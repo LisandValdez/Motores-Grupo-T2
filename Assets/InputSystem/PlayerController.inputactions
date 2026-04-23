@@ -104,24 +104,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Deffense",
-                    "type": "Button",
-                    "id": "52a1cb91-67af-40f5-a78c-20475debc836",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Switch Weapon Alt",
-                    "type": "Value",
-                    "id": "487f4b1b-9788-4df6-aecc-12ae05c71770",
-                    "expectedControlType": "Analog",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -333,39 +315,6 @@
                     "action": "Switch Weapon",
                     "isComposite": false,
                     "isPartOfComposite": true
-                },
-                {
-                    "name": "",
-                    "id": "f5f82e2c-70c1-4bfa-83bf-57ef91252c31",
-                    "path": "<Keyboard>/space",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Deffense",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "3fafad2a-c72f-4490-aa5a-a52b1eba4883",
-                    "path": "<Mouse>/scroll/down",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Switch Weapon Alt",
-                    "isComposite": false,
-                    "isPartOfComposite": false
-                },
-                {
-                    "name": "",
-                    "id": "b532242f-22e1-4afb-bd9b-82cbe472113b",
-                    "path": "<Mouse>/scroll/up",
-                    "interactions": "",
-                    "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Switch Weapon Alt",
-                    "isComposite": false,
-                    "isPartOfComposite": false
                 }
             ]
         }

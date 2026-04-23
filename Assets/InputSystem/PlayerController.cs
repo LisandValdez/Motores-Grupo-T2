@@ -190,24 +190,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
                     ""processors"": """",
                     ""interactions"": """",
                     ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Deffense"",
-                    ""type"": ""Button"",
-                    ""id"": ""52a1cb91-67af-40f5-a78c-20475debc836"",
-                    ""expectedControlType"": """",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": false
-                },
-                {
-                    ""name"": ""Switch Weapon Alt"",
-                    ""type"": ""Value"",
-                    ""id"": ""487f4b1b-9788-4df6-aecc-12ae05c71770"",
-                    ""expectedControlType"": ""Analog"",
-                    ""processors"": """",
-                    ""interactions"": """",
-                    ""initialStateCheck"": true
                 }
             ],
             ""bindings"": [
@@ -419,39 +401,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
                     ""action"": ""Switch Weapon"",
                     ""isComposite"": false,
                     ""isPartOfComposite"": true
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""f5f82e2c-70c1-4bfa-83bf-57ef91252c31"",
-                    ""path"": ""<Keyboard>/space"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard & Mouse"",
-                    ""action"": ""Deffense"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""3fafad2a-c72f-4490-aa5a-a52b1eba4883"",
-                    ""path"": ""<Mouse>/scroll/down"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard & Mouse"",
-                    ""action"": ""Switch Weapon Alt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
-                },
-                {
-                    ""name"": """",
-                    ""id"": ""b532242f-22e1-4afb-bd9b-82cbe472113b"",
-                    ""path"": ""<Mouse>/scroll/up"",
-                    ""interactions"": """",
-                    ""processors"": """",
-                    ""groups"": "";Keyboard & Mouse"",
-                    ""action"": ""Switch Weapon Alt"",
-                    ""isComposite"": false,
-                    ""isPartOfComposite"": false
                 }
             ]
         }
@@ -488,8 +437,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         m_Player_Reload = m_Player.FindAction("Reload", throwIfNotFound: true);
         m_Player_Inventory = m_Player.FindAction("Inventory", throwIfNotFound: true);
         m_Player_SwitchWeapon = m_Player.FindAction("Switch Weapon", throwIfNotFound: true);
-        m_Player_Deffense = m_Player.FindAction("Deffense", throwIfNotFound: true);
-        m_Player_SwitchWeaponAlt = m_Player.FindAction("Switch Weapon Alt", throwIfNotFound: true);
     }
 
     ~@PlayerController()
@@ -581,8 +528,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
     private readonly InputAction m_Player_Reload;
     private readonly InputAction m_Player_Inventory;
     private readonly InputAction m_Player_SwitchWeapon;
-    private readonly InputAction m_Player_Deffense;
-    private readonly InputAction m_Player_SwitchWeaponAlt;
     /// <summary>
     /// Provides access to input actions defined in input action map "Player".
     /// </summary>
@@ -638,14 +583,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         /// Provides access to the underlying input action "Player/SwitchWeapon".
         /// </summary>
         public InputAction @SwitchWeapon => m_Wrapper.m_Player_SwitchWeapon;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/Deffense".
-        /// </summary>
-        public InputAction @Deffense => m_Wrapper.m_Player_Deffense;
-        /// <summary>
-        /// Provides access to the underlying input action "Player/SwitchWeaponAlt".
-        /// </summary>
-        public InputAction @SwitchWeaponAlt => m_Wrapper.m_Player_SwitchWeaponAlt;
         /// <summary>
         /// Provides access to the underlying input action map instance.
         /// </summary>
@@ -705,12 +642,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
             @SwitchWeapon.started += instance.OnSwitchWeapon;
             @SwitchWeapon.performed += instance.OnSwitchWeapon;
             @SwitchWeapon.canceled += instance.OnSwitchWeapon;
-            @Deffense.started += instance.OnDeffense;
-            @Deffense.performed += instance.OnDeffense;
-            @Deffense.canceled += instance.OnDeffense;
-            @SwitchWeaponAlt.started += instance.OnSwitchWeaponAlt;
-            @SwitchWeaponAlt.performed += instance.OnSwitchWeaponAlt;
-            @SwitchWeaponAlt.canceled += instance.OnSwitchWeaponAlt;
         }
 
         /// <summary>
@@ -755,12 +686,6 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
             @SwitchWeapon.started -= instance.OnSwitchWeapon;
             @SwitchWeapon.performed -= instance.OnSwitchWeapon;
             @SwitchWeapon.canceled -= instance.OnSwitchWeapon;
-            @Deffense.started -= instance.OnDeffense;
-            @Deffense.performed -= instance.OnDeffense;
-            @Deffense.canceled -= instance.OnDeffense;
-            @SwitchWeaponAlt.started -= instance.OnSwitchWeaponAlt;
-            @SwitchWeaponAlt.performed -= instance.OnSwitchWeaponAlt;
-            @SwitchWeaponAlt.canceled -= instance.OnSwitchWeaponAlt;
         }
 
         /// <summary>
@@ -891,19 +816,5 @@ public partial class @PlayerController: IInputActionCollection2, IDisposable
         /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
         /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
         void OnSwitchWeapon(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Deffense" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnDeffense(InputAction.CallbackContext context);
-        /// <summary>
-        /// Method invoked when associated input action "Switch Weapon Alt" is either <see cref="UnityEngine.InputSystem.InputAction.started" />, <see cref="UnityEngine.InputSystem.InputAction.performed" /> or <see cref="UnityEngine.InputSystem.InputAction.canceled" />.
-        /// </summary>
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.started" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.performed" />
-        /// <seealso cref="UnityEngine.InputSystem.InputAction.canceled" />
-        void OnSwitchWeaponAlt(InputAction.CallbackContext context);
     }
 }
