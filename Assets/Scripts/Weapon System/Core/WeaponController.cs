@@ -51,7 +51,9 @@ public class WeaponController : MonoBehaviour
 
     public void OnAim(InputAction.CallbackContext context)
     {
-        if (currentWeapon != null && !isSwitching)
+        // 1. Verificamos que haya un arma, que no estemos cambiando y...
+        // 2. QUE EL ARMA NO SEA MELEE
+        if (currentWeapon != null && !isSwitching && !(currentWeapon is MeleeBase))
         {
             bool aiming = context.ReadValueAsButton();
 
@@ -59,6 +61,12 @@ public class WeaponController : MonoBehaviour
 
             if (movementScript != null) movementScript.SetAiming(aiming);
             if (lookScript != null) lookScript.SetAiming(aiming);
+        }
+        else if (currentWeapon is MeleeBase)
+        {
+            // Opcional: Asegurarnos de que el estado de apuntado sea falso si cambiamos de arma rápido
+            if (movementScript != null) movementScript.SetAiming(false);
+            if (lookScript != null) lookScript.SetAiming(false);
         }
     }
 

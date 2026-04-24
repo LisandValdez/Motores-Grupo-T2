@@ -1,20 +1,20 @@
 using UnityEngine;
-
 using System.Collections; // Necesario para usar Corrutinas
 
 public abstract class FireWeaponBase : WeaponBase
 {
     [Header("FireWeapon Settings")]
-    public int maxAmmo = 10;
-    public float reloadTime = 2f; 
+    public GameObject projectilePrefab; // Prefab que hereda de ProjectileBase
     public Transform firePoint;
+    public int maxAmmo = 10;
+    public float reloadTime = 2f;
 
     [Header("Animations")]
     protected Animator anim;
 
     protected int currentAmmo;
     protected bool isAiming;
-    protected bool isReloading = false; 
+    protected bool isReloading = false;
 
     [Header("Casing Settings")]
     public GameObject casingPrefab;
@@ -25,17 +25,43 @@ public abstract class FireWeaponBase : WeaponBase
     {
         anim = GetComponent<Animator>();
     }
+
     protected virtual void Start()
     {
         currentAmmo = maxAmmo;
-        
+    }
+
+    public override void Attack(Vector3 targetPoint)
+    {
+        // Lógica de disparo centralizada para todas las armas de fuego
+        if (CanShoot())
+        {
+            nextAttackTime = Time.time + (1f / fireRate);
+            currentAmmo--;
+
+            PlayFireAnimation();
+
+            // Cálculo de dirección e instanciación del proyectil
+            Vector3 fireDirection = (targetPoint - firePoint.position).normalized;
+            GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(fireDirection));
+
+            // Inicialización del proyectil con el daño del arma
+            ProjectileBase proj = projObj.GetComponent<ProjectileBase>();
+            if (proj != null)
+            {
+                proj.Initialize(damage);
+            }
+
+            Debug.Log($"{weaponName} disparó. Balas restantes: {currentAmmo}");
+        }
+        else if (currentAmmo <= 0 && !isReloading)
+        {
+            Debug.Log("¡Click click! (Sin balas)");
+        }
     }
 
     public override void Aim(bool isAimingState)
     {
-        // Si estamos recargando, podrías querer cancelar el apuntado
-        
-
         isAiming = isAimingState;
 
         if (anim != null)
@@ -44,10 +70,8 @@ public abstract class FireWeaponBase : WeaponBase
         }
     }
 
-    
     public override void Reload()
     {
-        // Solo recarga si no está recargando ya y le falta munición
         if (!isReloading && currentAmmo < maxAmmo)
         {
             StartCoroutine(ReloadRoutine());
@@ -59,32 +83,18 @@ public abstract class FireWeaponBase : WeaponBase
         isReloading = true;
         Debug.Log($"Recargando {weaponName}...");
 
-        // Verificamos si el Animator tiene el parámetro antes de llamarlo
         if (anim != null && HasParameter("ReloadTrigger", anim))
         {
             anim.SetTrigger("ReloadTrigger");
         }
 
-        // Espera el tiempo definido en el inspector
         yield return new WaitForSeconds(reloadTime);
 
         currentAmmo = maxAmmo;
         isReloading = false;
         Debug.Log($"{weaponName} lista.");
-        
     }
 
-    // Función auxiliar para evitar errores de "Parameter does not exist"
-    private bool HasParameter(string paramName, Animator animator)
-    {
-        foreach (AnimatorControllerParameter param in animator.parameters)
-        {
-            if (param.name == paramName) return true;
-        }
-        return false;
-    }
-
-    // Actualizamos CanShoot para incluir el bloqueo de recarga
     protected bool CanShoot()
     {
         return Time.time >= nextAttackTime && currentAmmo > 0 && !isReloading;
@@ -95,14 +105,6 @@ public abstract class FireWeaponBase : WeaponBase
         if (anim != null)
         {
             anim.SetTrigger("FireTrigger");
-        }
-    }
-
-    public void PlaySwitchAnimation()
-    {
-        if (anim != null)
-        {
-            anim.SetTrigger("SwitchTrigger");
         }
     }
 
@@ -122,5 +124,12 @@ public abstract class FireWeaponBase : WeaponBase
         }
     }
 
-    public virtual void Shoot() { }
+    private bool HasParameter(string paramName, Animator animator)
+    {
+        foreach (AnimatorControllerParameter param in animator.parameters)
+        {
+            if (param.name == paramName) return true;
+        }
+        return false;
+    }
 }
