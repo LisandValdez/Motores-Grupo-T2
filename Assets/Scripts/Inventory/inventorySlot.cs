@@ -18,23 +18,75 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         slotIndex = index;
         parentUI = ui;
         
-        // Buscar componentes si no están asignados
-        if (itemIcon == null)
-            itemIcon = GetComponentInChildren<Image>();
+        // Buscar el hijo "Icon" - usar Find con nombre exacto
+        Transform iconTransform = transform.Find("Icon");
+        if (iconTransform != null)
+        {
+            itemIcon = iconTransform.GetComponent<Image>();
+            Debug.Log($"✅ Slot {index}: Encontrado hijo 'Icon'");
+        }
+        else
+        {
+            Debug.LogError($"❌ Slot {index}: No se encontró hijo 'Icon'. Los hijos son: {GetChildNames()}");
+        }
         
-        if (amountText == null)
-            amountText = GetComponentInChildren<Text>();
+        // Buscar el hijo "Amount"
+        Transform amountTransform = transform.Find("Amount");
+        if (amountTransform != null)
+        {
+            amountText = amountTransform.GetComponent<Text>();
+            Debug.Log($"✅ Slot {index}: Encontrado hijo 'Amount'");
+        }
+        else
+        {
+            Debug.LogWarning($"⚠️ Slot {index}: No se encontró hijo 'Amount'");
+        }
+        
+        // Buscar el hijo "HighlightBorder"
+        Transform highlightTransform = transform.Find("HighlightBorder");
+        if (highlightTransform != null)
+        {
+            highlightBorder = highlightTransform.gameObject;
+        }
         
         if (highlightBorder != null)
             highlightBorder.SetActive(false);
+    }
+    
+    string GetChildNames()
+    {
+        string names = "";
+        foreach (Transform child in transform)
+        {
+            names += child.name + ", ";
+        }
+        return names;
     }
     
     public void SetItem(InventoryItem item)
     {
         currentItem = item;
         
-        if (itemIcon != null && item.icon != null)
-            itemIcon.sprite = item.icon;
+        Debug.Log($"🎨 [SLOT] SetItem: {item.itemName}, Icono: {(item.icon != null ? item.icon.name : "NULL")}");
+        
+        if (itemIcon != null)
+        {
+            if (item.icon != null)
+            {
+                itemIcon.sprite = item.icon;
+                itemIcon.color = Color.white;
+                Debug.Log($"  ✅ Icono asignado al hijo 'Icon': {item.icon.name}");
+            }
+            else
+            {
+                Debug.LogWarning($"  ⚠️ El item {item.itemName} no tiene icono");
+                itemIcon.sprite = null;
+            }
+        }
+        else
+        {
+            Debug.LogError($"❌ itemIcon es NULL en slot {slotIndex}!");
+        }
         
         if (amountText != null)
         {
@@ -48,7 +100,9 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         currentItem = null;
         
         if (itemIcon != null)
+        {
             itemIcon.sprite = null;
+        }
         
         if (amountText != null)
         {
@@ -61,7 +115,6 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         if (currentItem == null) return;
         
-        // Click derecho para usar/equipar item
         if (eventData.button == PointerEventData.InputButton.Right)
         {
             UseItem();
@@ -93,20 +146,17 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         Debug.Log($"Usando item: {currentItem.itemName}");
         
-        // Aquí puedes agregar lógica para usar items
-        switch (currentItem.itemName)
+        switch (currentItem.itemType)
         {
-            case "Poción":
-                // Curar al jugador
-                // PlayerHealth.Instance.Heal(20);
+            case ItemType.Consumable:
+                Debug.Log($"💊 Usaste {currentItem.itemName}");
                 break;
-            case "Manzana":
-                // Curar un poco
+            case ItemType.Weapon:
+                Debug.Log($"⚔️ Equipaste {currentItem.itemName}");
                 break;
         }
         
-        // Remover un item del inventario
-        Inventory playerInventory = FindFirstObjectByType<Inventory>();
+        Inventory playerInventory = Inventory.Instance;
         if (playerInventory != null)
         {
             playerInventory.RemoveItem(currentItem.itemName, 1);
