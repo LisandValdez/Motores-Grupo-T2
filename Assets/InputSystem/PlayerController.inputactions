@@ -43,7 +43,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Shoot",
+                    "name": "Attack",
                     "type": "Button",
                     "id": "94bd6ab0-088e-4f9a-80da-7b1fde351be9",
                     "expectedControlType": "",
@@ -79,7 +79,7 @@
                     "initialStateCheck": false
                 },
                 {
-                    "name": "Recharge",
+                    "name": "Reload",
                     "type": "Button",
                     "id": "589873f4-7bd8-45cf-84f7-2fb2cd99a26b",
                     "expectedControlType": "",
@@ -104,24 +104,6 @@
                     "processors": "",
                     "interactions": "",
                     "initialStateCheck": false
-                },
-                {
-                    "name": "Deffense",
-                    "type": "Button",
-                    "id": "52a1cb91-67af-40f5-a78c-20475debc836",
-                    "expectedControlType": "",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": false
-                },
-                {
-                    "name": "Switch Weapon Alt",
-                    "type": "Value",
-                    "id": "487f4b1b-9788-4df6-aecc-12ae05c71770",
-                    "expectedControlType": "Analog",
-                    "processors": "",
-                    "interactions": "",
-                    "initialStateCheck": true
                 }
             ],
             "bindings": [
@@ -220,7 +202,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
-                    "action": "Shoot",
+                    "action": "Attack",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -264,7 +246,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": ";Keyboard & Mouse",
-                    "action": "Recharge",
+                    "action": "Reload",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -302,37 +284,37 @@
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "f5f82e2c-70c1-4bfa-83bf-57ef91252c31",
-                    "path": "<Keyboard>/space",
+                    "name": "1D Axis",
+                    "id": "b7224683-d06a-43f4-9712-36f0adfd439c",
+                    "path": "1DAxis",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Deffense",
-                    "isComposite": false,
+                    "groups": "",
+                    "action": "Switch Weapon",
+                    "isComposite": true,
                     "isPartOfComposite": false
                 },
                 {
-                    "name": "",
-                    "id": "3fafad2a-c72f-4490-aa5a-a52b1eba4883",
+                    "name": "Negative",
+                    "id": "39ac3f1b-473c-449d-9268-ec4f813ca0fa",
                     "path": "<Mouse>/scroll/down",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Switch Weapon Alt",
+                    "groups": "",
+                    "action": "Switch Weapon",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 },
                 {
-                    "name": "",
-                    "id": "b532242f-22e1-4afb-bd9b-82cbe472113b",
+                    "name": "Positive",
+                    "id": "8504052b-e425-457b-988e-a55a4a89a25b",
                     "path": "<Mouse>/scroll/up",
                     "interactions": "",
                     "processors": "",
-                    "groups": ";Keyboard & Mouse",
-                    "action": "Switch Weapon Alt",
+                    "groups": "",
+                    "action": "Switch Weapon",
                     "isComposite": false,
-                    "isPartOfComposite": false
+                    "isPartOfComposite": true
                 }
             ]
         }
