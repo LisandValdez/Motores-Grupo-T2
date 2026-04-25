@@ -207,9 +207,11 @@ GameObject:
   - component: {fileID: 9002160466815916071}
   - component: {fileID: 4791343536397803659}
   - component: {fileID: 572299299440289367}
+  - component: {fileID: 1418056535964597951}
+  - component: {fileID: 7809096889203115431}
   m_Layer: 3
   m_Name: Player
-  m_TagString: Untagged
+  m_TagString: Player
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
@@ -389,7 +391,19 @@ MonoBehaviour:
     m_ActionId: 589873f4-7bd8-45cf-84f7-2fb2cd99a26b
     m_ActionName: 'Player/Recharge[/Keyboard/r]'
   - m_PersistentCalls:
-      m_Calls: []
+      m_Calls:
+      - m_Target: {fileID: 0}
+        m_TargetAssemblyTypeName: InventoryUI, Assembly-CSharp
+        m_MethodName: OnToggleInventory
+        m_Mode: 0
+        m_Arguments:
+          m_ObjectArgument: {fileID: 0}
+          m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
+          m_IntArgument: 0
+          m_FloatArgument: 0
+          m_StringArgument: 
+          m_BoolArgument: 0
+        m_CallState: 2
     m_ActionId: 1ddf4327-3373-4737-81f6-6d97c1a581ed
     m_ActionName: 'Player/Inventory[/Keyboard/i]'
   - m_PersistentCalls:
@@ -515,6 +529,45 @@ MonoBehaviour:
     m_Bits: 8
   movementScript: {fileID: 9002160466815916071}
   lookScript: {fileID: 5847848237562074132}
+--- !u!136 &1418056535964597951
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241444377585245299}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 3
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+--- !u!114 &7809096889203115431
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241444377585245299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 45903b33318e7e049a3184da09559dfe, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Inventory
+  maxSlots: 20
+  maxStackSize: 99
+  keys: []
+  items: []
 --- !u!1 &3364231681043539571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1334,8 +1387,9 @@ GameObject:
   - component: {fileID: 7644673273708021270}
   - component: {fileID: 5617011965074010844}
   - component: {fileID: 643653119340744148}
+  - component: {fileID: 7911082699108083212}
   m_Layer: 0
-  m_Name: 2K_Knife_Wood_Used
+  m_Name: Knife
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -1349,14 +1403,14 @@ Transform:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 6265455887393313545}
   serializedVersion: 2
-  m_LocalRotation: {x: 0.7070855, y: 0.7070855, z: 0.005491841, w: 0.005491841}
-  m_LocalPosition: {x: -0.193, y: 0.297, z: 0.237}
+  m_LocalRotation: {x: -0.44925126, y: -0.5834782, z: 0.5460525, w: 0.3994411}
+  m_LocalPosition: {x: -0.193, y: 0.18, z: 0.237}
   m_LocalScale: {x: 2, y: 2, z: 2}
   m_ConstrainProportionsScale: 1
   m_Children:
   - {fileID: 3364231681043267221}
   m_Father: {fileID: 950583559980028863}
-  m_LocalEulerAnglesHint: {x: 0, y: 179.11, z: 90}
+  m_LocalEulerAnglesHint: {x: 16.16, y: -95.05, z: 90}
 --- !u!33 &7644673273708021270
 MeshFilter:
   m_ObjectHideFlags: 0
@@ -1430,6 +1484,28 @@ MonoBehaviour:
   damage: 5
   fireRate: 2
   hitCollider: {fileID: 4500016726442954475}
+--- !u!95 &7911082699108083212
+Animator:
+  serializedVersion: 7
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6265455887393313545}
+  m_Enabled: 1
+  m_Avatar: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: adbdaecf712eb764e999bfac6dea34db, type: 2}
+  m_CullingMode: 0
+  m_UpdateMode: 0
+  m_ApplyRootMotion: 0
+  m_LinearVelocityBlending: 0
+  m_StabilizeFeet: 0
+  m_AnimatePhysics: 0
+  m_WarningMessage: 
+  m_HasTransformHierarchy: 1
+  m_AllowConstantClipSamplingOptimization: 1
+  m_KeepAnimatorStateOnDisable: 0
+  m_WriteDefaultValuesOnDisable: 0
 --- !u!1 &8121540369419073994
 GameObject:
   m_ObjectHideFlags: 0
@@ -1599,4 +1675,5 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::PlayerInteraction
   distance: 5.54
   radius: 1.91
-  cooldown: 1.5
+  interactionCooldown: 0.5
+  showDebug: 1

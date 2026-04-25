@@ -99,27 +99,68 @@ public class ItemPickup : MonoBehaviour, IInteractable
     }
 
     void CreateInteractionPrompt()
+{
+    if (currentPrompt != null) return;
+    
+    GameObject promptObj = new GameObject("InteractionPrompt");
+    promptObj.transform.SetParent(transform);
+    
+    // 🔧 CALCULAR ALTURA AUTOMÁTICAMENTE
+    float calculatedHeight = CalculatePromptHeight();
+    promptObj.transform.localPosition = new Vector3(0, calculatedHeight, 0);
+    
+    TextMesh textMesh = promptObj.AddComponent<TextMesh>();
+    string typeIcon = GetTypeIcon();
+    textMesh.text = $"Presiona <color=yellow>E</color> para agarrar\n<color=cyan>{typeIcon} {itemName}</color>";
+    textMesh.fontSize = (int)promptFontSize;
+    textMesh.characterSize = promptCharacterSize;
+    textMesh.color = Color.white;
+    textMesh.alignment = TextAlignment.Center;
+    
+    promptObj.AddComponent<Billboard>();
+    currentPrompt = promptObj;
+    promptObj.SetActive(false);
+    
+    Debug.Log($"✨ Prompt creado para item: {itemName}, altura: {calculatedHeight}");
+}
+
+float CalculatePromptHeight()
+{
+    float height = promptHeight; // Valor por defecto (1.5f)
+    
+    // Método 1: Usar Collider
+    Collider col = GetComponent<Collider>();
+    if (col != null)
     {
-        if (currentPrompt != null) return;
-        
-        GameObject promptObj = new GameObject("InteractionPrompt");
-        promptObj.transform.SetParent(transform);
-        promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
-        
-        TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        string typeIcon = GetTypeIcon();
-        textMesh.text = $"Presiona <color=yellow>E</color> para agarrar\n<color=cyan>{typeIcon} {itemName}</color>";
-        textMesh.fontSize = (int)promptFontSize;
-        textMesh.characterSize = promptCharacterSize;
-        textMesh.color = Color.white;
-        textMesh.alignment = TextAlignment.Center;
-        
-        promptObj.AddComponent<Billboard>();
-        
-        currentPrompt = promptObj;
-        
-        Debug.Log($"✨ Prompt creado para item: {itemName}");
+        height = col.bounds.extents.y + 0.5f;
+        Debug.Log($"📏 Altura calculada por Collider: {height}");
+        return height;
     }
+    
+    // Método 2: Usar MeshRenderer
+    MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+    if (meshRenderer != null)
+    {
+        height = meshRenderer.bounds.extents.y + 0.5f;
+        Debug.Log($"📏 Altura calculada por MeshRenderer: {height}");
+        return height;
+    }
+    
+    // Método 3: Usar SpriteRenderer
+    SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+    if (spriteRenderer != null && spriteRenderer.sprite != null)
+    {
+        height = spriteRenderer.bounds.extents.y + 0.5f;
+        Debug.Log($"📏 Altura calculada por SpriteRenderer: {height}");
+        return height;
+    }
+    
+    // Método 4: Usar transform.localScale
+    height = transform.localScale.y + 0.5f;
+    Debug.Log($"📏 Altura calculada por Scale: {height}");
+    
+    return height;
+}
     
     string GetTypeIcon()
     {
