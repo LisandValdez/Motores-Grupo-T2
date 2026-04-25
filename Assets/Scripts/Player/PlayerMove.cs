@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+using UnityEngine.InputSystem.Processors;
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
@@ -14,10 +15,12 @@ public class PlayerMove : MonoBehaviour
     private Vector3 velocity;
     private bool isRunning = false;
     private bool isAiming = false;
+    
 
     void Awake()
     {
         controller = GetComponent<CharacterController>();
+        rb = GetComponent<Rigidbody>();
     }
 
     // Recibe el estado desde el WeaponController
@@ -64,4 +67,32 @@ public class PlayerMove : MonoBehaviour
         velocity.y += gravity * Time.deltaTime;
         controller.Move(velocity * Time.deltaTime);
     }
+
+    
+
+    [Header("Evento muerte")]
+    private int maxLife;
+    private int currentLife;
+    private Rigidbody rb;
+    private bool isDead = false;
+
+    private void FixedUpdate()
+    {
+        if (isDead) return;
+    }
+
+    public void SetMaxLife(int life)
+    {
+        maxLife = life;
+        currentLife = life;
+    }
+
+    public void die()//
+    {
+        Debug.Log("PlayerMove: ya no puedo moverme, estoy muerto.");
+        rb.linearVelocity = Vector3.zero;
+        isDead = true;
+
+    }
+
 }

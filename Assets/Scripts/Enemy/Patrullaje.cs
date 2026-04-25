@@ -9,12 +9,15 @@ public class Patrullaje : MonoBehaviour
 
     [Header("Patrulla")]
     [SerializeField] private Transform[] puntos;
+    private Animator anim;
     private int index = 0;
 
     void Awake()
     {
         if (enemy == null)
             enemy = GetComponent<NavMeshAgent>();
+        if (anim == null)
+            anim = GetComponent<Animator>();
     }
 
     void Update()
@@ -29,5 +32,8 @@ public class Patrullaje : MonoBehaviour
         {
             index = (index + 1) % puntos.Length;
         }
+
+        float speed = enemy.velocity.magnitude / enemy.speed;
+        anim.SetFloat("speed", speed);
     }
 }

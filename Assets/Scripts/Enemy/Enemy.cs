@@ -16,7 +16,7 @@ public class Enemy : MonoBehaviour
         Debug.Log("dañaste al enemigo");
     }
 
-    public virtual void Spawn()
+    public virtual void Spawn_enemy()
     {
         Debug.Log("spawneo enemigo");
     }
