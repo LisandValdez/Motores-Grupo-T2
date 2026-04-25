@@ -1,18 +1,19 @@
 using UnityEngine;
-using UnityEngine.InputSystem;
 using UnityEngine.UI;
 
-public class NPCFollow : MonoBehaviour
+public class NPCFollow : MonoBehaviour, IInteractable  // ← Implementar interfaz
 {
     public GameObject player;
     public float followSpeed = 3f;
     public float stopDistance = 2f;
     public float interactionRange = 2.5f;
     public bool isFollowing = false;
-
-    private bool playerInRange = false;
+    
+    public GameObject interactionPanel;
+    public Text interactionText;
+    
     private GameObject currentPrompt;
-    private TextMesh promptText;
+    private GameObject currentWorldMessage;
 
     void Start()
     {
@@ -25,99 +26,96 @@ public class NPCFollow : MonoBehaviour
         
         CreateInteractionPrompt();
         
+        if (interactionPanel != null)
+            interactionPanel.SetActive(false);
     }
 
-   void Update()
-{
-    // 🔹 Interacción con tecla E
-    if (playerInRange && Keyboard.current != null && Keyboard.current.eKey.wasPressedThisFrame)
+    void Update()
     {
-        isFollowing = !isFollowing;
-    }
-
-    // 🔹 Movimiento del NPC
-    if (isFollowing && player != null)
-    {
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-        if (distance > stopDistance)
+        if (isFollowing && player != null)
         {
-            Vector3 direction = (player.transform.position - transform.position).normalized;
-            direction.y = 0;
-            transform.position += direction * followSpeed * Time.deltaTime;
+            float distance = Vector3.Distance(transform.position, player.transform.position);
+            if (distance > stopDistance)
+            {
+                Vector3 direction = (player.transform.position - transform.position).normalized;
+                direction.y = 0;
+                transform.position += direction * followSpeed * Time.deltaTime;
+            }
         }
-    }
-
-    // 🔹 Mostrar prompt
-    if (player != null)
-    {
-        float distance = Vector3.Distance(transform.position, player.transform.position);
-        playerInRange = distance <= interactionRange;
-
-        if (currentPrompt != null)
-            currentPrompt.SetActive(playerInRange);
-    }
-    if (promptText != null)
-{
-    if (isFollowing)
-        promptText.text = "<color=yellow>E</color> dejar de seguir";
-    else
-        promptText.text = "<color=yellow>E</color> seguir";
-}
-}
-    
-    void OnTriggerEnter(Collider other)
-    {
-        if (other.CompareTag("Player"))
+        
+        // Mostrar/ocultar prompt según distancia (opcional)
+        if (player != null && currentPrompt != null)
         {
-            player = other.gameObject;
-            playerInRange = true;
-            if (currentPrompt != null)
-                currentPrompt.SetActive(true);
-        }
-    }
-
-    
-    void OnTriggerExit(Collider other)
-    {
-        if (other.CompareTag("Player"))
-        {
-            player = null;
-            playerInRange = false;
-            if (currentPrompt != null)
-                currentPrompt.SetActive(false);
+            float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
+            bool isInRange = distanceToPlayer <= interactionRange;
+            currentPrompt.SetActive(isInRange);
         }
     }
 
     void CreateInteractionPrompt()
-{
-    GameObject promptObj = new GameObject("InteractionPrompt");
-    promptObj.transform.SetParent(transform);
-    promptObj.transform.localPosition = new Vector3(0, 2f, 0);
+    {
+        GameObject promptObj = new GameObject("InteractionPrompt");
+        promptObj.transform.SetParent(transform);
+        promptObj.transform.localPosition = new Vector3(0, 2f, 0);
+        
+        TextMesh textMesh = promptObj.AddComponent<TextMesh>();
+        textMesh.text = $"<color=yellow>E</color> - { (isFollowing ? "Detener" : "Seguir") }";
+        textMesh.fontSize = 30;
+        textMesh.characterSize = 0.03f;
+        textMesh.color = Color.white;
+        textMesh.alignment = TextAlignment.Center;
+        
+        promptObj.AddComponent<Billboard>();
+        currentPrompt = promptObj;
+        promptObj.SetActive(false);
+    }
     
-    promptText = promptObj.AddComponent<TextMesh>();
-
-    promptText.text = " <color=yellow>E</color> seguir";
-    promptText.fontSize = 30;
-    promptText.characterSize = 0.03f;
-    promptText.color = Color.cyan;
-    promptText.alignment = TextAlignment.Center;
-
-    promptObj.AddComponent<Billboard>();
-    currentPrompt = promptObj;
-    promptObj.SetActive(false);
+    void UpdatePromptText()
+    {
+        if (currentPrompt != null)
+        {
+            TextMesh textMesh = currentPrompt.GetComponent<TextMesh>();
+            if (textMesh != null)
+            {
+                textMesh.text = $"<color=yellow>E</color> - { (isFollowing ? "Detener" : "Seguir") }";
+            }
+        }
+    }
     
-    Debug.Log("✅ Prompt del NPC creado correctamente");
-}
+    // ✅ INTERACCIÓN (llamada por PlayerInteraction)
+    public void Interact()
+    {
+        isFollowing = !isFollowing;
+        UpdatePromptText();
+        ShowWorldMessage(isFollowing ? "✨ Te sigo" : "🛑 Me quedo", 
+                        isFollowing ? Color.green : Color.yellow);
+        Debug.Log(isFollowing ? "NPC: ¡Te sigo!" : "NPC: Me quedo aquí");
+    }
+    
+    void ShowWorldMessage(string message, Color color)
+    {
+        if (currentWorldMessage != null)
+            Destroy(currentWorldMessage);
+        
+        GameObject messageObj = new GameObject("FloatingMessage");
+        messageObj.transform.SetParent(transform);
+        messageObj.transform.localPosition = new Vector3(0, 2.5f, 0);
+        
+        TextMesh textMesh = messageObj.AddComponent<TextMesh>();
+        textMesh.text = message;
+        textMesh.fontSize = 40;
+        textMesh.characterSize = 0.05f;
+        textMesh.color = color;
+        textMesh.fontStyle = FontStyle.Bold;
+        textMesh.alignment = TextAlignment.Center;
+        
+        messageObj.AddComponent<PickupMessageAnimator>();
+        currentWorldMessage = messageObj;
+    }
     
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.yellow;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
-        
-        if (isFollowing && player != null)
-        {
-            Gizmos.color = Color.green;
-            Gizmos.DrawLine(transform.position, player.transform.position);
-        }
     }
 }

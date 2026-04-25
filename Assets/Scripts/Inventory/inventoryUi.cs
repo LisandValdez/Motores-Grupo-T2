@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.InputSystem;  // ← Agregar esto
 using System.Collections.Generic;
 
 public class InventoryUI : MonoBehaviour
@@ -10,7 +11,7 @@ public class InventoryUI : MonoBehaviour
     public GameObject slotPrefab;          // Prefab del slot (un botón con imagen)
     
     [Header("Teclas")]
-    public KeyCode toggleKey = KeyCode.I;   // Tecla para abrir/cerrar inventario
+    public KeyCode toggleKey = KeyCode.I;   // Tecla para abrir/cerrar inventario (referencia)
     
     [Header("Detalles del Item")]
     public GameObject itemDetailPanel;     // Panel para mostrar detalles
@@ -21,56 +22,110 @@ public class InventoryUI : MonoBehaviour
     private List<InventorySlot> slots = new List<InventorySlot>();
     private bool isInventoryOpen = false;
     private Inventory playerInventory;
-    
+
     void Start()
+{
+    // Buscar el inventario del jugador
+    playerInventory = FindFirstObjectByType<Inventory>();
+    
+    if (playerInventory == null)
     {
-        // Buscar el inventario del jugador
-        playerInventory = FindFirstObjectByType<Inventory>();
-        
-        if (playerInventory == null)
-        {
-            Debug.LogError("❌ No se encontró el componente Inventory en el jugador!");
-            return;
-        }
-        
-        // Crear los slots
-        CreateSlots();
-        
-        // Ocultar paneles al inicio
-        if (inventoryPanel != null)
-            inventoryPanel.SetActive(false);
-        
-        if (itemDetailPanel != null)
-            itemDetailPanel.SetActive(false);
-        
-        // Suscribirse al evento de cambio de inventario
-        playerInventory.OnInventoryChanged += RefreshUI;
-        
-        // Refrescar UI inicial
-        RefreshUI();
+        Debug.LogError("❌ No se encontró el componente Inventory en el jugador!");
+        return;
     }
+    
+    Debug.Log($"✅ InventoryUI: Inventario encontrado con {playerInventory.items.Count} items");
+    
+    // Crear los slots
+    CreateSlots();
+    
+    // Ocultar paneles al inicio
+    if (inventoryPanel != null)
+        inventoryPanel.SetActive(false);
+    
+    if (itemDetailPanel != null)
+        itemDetailPanel.SetActive(false);
+    
+    // Suscribirse al evento de cambio de inventario
+    playerInventory.OnInventoryChanged += RefreshUI;
+    
+    // Refrescar UI inicial
+    RefreshUI();
+}
+
+public void RefreshUI()
+{
+    if (playerInventory == null || slots.Count == 0) return;
+    
+    Debug.Log($"🔄 [UI] Refrescando UI. Items en inventario: {playerInventory.items.Count}");
+    
+    for (int i = 0; i < playerInventory.items.Count; i++)
+    {
+        var item = playerInventory.items[i];
+        Debug.Log($"  [UI] Item {i}: {item.itemName}, Icono: {(item.icon != null ? item.icon.name : "NULL")}");
+    }
+    
+    for (int i = 0; i < slots.Count; i++)
+    {
+        if (i < playerInventory.items.Count && playerInventory.items[i] != null)
+        {
+            slots[i].SetItem(playerInventory.items[i]);
+        }
+        else
+        {
+            slots[i].ClearSlot();
+        }
+    }
+}
+    
+    // public void RefreshUI()
+    // {
+    //     if (playerInventory == null) return;
+        
+    //     // Actualizar cada slot
+    //     for (int i = 0; i < slots.Count; i++)
+    //     {
+    //         if (i < playerInventory.items.Count)
+    //         {
+    //             // Slot con item
+    //             InventoryItem item = playerInventory.items[i];
+    //             slots[i].SetItem(item);
+    //         }
+    //         else
+    //         {
+    //             // Slot vacío
+    //             slots[i].ClearSlot();
+    //         }
+    //     }
+    // }
     
     void Update()
+{
+    // Cerrar inventario con ESC
+    if (isInventoryOpen && Keyboard.current != null && Keyboard.current.escapeKey.wasPressedThisFrame)
     {
-        // Abrir/cerrar inventario con tecla I
-        if (Input.GetKeyDown(toggleKey))
-        {
-            ToggleInventory();
-        }
-        
-        // Cerrar inventario con ESC si está abierto
-        if (isInventoryOpen && Input.GetKeyDown(KeyCode.Escape))
-        {
-            CloseInventory();
-        }
+        CloseInventory();
     }
+}
+
+// Método público para llamar desde Input Action
+public void OnToggleInventory(InputAction.CallbackContext context)
+{
+    if (context.performed)
+    {
+        ToggleInventory();
+    }
+}
     
     void CreateSlots()
     {
         // Limpiar slots existentes
-        foreach (Transform child in slotsParent)
+        if (slotsParent != null)
         {
-            Destroy(child.gameObject);
+            foreach (Transform child in slotsParent)
+            {
+                Destroy(child.gameObject);
+            }
         }
         slots.Clear();
         
@@ -86,28 +141,10 @@ public class InventoryUI : MonoBehaviour
             slot.Initialize(i, this);
             slots.Add(slot);
         }
-    }
-    
-    public void RefreshUI()
-    {
-        if (playerInventory == null) return;
         
-        // Actualizar cada slot
-        for (int i = 0; i < slots.Count; i++)
-        {
-            if (i < playerInventory.items.Count)
-            {
-                // Slot con item
-                InventoryItem item = playerInventory.items[i];
-                slots[i].SetItem(item);
-            }
-            else
-            {
-                // Slot vacío
-                slots[i].ClearSlot();
-            }
-        }
+        Debug.Log($"✅ Creados {slots.Count} slots para el inventario");
     }
+
     
     public void ToggleInventory()
     {
@@ -120,11 +157,11 @@ public class InventoryUI : MonoBehaviour
     public void OpenInventory()
     {
         isInventoryOpen = true;
-        inventoryPanel.SetActive(true);
+        if (inventoryPanel != null)
+            inventoryPanel.SetActive(true);
         RefreshUI();
         
-        // Opcional: pausar el juego
-        // Time.timeScale = 0f;
+        // Cambiar cursor para usar el inventario
         Cursor.lockState = CursorLockMode.None;
         Cursor.visible = true;
     }
@@ -132,13 +169,13 @@ public class InventoryUI : MonoBehaviour
     public void CloseInventory()
     {
         isInventoryOpen = false;
-        inventoryPanel.SetActive(false);
+        if (inventoryPanel != null)
+            inventoryPanel.SetActive(false);
         
         if (itemDetailPanel != null)
             itemDetailPanel.SetActive(false);
         
-        // Opcional: reanudar el juego
-        // Time.timeScale = 1f;
+        // Volver al modo de juego
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;
     }
