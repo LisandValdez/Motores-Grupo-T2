@@ -4,12 +4,20 @@ using UnityEngine.InputSystem;
 public class PlayerLook : MonoBehaviour
 {
     public float sensitivity = 2f;
+    [Range(0.1f, 1f)]
+    public float aimSensitivityMultiplier = 0.5f; // 0.5 significa la mitad de sensibilidad
     public Transform player;
 
     private Vector2 lookInput;
     private float xRotation = 0f;
+    private bool isAiming = false;
 
-    // Unity Events
+    // Recibe el estado desde el WeaponController
+    public void SetAiming(bool state)
+    {
+        isAiming = state;
+    }
+
     public void OnLook(InputAction.CallbackContext context)
     {
         lookInput = context.ReadValue<Vector2>();
@@ -17,16 +25,16 @@ public class PlayerLook : MonoBehaviour
 
     void Update()
     {
-        // Rotación en el eje X (vertical, rota la camara)
-        float mouseX = lookInput.x * sensitivity * Time.deltaTime;
-        float mouseY = lookInput.y * sensitivity * Time.deltaTime;
+        // Aplicar reducción si estamos apuntando
+        float currentSensitivity = isAiming ? (sensitivity * aimSensitivityMultiplier) : sensitivity;
+
+        float mouseX = lookInput.x * currentSensitivity * Time.deltaTime;
+        float mouseY = lookInput.y * currentSensitivity * Time.deltaTime;
 
         xRotation -= mouseY;
         xRotation = Mathf.Clamp(xRotation, -90f, 90f);
 
         transform.localRotation = Quaternion.Euler(xRotation, 0f, 0f);
-
-        // Rotación en el eje Y (horizontal, rota el player)
-        player.Rotate(Vector2.up * mouseX);
+        player.Rotate(Vector3.up * mouseX);
     }
 }
