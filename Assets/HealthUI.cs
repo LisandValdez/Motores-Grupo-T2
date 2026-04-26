@@ -16,19 +16,19 @@ public class HealthUI : MonoBehaviour
         UpdateHearts();
     }
 
-    void Update()
-    {
-        // tecla H para probar daño
-        if (Input.GetKeyDown(KeyCode.H))
-        {
-            currentHealth--;
+    //void Update()
+    //{
+    //    // tecla H para probar daño
+    //    if (Input.GetKeyDown(KeyCode.H))
+    //    {
+    //        currentHealth--;
 
-            if (currentHealth < 0)
-                currentHealth = 0;
+    //        if (currentHealth < 0)
+    //            currentHealth = 0;
 
-            UpdateHearts();
-        }
-    }
+    //        UpdateHearts();
+    //    }
+    //}
 
     void UpdateHearts()
     {
@@ -40,9 +40,9 @@ public class HealthUI : MonoBehaviour
                 hearts[i].sprite = emptyHeart;
         }
 
-        if (currentHealth <= 0)
-        {
-            FindFirstObjectByType<GameOverManager>().GameOver();
-        }
+        //if (currentHealth <= 0)
+        //{
+        //    FindFirstObjectByType<GameOverManager>().GameOver();
+        //}
     }
 }

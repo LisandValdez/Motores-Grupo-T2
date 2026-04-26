@@ -15,25 +15,25 @@ public class CorduraManager : MonoBehaviour
         corduraBar.value = currentCordura;
     }
 
-    void Update()
-    {
-        // Tecla J para probar pérdida de cordura
-        if (Input.GetKeyDown(KeyCode.J))
-        {
-            PerderCordura(10f);
-        }
-    }
+    //void Update()
+    //{
+    //    // Tecla J para probar pérdida de cordura
+    //    if (Input.GetKeyDown(KeyCode.J))
+    //    {
+    //        PerderCordura(10f);
+    //    }
+    //}
 
-    public void PerderCordura(float cantidad)
-    {
-        currentCordura -= cantidad;
-        currentCordura = Mathf.Clamp(currentCordura, 0, maxCordura);
+    //public void PerderCordura(float cantidad)
+    //{
+    //    currentCordura -= cantidad;
+    //    currentCordura = Mathf.Clamp(currentCordura, 0, maxCordura);
 
-        corduraBar.value = currentCordura;
+    //    corduraBar.value = currentCordura;
 
-        if (currentCordura <= 0)
-        {
-            FindFirstObjectByType<GameOverManager>().GameOver();
-        }
-    }
+    //    if (currentCordura <= 0)
+    //    {
+    //        FindFirstObjectByType<GameOverManager>().GameOver();
+    //    }
+    //}
 }
