@@ -3,39 +3,119 @@ using UnityEngine;
 public abstract class ProjectileBase : MonoBehaviour
 {
     [Header("Projectile Settings")]
-    public float speed = 50f;
-    public float lifeTime = 3f;
+    public float speed = 80f;
+    public float lifeTime = 5f;
+    public float maxDistance = 500f;
     public bool destroyOnImpact = true;
-
-    protected float damage;
+    public int damage = 20;
+    
+    private Vector3 lastPosition;
+    private Vector3 startPosition;
+    private bool hasHit = false;
+    private Collider projectileCollider;
 
     public virtual void Initialize(float weaponDamage)
     {
-        damage = weaponDamage;
+        damage = Mathf.RoundToInt(weaponDamage);
+        startPosition = transform.position;
+        lastPosition = transform.position;
         Destroy(gameObject, lifeTime);
+        
+        projectileCollider = GetComponent<Collider>();
+        
+        // Ignorar colisi√≥n con el jugador
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && projectileCollider != null)
+        {
+            Collider playerCollider = player.GetComponent<Collider>();
+            if (playerCollider != null)
+            {
+                Physics.IgnoreCollision(projectileCollider, playerCollider);
+                Debug.Log("üîß Bala ignora colisi√≥n con jugador");
+            }
+        }
     }
 
     protected virtual void Update()
     {
-        // Movimiento est·ndar hacia adelante
-        transform.Translate(Vector3.forward * speed * Time.deltaTime);
+        if (hasHit) return;
+        
+        Vector3 currentPosition = transform.position;
+        Vector3 newPosition = currentPosition + transform.forward * speed * Time.deltaTime;
+        
+        // Raycast para detectar colisiones entre frames
+        Vector3 direction = (newPosition - currentPosition).normalized;
+        float distance = Vector3.Distance(currentPosition, newPosition);
+        
+        RaycastHit hit;
+        // Ignorar la capa del jugador (Layer 3)
+        int layerMask = ~LayerMask.GetMask("Player");
+        
+        if (Physics.Raycast(currentPosition, direction, out hit, distance, layerMask))
+        {
+            // Verificar que no es el propio proyectil
+            if (hit.collider == projectileCollider) 
+            {
+                transform.position = newPosition;
+                lastPosition = newPosition;
+                return;
+            }
+            
+            Debug.Log($"üí• Raycast impact√≥: {hit.collider.gameObject.name} (Layer: {hit.collider.gameObject.layer})");
+            
+            transform.position = hit.point;
+            HandleHit(hit.collider);
+            return;
+        }
+        
+        // Movimiento normal
+        transform.position = newPosition;
+        lastPosition = newPosition;
+        
+        // Distancia m√°xima
+        if (Vector3.Distance(startPosition, transform.position) > maxDistance)
+        {
+            Destroy(gameObject);
+        }
     }
-
-    protected virtual void OnTriggerEnter(Collider other)
+    
+    protected virtual void HandleHit(Collider hitCollider)
     {
-        // 1. Intentamos obtener la interfaz (SoluciÛn m·s limpia)
-        IDamageable damageable = other.GetComponentInParent<IDamageable>();
-
+        if (hasHit) return;
+        hasHit = true;
+        
+        Debug.Log($"üí• Proyectil impact√≥ en: {hitCollider.gameObject.name}");
+        
+        // Buscar IDamageable
+        IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
+        
         if (damageable != null)
         {
             damageable.TakeDamage(damage);
-            Debug.Log($"Impacto en {other.name}: {damage} de daÒo.");
+            Debug.Log($"  ‚úÖ {damage} de da√±o aplicado");
         }
-
-        // 2. Si el objeto debe destruirse al chocar, lo hacemos despuÈs de aplicar daÒo
+        else
+        {
+            Debug.Log($"  ‚ùå {hitCollider.name} no tiene IDamageable");
+        }
+        
+        // Efectos de impacto
+        OnImpact(hitCollider);
+        
         if (destroyOnImpact)
         {
             Destroy(gameObject);
         }
+    }
+    
+    protected virtual void OnImpact(Collider hitCollider)
+    {
+        // Sobrescribir para efectos especiales
+    }
+    
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2f);
     }
 }

@@ -40,7 +40,7 @@ public class GameOverManager : MonoBehaviour
     public void Retry()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        SceneManager.LoadScene("MapaHotel");
     }
 
     public void MainMenu()

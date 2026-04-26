@@ -10,7 +10,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 100000, guid: 1319cfeb42068a446bc5d43ef1562670, type: 3}
       propertyPath: m_Name
-      value: 45ACP Bullet
+      value: Pistol Bullet
+      objectReference: {fileID: 0}
+    - target: {fileID: 100000, guid: 1319cfeb42068a446bc5d43ef1562670, type: 3}
+      propertyPath: m_TagString
+      value: Bullet
       objectReference: {fileID: 0}
     - target: {fileID: 400000, guid: 1319cfeb42068a446bc5d43ef1562670, type: 3}
       propertyPath: m_LocalScale.x
