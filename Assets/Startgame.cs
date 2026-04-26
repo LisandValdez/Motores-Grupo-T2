@@ -5,6 +5,6 @@ public class StartGame : MonoBehaviour
 {
     public void EmpezarJuego()
     {
-        Debug.Log("Start presionado");
+        SceneManager.LoadScene("MapaHotel");
     }
 }

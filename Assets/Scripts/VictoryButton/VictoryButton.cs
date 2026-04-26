@@ -46,6 +46,8 @@ public class VictoryButton : MonoBehaviour, IInteractable
     private bool isMoving = false;
     private Vector3 targetPosition;
 
+    public VictoryManager victoryManager;
+
     void Start()
     {
         // Asegurar posición inicial
@@ -56,6 +58,15 @@ public class VictoryButton : MonoBehaviour, IInteractable
         
         FindFuseBox();
         CreateInteractionPrompt();
+
+        if (victoryManager == null)
+        {
+            victoryManager = FindFirstObjectByType<VictoryManager>();
+            if (victoryManager != null)
+                Debug.Log("✅ VictoryManager encontrado automáticamente");
+            else
+                Debug.LogWarning("⚠️ No se encontró VictoryManager en la escena");
+        }
     }
 
     void Update()
@@ -264,13 +275,17 @@ public class VictoryButton : MonoBehaviour, IInteractable
     {
         Debug.Log("🏆 JUEGO COMPLETADO 🏆");
         
-        // Opcional: Mostrar cursor y pausar
-        // Cursor.lockState = CursorLockMode.None;
-        // Cursor.visible = true;
-        // Time.timeScale = 0f;
-        
-        // Opcional: Cargar escena de victoria
-        // SceneManager.LoadScene("VictoryScene");
+        // 🔥 ACTIVAR EL PANEL DE VICTORIA 🔥
+        if (victoryManager != null)
+        {
+            Time.timeScale = 0f;
+            victoryManager.Victory();
+            Debug.Log("✅ VictoryManager.Victory() llamado");
+        }
+        else
+        {
+            Debug.LogError("❌ No se encontró VictoryManager!");
+        }
     }
     
     void ShowMessage(string message, Color color)
