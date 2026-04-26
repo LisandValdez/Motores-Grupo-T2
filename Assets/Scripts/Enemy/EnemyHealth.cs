@@ -107,7 +107,7 @@ public class EnemyHealth : MonoBehaviour, IDamageable
         
         // Destruir el objeto después de un tiempo
         Debug.Log($"Destruyendo {gameObject.name} en 2 segundos...");
-        Destroy(gameObject, 2f);
+        Destroy(gameObject);
     }
     
     IEnumerator FlashRed()
