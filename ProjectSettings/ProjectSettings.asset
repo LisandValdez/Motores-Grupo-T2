@@ -924,11 +924,11 @@ PlayerSettings:
   captureStartupLogs: {}
   activeInputHandler: 2
   windowsGamepadBackendHint: 0
-  cloudProjectId: f1b1a058-6428-46dd-9e11-5aeb0930fa2b
+  cloudProjectId: 6f2c8243-0024-49bf-91bc-de0da6aecc20
   framebufferDepthMemorylessMode: 0
   qualitySettingsNames: []
-  projectName: My project (1) 2026-04-16_17-34-57
-  organizationId: rithmic13
+  projectName: Motores
+  organizationId: martinvaldez735
   cloudEnabled: 0
   legacyClampBlendShapeWeights: 0
   hmiLoadingImage: {fileID: 0}
