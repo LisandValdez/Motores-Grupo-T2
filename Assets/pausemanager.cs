@@ -6,20 +6,20 @@ public class PauseManager : MonoBehaviour
     public GameObject pauseMenu;
     private bool isPaused = false;
 
-    void Update()
-    {
-        if (Input.GetKeyDown(KeyCode.Escape))
-        {
-            if (isPaused)
-            {
-                Resume();
-            }
-            else
-            {
-                Pause();
-            }
-        }
-    }
+    //void Update()
+    //{
+    //    if (Input.GetKeyDown(KeyCode.Escape))
+    //    {
+    //        if (isPaused)
+    //        {
+    //            Resume();
+    //        }
+    //        else
+    //        {
+    //            Pause();
+    //        }
+    //    }
+    //}
 
     public void Pause()
     {

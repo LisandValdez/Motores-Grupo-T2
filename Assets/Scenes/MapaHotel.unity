@@ -7093,8 +7093,8 @@ MonoBehaviour:
   maxHealth: 60
   currentHealth: 60
   deathEffect: {fileID: 0}
-  hurtSound: {fileID: 0}
-  deathSound: {fileID: 0}
+  hurtSound: {fileID: 8300000, guid: 54d58080dd5a58541855cb3daae766e3, type: 3}
+  deathSound: {fileID: 8300000, guid: a0087d7df53697240bc96f021e40016a, type: 3}
   enemyAI: {fileID: 0}
   enemyCollider: {fileID: 0}
   rb: {fileID: 368725268}
@@ -41785,8 +41785,8 @@ MonoBehaviour:
   fullHeartSprite: {fileID: 0}
   emptyHeartSprite: {fileID: 0}
   damageEffect: {fileID: 0}
-  damageSound: {fileID: 0}
-  deathSound: {fileID: 0}
+  damageSound: {fileID: 8300000, guid: 54d58080dd5a58541855cb3daae766e3, type: 3}
+  deathSound: {fileID: 8300000, guid: f35e2d74e069c004d95e4d6a6d2e2301, type: 3}
   invincibilityDuration: 1.5
   blinkInterval: 0.1
   gameOverManager: {fileID: 224577296}
