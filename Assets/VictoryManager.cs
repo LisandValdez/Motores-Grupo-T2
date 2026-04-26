@@ -32,6 +32,6 @@ public class VictoryManager : MonoBehaviour
     public void MainMenu()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("SampleScene");
+        SceneManager.LoadScene("Menu");
     }
 }
