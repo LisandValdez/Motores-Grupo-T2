@@ -196,4 +196,23 @@ public class EnemigoCompleto : MonoBehaviour
         Gizmos.color = Color.magenta;
         Gizmos.DrawWireSphere(transform.position, rangoAtaque);
     }
+
+public class EnemyRaycastReceiver : MonoBehaviour
+{
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.cyan;
+        Gizmos.DrawWireSphere(transform.position, 1f);
+    }
+    
+    void OnCollisionEnter(Collision collision)
+    {
+        Debug.Log($"🔥 Collision con: {collision.gameObject.name}");
+    }
+    
+    void OnTriggerEnter(Collider other)
+    {
+        Debug.Log($"🔥 Trigger con: {other.gameObject.name}");
+    }
+}
 }

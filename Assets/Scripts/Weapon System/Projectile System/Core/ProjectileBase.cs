@@ -4,24 +4,19 @@ public abstract class ProjectileBase : MonoBehaviour
 {
     [Header("Projectile Settings")]
     public float speed = 80f;
-    public float lifeTime = 8f;
+    public float lifeTime = 5f;
     public float maxDistance = 500f;
     public bool destroyOnImpact = true;
-    public bool ignorePlayerCollision = true;
+    public int damage = 20;
     
-    [Header("Detección Avanzada")]
-    public bool useRaycastDetection = true;
-    public float detectionRadius = 0.2f;
-    
-    protected float damage;
     private Vector3 lastPosition;
     private Vector3 startPosition;
-    private Collider projectileCollider;
     private bool hasHit = false;
+    private Collider projectileCollider;
 
-    public virtual void Initialize(float weaponDamage, GameObject owner = null)
+    public virtual void Initialize(float weaponDamage)
     {
-        damage = weaponDamage;
+        damage = Mathf.RoundToInt(weaponDamage);
         startPosition = transform.position;
         lastPosition = transform.position;
         Destroy(gameObject, lifeTime);
@@ -29,12 +24,14 @@ public abstract class ProjectileBase : MonoBehaviour
         projectileCollider = GetComponent<Collider>();
         
         // Ignorar colisión con el jugador
-        if (ignorePlayerCollision && owner != null)
+        GameObject player = GameObject.FindGameObjectWithTag("Player");
+        if (player != null && projectileCollider != null)
         {
-            Collider ownerCollider = owner.GetComponent<Collider>();
-            if (ownerCollider != null && projectileCollider != null)
+            Collider playerCollider = player.GetComponent<Collider>();
+            if (playerCollider != null)
             {
-                Physics.IgnoreCollision(projectileCollider, ownerCollider);
+                Physics.IgnoreCollision(projectileCollider, playerCollider);
+                Debug.Log("🔧 Bala ignora colisión con jugador");
             }
         }
     }
@@ -46,64 +43,50 @@ public abstract class ProjectileBase : MonoBehaviour
         Vector3 currentPosition = transform.position;
         Vector3 newPosition = currentPosition + transform.forward * speed * Time.deltaTime;
         
-        if (useRaycastDetection)
+        // Raycast para detectar colisiones entre frames
+        Vector3 direction = (newPosition - currentPosition).normalized;
+        float distance = Vector3.Distance(currentPosition, newPosition);
+        
+        RaycastHit hit;
+        // Ignorar la capa del jugador (Layer 3)
+        int layerMask = ~LayerMask.GetMask("Player");
+        
+        if (Physics.Raycast(currentPosition, direction, out hit, distance, layerMask))
         {
-            Vector3 direction = (newPosition - currentPosition).normalized;
-            float distance = Vector3.Distance(currentPosition, newPosition);
-            
-            // Raycast con capas filtradas
-            RaycastHit hit;
-            int layerMask = ~LayerMask.GetMask("Projectile", "Player"); // Ignorar balas y jugador
-            
-            if (Physics.Raycast(currentPosition, direction, out hit, distance, layerMask))
+            // Verificar que no es el propio proyectil
+            if (hit.collider == projectileCollider) 
             {
-                // Ignorar si es la misma bala
-                if (hit.collider == projectileCollider) return;
-                
-                // Ignorar si es otra bala
-                if (hit.collider.CompareTag("Bullet")) return;
-                if (hit.collider.GetComponent<ProjectileBase>() != null) return;
-                
-                transform.position = hit.point;
-                HandleHit(hit.collider);
+                transform.position = newPosition;
+                lastPosition = newPosition;
                 return;
             }
+            
+            Debug.Log($"💥 Raycast impactó: {hit.collider.gameObject.name} (Layer: {hit.collider.gameObject.layer})");
+            
+            transform.position = hit.point;
+            HandleHit(hit.collider);
+            return;
         }
         
+        // Movimiento normal
         transform.position = newPosition;
-        lastPosition = transform.position;
+        lastPosition = newPosition;
         
+        // Distancia máxima
         if (Vector3.Distance(startPosition, transform.position) > maxDistance)
         {
             Destroy(gameObject);
         }
     }
     
-    protected virtual void OnTriggerEnter(Collider other)
-    {
-        if (hasHit) return;
-        
-        // 🔥 IGNORAR LA PROPIA BALA
-        if (other == projectileCollider) return;
-        
-        // 🔥 IGNORAR OTRAS BALAS
-        if (other.CompareTag("Bullet")) return;
-        if (other.GetComponent<ProjectileBase>() != null) return;
-        
-        // Ignorar al jugador
-        if (other.CompareTag("Player")) return;
-        
-        HandleHit(other);
-    }
-    
     protected virtual void HandleHit(Collider hitCollider)
     {
         if (hasHit) return;
-        
         hasHit = true;
         
         Debug.Log($"💥 Proyectil impactó en: {hitCollider.gameObject.name}");
         
+        // Buscar IDamageable
         IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
         
         if (damageable != null)
@@ -111,7 +94,12 @@ public abstract class ProjectileBase : MonoBehaviour
             damageable.TakeDamage(damage);
             Debug.Log($"  ✅ {damage} de daño aplicado");
         }
+        else
+        {
+            Debug.Log($"  ❌ {hitCollider.name} no tiene IDamageable");
+        }
         
+        // Efectos de impacto
         OnImpact(hitCollider);
         
         if (destroyOnImpact)
@@ -123,5 +111,11 @@ public abstract class ProjectileBase : MonoBehaviour
     protected virtual void OnImpact(Collider hitCollider)
     {
         // Sobrescribir para efectos especiales
+    }
+    
+    void OnDrawGizmos()
+    {
+        Gizmos.color = Color.red;
+        Gizmos.DrawLine(transform.position, transform.position + transform.forward * 2f);
     }
 }
