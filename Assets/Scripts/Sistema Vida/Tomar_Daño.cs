@@ -8,7 +8,9 @@ public class Tomar_Daño : MonoBehaviour
     {
         if (other.TryGetComponent(out Sist_vida life_Player))
         {
-            life_Player.Take_damage(damage);
+            life_Player.TakeDamage(damage);
+           
         }
+
     }
 }

@@ -329,6 +329,9 @@ PrefabInstance:
     - targetCorrespondingSourceObject: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       insertIndex: -1
       addedObject: {fileID: 577525768}
+    - targetCorrespondingSourceObject: {fileID: 4493914613880827488, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 577525769}
   m_SourcePrefab: {fileID: 100100000, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
 --- !u!1 &266318394
 GameObject:
@@ -804,12 +807,12 @@ NavMeshAgent:
   m_Acceleration: 4
   avoidancePriority: 50
   m_AngularSpeed: 120
-  m_StoppingDistance: 0.5
+  m_StoppingDistance: 1
   m_AutoTraverseOffMeshLink: 1
   m_AutoBraking: 0
   m_AutoRepath: 1
   m_Height: 1.8
-  m_BaseOffset: 0
+  m_BaseOffset: -0.08
   m_WalkableMask: 4294967295
   m_ObstacleAvoidanceType: 4
 --- !u!114 &577525768
@@ -819,7 +822,7 @@ MonoBehaviour:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 577525762}
-  m_Enabled: 0
+  m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 6abb1fd9fa326fd4aa2a5ae70a387847, type: 3}
   m_Name: 
@@ -828,6 +831,26 @@ MonoBehaviour:
   puntos:
   - {fileID: 306346738}
   - {fileID: 788706602}
+--- !u!114 &577525769
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 577525762}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 06f8f80bd2c7b7e40b42de9e646971c8, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::Dopelllganger
+  life_enemy: 5
+  damage: 2
+  patrol: {fileID: 577525768}
+  chase: {fileID: 577525766}
+  player: {fileID: 2648454507617549630}
+  anim: {fileID: 577525764}
+  distanciaAtaque: 1
+  cooldownAtaque: 0.5
 --- !u!1 &612490743
 GameObject:
   m_ObjectHideFlags: 0

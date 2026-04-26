@@ -2,9 +2,9 @@ using UnityEngine;
 
 public class Enemy : MonoBehaviour
 {
-    [SerializeField] private int life;
-    [SerializeField] private float speed;
-    [SerializeField] private int damage;
+    [SerializeField] protected int life_enemy;
+    
+    [SerializeField] protected int damage;
 
     public virtual void Atk_enemy()
     {

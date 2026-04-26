@@ -30,7 +30,7 @@ public class Sist_vida : MonoBehaviour
 
     }
 
-    public void Take_damage(int damage)
+    public void TakeDamage(int damage)
     {
         actual_life = math.clamp(actual_life - damage, 0, maxlife);
         player_take_damage?.Invoke(actual_life);
@@ -63,7 +63,7 @@ public class Sist_vida : MonoBehaviour
         {
 
             ps.die();
-            //anim.SetTrigger("isdead");
+            //anim.SetTrigger("isdead"); 
             Debug.Log("El jugador ha muerto con animacion");
 
             yield return new WaitForSeconds(1f);

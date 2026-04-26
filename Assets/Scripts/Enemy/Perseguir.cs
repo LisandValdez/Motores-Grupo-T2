@@ -3,6 +3,7 @@ using UnityEngine.AI;
 
 public class Perseguir : MonoBehaviour
 {
+
     [SerializeField] private NavMeshAgent enemy;
     [SerializeField] private Transform objetivo_a_perseguir;
     [SerializeField] float velocity;
@@ -14,9 +15,31 @@ public class Perseguir : MonoBehaviour
 
     [Header("Animaciones")]
     [SerializeField] private Animator anim;
+    public float RangoDeteccion => rango_deteccion;
 
 
     private void Update()
+    {
+        Met_perseguir();
+
+        if (!persiguiendo)
+        {
+            enemy.speed = 0f;
+            if (anim != null)
+                anim.SetFloat("speed", 0f);
+
+        }
+        else if (persiguiendo == true)
+        {
+            enemy.speed = velocity;
+            enemy.SetDestination(objetivo_a_perseguir.position);
+            float velocidadActual = enemy.velocity.magnitude;
+            anim.SetFloat("speed", velocidadActual);
+
+        }
+    }
+
+    private void Met_perseguir()
     {
         distancia_del_obj = Vector3.Distance(enemy.transform.position, objetivo_a_perseguir.position);
 
@@ -30,23 +53,6 @@ public class Perseguir : MonoBehaviour
 
             persiguiendo = false;
 
-        }
-
-
-        if (!persiguiendo)
-        {
-            enemy.speed = 0f;
-            if (anim != null)
-                anim.SetFloat("speed", 0f);
-
-        }
-        else if (persiguiendo == true)
-        {
-            enemy.speed = velocity;
-            enemy.SetDestination(objetivo_a_perseguir.position);           
-            float velocidadActual = enemy.velocity.magnitude;
-            anim.SetFloat("speed", velocidadActual);
-            
         }
     }
 
