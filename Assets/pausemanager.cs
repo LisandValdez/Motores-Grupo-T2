@@ -1,25 +1,27 @@
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using UnityEngine.InputSystem;
 
 public class PauseManager : MonoBehaviour
 {
     public GameObject pauseMenu;
     private bool isPaused = false;
 
-    //void Update()
-    //{
-    //    if (Input.GetKeyDown(KeyCode.Escape))
-    //    {
-    //        if (isPaused)
-    //        {
-    //            Resume();
-    //        }
-    //        else
-    //        {
-    //            Pause();
-    //        }
-    //    }
-    //}
+  // Este método se llama desde el Player Input
+    public void OnPause(InputAction.CallbackContext context)
+    {
+        if (context.performed)  // Solo cuando se presiona la tecla
+        {
+            if (isPaused)
+            {
+                Resume();
+            }
+            else
+            {
+                Pause();
+            }
+        }
+    }
 
     public void Pause()
     {

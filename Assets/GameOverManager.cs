@@ -11,14 +11,6 @@ public class GameOverManager : MonoBehaviour
             gameOverPanel.SetActive(false);
     }
 
-    void Update()
-    {
-        // Presiona K para probar el Game Over (solo para testing)
-        if (Input.GetKeyDown(KeyCode.K))
-        {
-            GameOver();
-        }
-    }
 
     public void GameOver()
     {

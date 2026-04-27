@@ -5,14 +5,6 @@ public class VictoryManager : MonoBehaviour
 {
     public GameObject victoryPanel;
 
-    //void Update()
-    //{
-    //    // Presioná V para probar Victoria
-    //    if (Input.GetKeyDown(KeyCode.V))
-    //    {
-    //        Victory();
-    //    }
-    //}
 
     public void Victory()
     {

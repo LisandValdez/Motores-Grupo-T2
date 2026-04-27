@@ -24,7 +24,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float blinkInterval = 0.1f;
     
     [Header("Game Over")]
-    //[SerializeField] private GameOverManager gameOverManager;  // ← AGREGAR ESTO
+    [SerializeField] private GameOverManager gameOverManager;  // ← AGREGAR ESTO
     
     private bool isInvincible = false;
     private SpriteRenderer spriteRenderer;
@@ -44,15 +44,15 @@ public class PlayerHealth : MonoBehaviour
         if (spriteRenderer != null)
             originalColor = spriteRenderer.color;
         
-        // Buscar GameOverManager si no está asignado
-        //if (gameOverManager == null)
-        //{
-        //    gameOverManager = FindFirstObjectByType<GameOverManager>();
-        //    if (gameOverManager != null)
-        //        Debug.Log("✅ GameOverManager encontrado automáticamente");
-        //    else
-        //        Debug.LogWarning("⚠️ No se encontró GameOverManager en la escena");
-        //}
+        //Buscar GameOverManager si no está asignado
+        if (gameOverManager == null)
+        {
+           gameOverManager = FindFirstObjectByType<GameOverManager>();
+           if (gameOverManager != null)
+               Debug.Log("✅ GameOverManager encontrado automáticamente");
+           else
+               Debug.LogWarning("⚠️ No se encontró GameOverManager en la escena");
+        }
         
         InitializeHeartUI();
         UpdateHeartUI();
@@ -189,7 +189,7 @@ public class PlayerHealth : MonoBehaviour
         OnPlayerDied?.Invoke();
         
         // 🔥 ACTIVAR GAME OVER 🔥
-        //ActivarGameOver();
+        ActivarGameOver();
         
         // Desactivar el control del jugador
         PlayerMove playerMove = GetComponent<PlayerMove>();
@@ -201,30 +201,30 @@ public class PlayerHealth : MonoBehaviour
             animator.SetTrigger("Death");
     }
     
-    //void ActivarGameOver()
-    //{
-    //    if (gameOverManager != null)
-    //    {
-    //        gameOverManager.GameOver();
-    //        Debug.Log("✅ GameOver activado desde PlayerHealth");
-    //    }
-    //    else
-    //    {
-    //        Debug.LogError("❌ GameOverManager es NULL! No se puede mostrar Game Over");
+    void ActivarGameOver()
+    {
+       if (gameOverManager != null)
+       {
+           gameOverManager.GameOver();
+           Debug.Log("✅ GameOver activado desde PlayerHealth");
+       }
+       else
+       {
+           Debug.LogError("❌ GameOverManager es NULL! No se puede mostrar Game Over");
             
-    //        // Intentar encontrarlo como fallback
-    //        gameOverManager = FindFirstObjectByType<GameOverManager>();
-    //        if (gameOverManager != null)
-    //        {
-    //            //gameOverManager.GameOver();
-    //            Debug.Log("✅ GameOver encontrado y activado como fallback");
-    //        }
-    //        else
-    //        {
-    //            Debug.LogError("❌ No hay GameOverManager en la escena!");
-    //        }
-    //    }
-    //}
+           // Intentar encontrarlo como fallback
+           gameOverManager = FindFirstObjectByType<GameOverManager>();
+           if (gameOverManager != null)
+           {
+               //gameOverManager.GameOver();
+               Debug.Log("✅ GameOver encontrado y activado como fallback");
+           }
+           else
+           {
+               Debug.LogError("❌ No hay GameOverManager en la escena!");
+           }
+       }
+    }
     
     public void ResetHealth()
     {

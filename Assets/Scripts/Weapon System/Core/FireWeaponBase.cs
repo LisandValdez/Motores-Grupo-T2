@@ -9,6 +9,16 @@ public abstract class FireWeaponBase : WeaponBase
     public int maxAmmo = 10;
     public float reloadTime = 2f;
 
+    [Header("Audio")]
+    public AudioClip shootSound;        // Sonido de disparo
+    public AudioClip dryFireSound;      // Sonido cuando no hay balas (click)
+    public AudioClip reloadSound;       // Sonido de recarga
+    public float shootVolume = 1f;      // Volumen del disparo
+    public float dryFireVolume = 0.8f;  // Volumen del click
+    
+    [Header("Audio Source (Opcional)")]
+    public AudioSource audioSource;     // Si no se asigna, se crea automÃ¡ticamente
+
     [Header("Animations")]
     protected Animator anim;
 
@@ -24,6 +34,21 @@ public abstract class FireWeaponBase : WeaponBase
     protected virtual void Awake()
     {
         anim = GetComponent<Animator>();
+        
+        // Configurar AudioSource si no estÃ¡ asignado
+        if (audioSource == null)
+        {
+            audioSource = GetComponent<AudioSource>();
+            if (audioSource == null)
+            {
+                audioSource = gameObject.AddComponent<AudioSource>();
+            }
+        }
+        
+        // Configurar AudioSource
+        audioSource.spatialBlend = 1f; // Sonido 3D
+        audioSource.rolloffMode = AudioRolloffMode.Linear;
+        audioSource.maxDistance = 50f;
     }
 
     protected virtual void Start()
@@ -33,30 +58,32 @@ public abstract class FireWeaponBase : WeaponBase
 
     public override void Attack(Vector3 targetPoint)
     {
-        // Lógica de disparo centralizada para todas las armas de fuego
+        // LÃ³gica de disparo centralizada para todas las armas de fuego
         if (CanShoot())
         {
             nextAttackTime = Time.time + (1f / fireRate);
             currentAmmo--;
 
             PlayFireAnimation();
+            PlayShootSound(); // ðŸ”« Reproducir sonido de disparo
 
-            // Cálculo de dirección e instanciación del proyectil
+            // CÃ¡lculo de direcciÃ³n e instanciaciÃ³n del proyectil
             Vector3 fireDirection = (targetPoint - firePoint.position).normalized;
             GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(fireDirection));
 
-            // Inicialización del proyectil con el daño del arma
+            // InicializaciÃ³n del proyectil con el daÃ±o del arma
             ProjectileBase proj = projObj.GetComponent<ProjectileBase>();
             if (proj != null)
             {
                 proj.Initialize(damage);
             }
 
-            Debug.Log($"{weaponName} disparó. Balas restantes: {currentAmmo}");
+            Debug.Log($"{weaponName} disparÃ³. Balas restantes: {currentAmmo}");
         }
         else if (currentAmmo <= 0 && !isReloading)
         {
-            Debug.Log("¡Click click! (Sin balas)");
+            Debug.Log("Â¡Click click! (Sin balas)");
+            PlayDryFireSound(); // ðŸ”‡ Sonido de dry fire (sin balas)
         }
     }
 
@@ -83,6 +110,8 @@ public abstract class FireWeaponBase : WeaponBase
         isReloading = true;
         Debug.Log($"Recargando {weaponName}...");
 
+        PlayReloadSound(); // ðŸ”„ Sonido de inicio de recarga
+
         if (anim != null && HasParameter("ReloadTrigger", anim))
         {
             anim.SetTrigger("ReloadTrigger");
@@ -105,6 +134,32 @@ public abstract class FireWeaponBase : WeaponBase
         if (anim != null)
         {
             anim.SetTrigger("FireTrigger");
+        }
+    }
+    
+    // ðŸ”« MÃ‰TODOS DE SONIDO
+    
+    protected void PlayShootSound()
+    {
+        if (shootSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(shootSound, shootVolume);
+        }
+    }
+    
+    protected void PlayDryFireSound()
+    {
+        if (dryFireSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(dryFireSound, dryFireVolume);
+        }
+    }
+    
+    protected void PlayReloadSound()
+    {
+        if (reloadSound != null && audioSource != null)
+        {
+            audioSource.PlayOneShot(reloadSound, 0.8f);
         }
     }
 
