@@ -1,5 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
+// No incluyas ningún using de Cinemachine
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
@@ -15,7 +16,8 @@ public class PlayerMove : MonoBehaviour
     private bool isRunning = false;
     private bool isAiming = false;
     
-    // 🔥 NUEVA VARIABLE PARA LA VIDA
+    private Transform cameraTransform;
+    
     private int maxLife = 100;
     private int currentLife = 100;
 
@@ -23,8 +25,30 @@ public class PlayerMove : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
     }
+    
+    void Start()
+    {
+        // Simplemente obtener la cámara principal
+        if (Camera.main != null)
+        {
+            cameraTransform = Camera.main.transform;
+        }
+        else
+        {
+            // Buscar cualquier cámara como fallback
+            Camera anyCamera = FindObjectOfType<Camera>();
+            if (anyCamera != null)
+            {
+                cameraTransform = anyCamera.transform;
+                Debug.Log("Cámara encontrada: " + anyCamera.name);
+            }
+            else
+            {
+                Debug.LogError("No se encontró ninguna cámara en la escena");
+            }
+        }
+    }
 
-    // 🔥 NUEVO MÉTODO - SetMaxLife
     public void SetMaxLife(int maxLifeValue)
     {
         maxLife = maxLifeValue;
@@ -32,17 +56,23 @@ public class PlayerMove : MonoBehaviour
         Debug.Log($"✅ Vida máxima establecida en: {maxLife}");
     }
 
-    // 🔥 MÉTODO PARA MORIR
     public void die()
     {
         Debug.Log("💀 El jugador ha muerto");
-        // Aquí puedes agregar lógica de muerte (desactivar control, animación, etc.)
-        enabled = false; // Desactiva el movimiento
+        enabled = false;
     }
 
     public void SetAiming(bool state)
     {
         isAiming = state;
+    }
+    
+    public void SetMovementEnabled(bool enabled)
+    {
+        this.enabled = enabled;
+        
+        if (controller != null)
+            controller.enabled = enabled;
     }
 
     public void OnMove(InputAction.CallbackContext context)
@@ -58,9 +88,30 @@ public class PlayerMove : MonoBehaviour
 
     void Update()
     {
-        Vector3 move = new Vector3(moveInput.x, 0, moveInput.y);
-        move = transform.TransformDirection(move);
-
+        if (cameraTransform == null)
+        {
+            // Intentar obtener la cámara nuevamente
+            if (Camera.main != null)
+                cameraTransform = Camera.main.transform;
+            else
+                return;
+        }
+        
+        // Movimiento relativo a la cámara
+        Vector3 moveDirection = Vector3.zero;
+        
+        Vector3 forward = cameraTransform.forward;
+        Vector3 right = cameraTransform.right;
+        
+        // Ignorar inclinación vertical
+        forward.y = 0;
+        right.y = 0;
+        forward.Normalize();
+        right.Normalize();
+        
+        // Construir vector de movimiento
+        moveDirection = (forward * moveInput.y) + (right * moveInput.x);
+        
         float currentSpeed = walkSpeed;
 
         if (isAiming)
@@ -72,8 +123,9 @@ public class PlayerMove : MonoBehaviour
             currentSpeed = runSpeed;
         }
 
-        controller.Move(move * currentSpeed * Time.deltaTime);
+        controller.Move(moveDirection * currentSpeed * Time.deltaTime);
 
+        // Gravedad
         if (controller.isGrounded && velocity.y < 0)
         {
             velocity.y = -2f;
