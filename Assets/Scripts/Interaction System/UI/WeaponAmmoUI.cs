@@ -1,5 +1,5 @@
 using UnityEngine;
-using TMPro; // 1. IMPORTANTE: Agrega esta línea arriba del todo
+using TMPro;
 
 public class WeaponAmmoUI : MonoBehaviour
 {

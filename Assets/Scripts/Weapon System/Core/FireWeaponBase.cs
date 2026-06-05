@@ -55,17 +55,15 @@ public abstract class FireWeaponBase : WeaponBase
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
         }
-        
+        currentAmmo = maxAmmo;
+
         // Configurar AudioSource
         audioSource.spatialBlend = 1f; // Sonido 3D
         audioSource.rolloffMode = AudioRolloffMode.Linear;
         audioSource.maxDistance = 50f;
     }
 
-    protected virtual void Start()
-    {
-        currentAmmo = maxAmmo;
-    }
+ 
 
     public override void Attack(Vector3 targetPoint)
     {
