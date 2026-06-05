@@ -25,7 +25,7 @@ public class PlayerLook : MonoBehaviour
 
     void Update()
     {
-        // Aplicar reducción si estamos apuntando
+        // Aplicar reducciï¿½n si estamos apuntando
         float currentSensitivity = isAiming ? (sensitivity * aimSensitivityMultiplier) : sensitivity;
 
         float mouseX = lookInput.x * currentSensitivity * Time.deltaTime;
