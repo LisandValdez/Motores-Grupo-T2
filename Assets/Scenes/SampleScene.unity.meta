@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Scenes/SampleScene.unity.meta
 guid: 99c9720ab356a0642a771bea13969a05
+========
+guid: 83b65c3914a88be4999b9dc557889bca
+>>>>>>>> Stashed changes:Assets/Scenes/MapaHotel.unity.meta
 DefaultImporter:
   externalObjects: {}
   userData: 

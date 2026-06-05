@@ -195,5 +195,36 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1f98b5e3480cd498abc4eac787df4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletPistol
+<<<<<<< Updated upstream
   speed: 50
   lifeTime: 3
+=======
+  speed: 80
+  lifeTime: 5
+  maxDistance: 500
+  destroyOnImpact: 1
+  damage: 20
+--- !u!136 &2055820469766882559
+CapsuleCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804990658058999119}
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 256
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 520
+  m_LayerOverridePriority: 0
+  m_IsTrigger: 1
+  m_ProvidesContacts: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Radius: 0.2
+  m_Height: 1
+  m_Direction: 1
+  m_Center: {x: 0, y: 0, z: 0}
+>>>>>>> Stashed changes

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Readme.asset.meta
 guid: 8105016687592461f977c054a80ce2f2
+========
+guid: f19213edafda9364aaface8649add6fc
+>>>>>>>> Stashed changes:Assets/Scenes/Material/Resources/Materials/Collider.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 0

@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<< Updated upstream:Assets/Animations/GunChangeUP.anim.meta
 guid: c80ba30157c1b094fbd3ef1d48345219
+=======
+guid: febc3513659f76a4082a0c48b88cfe96
+>>>>>>> Stashed changes:Assets/Scenes/Material/Resources/Materials/InvisibleFace.mat.meta
 NativeFormatImporter:
   externalObjects: {}
   mainObjectFileID: 7400000
