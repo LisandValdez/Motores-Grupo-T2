@@ -35,7 +35,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
     
     private GameObject currentPrompt;
     private bool playerInRange = false;
-    private GameObject currentPlayer;  // ← ESTA VARIABLE FALTABA
+    private GameObject currentPlayer;
 
     void Start()
     {
