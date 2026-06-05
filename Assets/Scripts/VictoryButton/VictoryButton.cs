@@ -283,6 +283,8 @@ public class VictoryButton : MonoBehaviour, IInteractable
         // EndGame();
     }
     
+
+    
     void EndGame()
     {
         Debug.Log("🏆 JUEGO COMPLETADO 🏆");
