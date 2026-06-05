@@ -2,57 +2,48 @@ using UnityEngine;
 using UnityEngine.InputSystem;
 using System.Collections;
 
-public class VictoryButton : MonoBehaviour, IInteractable
+public class ElevatorButton : MonoBehaviour, IInteractable
 {
     [Header("Configuración")]
-    public string requiredFuseBoxName = "FuseBox";
-    public bool requireFuseBoxCompletion = true;
+    public ElevatorDoor elevatorDoor;  // Referencia a la puerta
+    public bool requirePowerToOpen = true;  // Si necesita el fusible
     
     [Header("Movimiento del Botón")]
-    public float pressedPositionX = -96.30f;   // Posición X cuando está presionado
-    public float releasedPositionX = -96f;     // Posición X cuando está en reposo
-    public float moveSpeed = 5f;               // Velocidad de movimiento
+    public float pressedPositionX = -96.30f;
+    public float releasedPositionX = -96f;
+    public float moveSpeed = 5f;
     
     [Header("Mensajes")]
     [TextArea(3, 5)]
-    public string victoryMessage = "🎉 ¡VICTORIA! ¡Has restaurado la energía! 🎉";
-    
-    [TextArea(3, 5)]
     public string noPowerMessage = "🔌 No hay energía. Necesito colocar el fusible primero.";
-    
     [TextArea(3, 5)]
-    public string alreadyVictoryMessage = "El sistema ya está activado. ¡Victoria!";
+    public string alreadyOpenMessage = "🚪 La puerta ya está abierta.";
+    [TextArea(3, 5)]
+    public string successMessage = "🔓 ¡Puerta abierta!";
     
     [Header("Efectos")]
-    public GameObject victoryEffect;
-    public AudioClip victorySound;
-    public AudioClip errorSound;
     public AudioClip pressSound;
+    public AudioClip errorSound;
+    public AudioClip doorOpenSound;
     
     [Header("Visual")]
     public float interactionRange = 3f;
     public float promptHeight = 1.5f;
     
     [Header("Estado")]
-    public bool isVictoryAchieved = false;
+    public bool isDoorOpen = false;
     
     private GameObject currentPrompt;
     private GameObject currentPlayer;
     private bool playerInRange = false;
     private FuseBox fuseBox;
     
-    // Variables para el movimiento
     private bool isPressed = false;
     private bool isMoving = false;
     private Vector3 targetPosition;
-
-    public VictoryManager victoryManager;
-    public ElevatorDoor elevatorDoor;  // ← Referencia a la puerta
-    public bool openDoorOnVictory = true;
-
+    
     void Start()
     {
-        // Asegurar posición inicial
         Vector3 pos = transform.localPosition;
         pos.x = releasedPositionX;
         transform.localPosition = pos;
@@ -60,17 +51,8 @@ public class VictoryButton : MonoBehaviour, IInteractable
         
         FindFuseBox();
         CreateInteractionPrompt();
-
-        if (victoryManager == null)
-        {
-            victoryManager = FindFirstObjectByType<VictoryManager>();
-            if (victoryManager != null)
-                Debug.Log("✅ VictoryManager encontrado automáticamente");
-            else
-                Debug.LogWarning("⚠️ No se encontró VictoryManager en la escena");
-        }
     }
-
+    
     void Update()
     {
         if (currentPrompt != null && currentPrompt.activeSelf != playerInRange)
@@ -78,7 +60,6 @@ public class VictoryButton : MonoBehaviour, IInteractable
             currentPrompt.SetActive(playerInRange);
         }
         
-        // Movimiento suave del botón
         if (isMoving)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * moveSpeed);
@@ -89,28 +70,14 @@ public class VictoryButton : MonoBehaviour, IInteractable
             }
         }
     }
-
+    
     void FindFuseBox()
     {
-        GameObject fuseBoxObj = GameObject.Find(requiredFuseBoxName);
-        
-        if (fuseBoxObj == null)
-        {
-            fuseBox = FindFirstObjectByType<FuseBox>();
-            if (fuseBox != null)
-                Debug.Log($"✅ Caja de fusibles encontrada: {fuseBox.gameObject.name}");
-        }
-        else
-        {
-            fuseBox = fuseBoxObj.GetComponent<FuseBox>();
-            if (fuseBox != null)
-                Debug.Log($"✅ Caja de fusibles encontrada: {fuseBoxObj.name}");
-        }
-        
+        fuseBox = FindFirstObjectByType<FuseBox>();
         if (fuseBox == null)
             Debug.LogWarning("⚠️ No se encontró la caja de fusibles en la escena!");
     }
-
+    
     void OnTriggerEnter(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -121,7 +88,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
                 currentPrompt.SetActive(true);
         }
     }
-
+    
     void OnTriggerExit(Collider other)
     {
         if (other.CompareTag("Player"))
@@ -132,7 +99,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
                 currentPrompt.SetActive(false);
         }
     }
-
+    
     void CreateInteractionPrompt()
     {
         GameObject promptObj = new GameObject("InteractionPrompt");
@@ -140,7 +107,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
         promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
         
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        textMesh.text = $"Presiona <color=yellow>E</color> para activar\n<color=cyan>🔘 Botón de Energía</color>";
+        textMesh.text = $"Presiona <color=yellow>E</color> para abrir puerta\n<color=cyan>🚪 Ascensor</color>";
         textMesh.fontSize = 30;
         textMesh.characterSize = 0.03f;
         textMesh.color = Color.white;
@@ -150,7 +117,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
         currentPrompt = promptObj;
         promptObj.SetActive(false);
     }
-
+    
     public void Interact()
     {
         if (!playerInRange)
@@ -159,145 +126,84 @@ public class VictoryButton : MonoBehaviour, IInteractable
             return;
         }
         
-        if (isVictoryAchieved)
+        if (isDoorOpen)
         {
-            ShowMessage(alreadyVictoryMessage, Color.gray);
+            ShowMessage(alreadyOpenMessage, Color.gray);
             return;
         }
         
         if (isPressed || isMoving)
         {
-            Debug.Log("⏰ El botón ya está siendo usado");
             return;
         }
         
-        // Verificar si la caja de fusibles está completada
-        bool hasPower = CheckPowerStatus();
+        // Verificar si hay energía (si se requiere)
+        bool hasPower = true;
+        if (requirePowerToOpen && fuseBox != null)
+        {
+            hasPower = fuseBox.isCompleted;
+        }
         
         if (hasPower)
         {
-            // VICTORIA - El botón se queda presionado
-            isVictoryAchieved = true;
-            PressButton(true);
-            ShowVictory();
+            // Abrir la puerta
+            StartCoroutine(PressAndOpenDoor());
         }
         else
         {
-            // SIN ENERGÍA - Solo animación de error (presiona y vuelve rápido)
-            Debug.Log("🔌 Botón presionado pero NO hay energía");
+            // Sin energía
             ShowMessage(noPowerMessage, Color.red);
-            
             if (errorSound != null)
                 AudioSource.PlayClipAtPoint(errorSound, transform.position, 1f);
-            
             StartCoroutine(ErrorPress());
         }
     }
     
-    void PressButton(bool permanent)
+    IEnumerator PressAndOpenDoor()
     {
-        isPressed = true;
+        // Presionar botón
         isMoving = true;
         targetPosition = new Vector3(pressedPositionX, transform.localPosition.y, transform.localPosition.z);
-        
         if (pressSound != null)
             AudioSource.PlayClipAtPoint(pressSound, transform.position, 1f);
         
-        Debug.Log($"🔘 Botón presionado: X = {pressedPositionX}");
+        yield return new WaitForSeconds(0.2f);
         
-        if (!permanent)
+        // Soltar botón
+        isMoving = true;
+        targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
+        
+        // Abrir la puerta
+        if (elevatorDoor != null)
         {
-            StartCoroutine(ReturnButton());
+            elevatorDoor.OpenDoor();
+            ShowMessage(successMessage, Color.green);
+            isDoorOpen = true;
+            
+            // Opcional: Cambiar el prompt después de abrir
+            if (currentPrompt != null)
+            {
+                TextMesh textMesh = currentPrompt.GetComponent<TextMesh>();
+                if (textMesh != null)
+                    textMesh.text = $"<color=green>✅ Puerta abierta</color>";
+            }
         }
-    }
-    
-    IEnumerator ReturnButton()
-    {
-        yield return new WaitForSeconds(0.5f);
-        
-        if (!isVictoryAchieved)
+        else
         {
-            isMoving = true;
-            targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
-            isPressed = false;
-            Debug.Log($"🔘 Botón liberado: X = {releasedPositionX}");
+            Debug.LogError("❌ No se asignó la puerta del ascensor!");
         }
     }
     
     IEnumerator ErrorPress()
     {
-        // Presionar rápidamente
         isMoving = true;
         targetPosition = new Vector3(pressedPositionX, transform.localPosition.y, transform.localPosition.z);
-        
         yield return new WaitForSeconds(0.15f);
         
-        // Volver inmediatamente
         isMoving = true;
         targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
-        
         yield return new WaitForSeconds(0.1f);
         isPressed = false;
-    }
-    
-    bool CheckPowerStatus()
-    {
-        if (fuseBox != null)
-        {
-            return fuseBox.isCompleted;
-        }
-        
-        GameObject fuseBoxObj = GameObject.FindGameObjectWithTag("FuseBox");
-        if (fuseBoxObj != null)
-        {
-            FuseBox fb = fuseBoxObj.GetComponent<FuseBox>();
-            if (fb != null)
-                return fb.isCompleted;
-        }
-        
-        return false;
-    }
-    
-    void ShowVictory()
-    {
-        Debug.Log("🎉 ¡VICTORIA! El botón fue presionado con energía.");
-        
-        ShowMessage(victoryMessage, Color.green);
-        
-        if (victoryEffect != null)
-            Instantiate(victoryEffect, transform.position, Quaternion.identity);
-        
-        if (victorySound != null)
-            AudioSource.PlayClipAtPoint(victorySound, transform.position, 1f);
-
-        if (openDoorOnVictory && elevatorDoor != null)
-    {
-        elevatorDoor.OpenDoor();
-        Debug.Log("🚪 Puerta del ascensor abriéndose...");
-    }
-    else if (openDoorOnVictory && elevatorDoor == null)
-    {
-        Debug.LogWarning("⚠️ No se asignó la puerta del ascensor en el VictoryButton");
-    }
-        
-        // EndGame();
-    }
-    
-    void EndGame()
-    {
-        Debug.Log("🏆 JUEGO COMPLETADO 🏆");
-        
-        // 🔥 ACTIVAR EL PANEL DE VICTORIA 🔥
-        if (victoryManager != null)
-        {
-            Time.timeScale = 0f;
-            victoryManager.Victory();
-            Debug.Log("✅ VictoryManager.Victory() llamado");
-        }
-        else
-        {
-            Debug.LogError("❌ No se encontró VictoryManager!");
-        }
     }
     
     void ShowMessage(string message, Color color)
@@ -324,7 +230,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
     
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.blue;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }
