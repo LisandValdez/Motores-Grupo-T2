@@ -14,9 +14,9 @@ GameObject:
   - component: {fileID: 5167705105868656863}
   - component: {fileID: 759976902055858527}
   - component: {fileID: 4089863935433450171}
-  - component: {fileID: 6825255161299488649}
+  - component: {fileID: 1993943889485091349}
   m_Layer: 0
-  m_Name: VictoryButton
+  m_Name: ElevatorButton
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -32,7 +32,7 @@ Transform:
   serializedVersion: 2
   m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
   m_LocalPosition: {x: -96.04, y: 2.61, z: 31.688}
-  m_LocalScale: {x: 0.3, y: 0.186075, z: 0.26341784}
+  m_LocalScale: {x: 0.1, y: 0.1, z: 0.2}
   m_ConstrainProportionsScale: 0
   m_Children: []
   m_Father: {fileID: 0}
@@ -113,7 +113,7 @@ BoxCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 3
-  m_Size: {x: 10, y: 10, z: 10}
+  m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
 --- !u!54 &759976902055858527
 Rigidbody:
@@ -163,7 +163,7 @@ BoxCollider:
   serializedVersion: 3
   m_Size: {x: 1, y: 1, z: 1}
   m_Center: {x: 0, y: 0, z: 0}
---- !u!114 &6825255161299488649
+--- !u!114 &1993943889485091349
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -172,24 +172,20 @@ MonoBehaviour:
   m_GameObject: {fileID: 1407592292553390555}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 6f483e625e965064da4f511734801d0e, type: 3}
+  m_Script: {fileID: 11500000, guid: 9206d548310e7b548896637c349804d8, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::SimpleVictoryButton
-  requiredFuseBoxName: FuseBox
-  requireFuseBoxCompletion: 1
-  pressedPositionX: -47.634
-  releasedPositionX: -47.634
+  m_EditorClassIdentifier: Assembly-CSharp::ElevatorButton
+  elevatorDoor: {fileID: 0}
+  requirePowerToOpen: 1
+  pressedPositionX: -96.3
+  releasedPositionX: -96
   moveSpeed: 5
-  victoryMessage: VICTORIA!
-  noPowerMessage: "No hay energ\xEDa."
-  alreadyVictoryMessage: "El sistema ya est\xE1 activado. \xA1Victoria!"
-  victoryEffect: {fileID: 0}
-  victorySound: {fileID: 0}
-  errorSound: {fileID: 0}
+  noPowerMessage: "\U0001F50C No hay energ\xEDa. Necesito colocar el fusible primero."
+  alreadyOpenMessage: "\U0001F6AA La puerta ya est\xE1 abierta."
+  successMessage: "\U0001F513 \xA1Puerta abierta!"
   pressSound: {fileID: 0}
+  errorSound: {fileID: 0}
+  doorOpenSound: {fileID: 0}
   interactionRange: 3
   promptHeight: 1.5
-  isVictoryAchieved: 0
-  victoryManager: {fileID: 0}
-  elevatorDoor: {fileID: 0}
-  openDoorOnVictory: 1
+  isDoorOpen: 0
