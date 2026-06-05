@@ -20720,81 +20720,17 @@ Mesh:
       - serializedVersion: 1
         m_IndexStart: 0
         m_IndexCount: 0
---- !u!1 &313112235
-GameObject:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  serializedVersion: 6
-  m_Component:
-  - component: {fileID: 313112237}
-  - component: {fileID: 313112236}
-  m_Layer: 0
-  m_Name: ElevatorCMCamera
-  m_TagString: Untagged
-  m_Icon: {fileID: 0}
-  m_NavMeshLayer: 0
-  m_StaticEditorFlags: 0
-  m_IsActive: 1
---- !u!114 &313112236
+--- !u!114 &313112236 stripped
 MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
+  m_CorrespondingSourceObject: {fileID: 5329824193367598257, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+  m_PrefabInstance: {fileID: 1948258255576810172}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 313112235}
+  m_GameObject: {fileID: 0}
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: f9dfa5b682dcd46bda6128250e975f58, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Unity.Cinemachine::Unity.Cinemachine.CinemachineCamera
-  Priority:
-    Enabled: 1
-    m_Value: 0
-  OutputChannel: 1
-  StandbyUpdate: 2
-  m_StreamingVersion: 20241001
-  m_LegacyPriority: 0
-  Target:
-    TrackingTarget: {fileID: 46552495}
-    LookAtTarget: {fileID: 0}
-    CustomLookAtTarget: 0
-  Lens:
-    FieldOfView: 68.36692
-    OrthographicSize: 5
-    NearClipPlane: 0.3
-    FarClipPlane: 1000
-    Dutch: 0
-    ModeOverride: 0
-    PhysicalProperties:
-      GateFit: 2
-      SensorSize: {x: 21.946, y: 16.002}
-      LensShift: {x: 0, y: 0}
-      FocusDistance: 10
-      Iso: 200
-      ShutterSpeed: 0.005
-      Aperture: 16
-      BladeCount: 5
-      Curvature: {x: 2, y: 11}
-      BarrelClipping: 0.25
-      Anamorphism: 0
-  BlendHint: 0
---- !u!4 &313112237
-Transform:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 313112235}
-  serializedVersion: 2
-  m_LocalRotation: {x: -0.03849561, y: 0.70705, z: -0.038691644, w: -0.70505416}
-  m_LocalPosition: {x: -87.81313, y: 4.4981313, z: 34.50951}
-  m_LocalScale: {x: 1, y: 1, z: 1}
-  m_ConstrainProportionsScale: 0
-  m_Children: []
-  m_Father: {fileID: 0}
-  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!43 &313331668
 Mesh:
   m_ObjectHideFlags: 0
@@ -121315,6 +121251,67 @@ MonoBehaviour:
   m_SelectedFaces: 
   m_SelectedEdges: []
   m_SelectedVertices: 
+--- !u!1001 &1948258255576810172
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: -87.81313
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 4.4981313
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 34.50951
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: -0.70505416
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0.03849561
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0.70705
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0.038691644
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5314472437957886496, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 5329824193367598257, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: Target.TrackingTarget
+      value: 
+      objectReference: {fileID: 46552495}
+    - target: {fileID: 7320807095539527730, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
+      propertyPath: m_Name
+      value: ElevatorCMCamera
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 042321e0b89bc964aa87bca93c61976a, type: 3}
 --- !u!1660057539 &9223372036854775807
 SceneRoots:
   m_ObjectHideFlags: 0
@@ -121322,7 +121319,7 @@ SceneRoots:
   - {fileID: 410087041}
   - {fileID: 832575519}
   - {fileID: 1837982009}
-  - {fileID: 313112237}
+  - {fileID: 1948258255576810172}
   - {fileID: 1129477263}
   - {fileID: 1647320749}
   - {fileID: 893242681}
