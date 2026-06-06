@@ -1,31 +1,94 @@
-using UnityEngine;
+锘縰sing UnityEngine;
 
 public class Door : ActivableBase
 {
-    [SerializeField] private float openAngle = 90f;   // 羘gulo de apertura
-    [SerializeField] private float speed = 2f;        // Velocidad de rotaci髇
-    private bool isOpen = false;
-    private Quaternion closedRotation;
-    private Quaternion openRotation;
+    public GameObject door;
+    public Vector3 openRotationOffset = new Vector3(0, 90, 0); // El desfase (90 grados)
+
+    [Header("Configuraci贸n de Llaves")]
+    [SerializeField] private bool isLocked = false;
+    [SerializeField] private string requiredKeyId = "";
+
+    private bool playerInsideTrigger = false;
+
+    // Variables para guardar las rotaciones calculadas din谩micamente
+    private Vector3 baseRotation;
+    private Vector3 calculatedOpenRotation;
 
     private void Start()
     {
-        // Guardamos la rotaci髇 inicial como "cerrada"
-        closedRotation = transform.rotation;
-        // Calculamos la rotaci髇 abierta sumando el 醤gulo en Y
-        openRotation = Quaternion.Euler(transform.eulerAngles + new Vector3(0, openAngle, 0));
+        if (door != null)
+        {
+            // Guardamos la rotaci贸n exacta que tiene la puerta colocada en el inspector
+            baseRotation = door.transform.localEulerAngles;
+
+            // Calculamos la rotaci贸n abierta sumando el offset a su base original
+            calculatedOpenRotation = baseRotation + openRotationOffset;
+        }
     }
 
+    // M茅todo obligatorio de ActivableBase (Se ejecuta al usar la E o el Raycast)
     protected override void Activate()
     {
-        isOpen = !isOpen;
-        Debug.Log("Puerta " + (isOpen ? "abierta" : "cerrada"));
+        if (isLocked)
+        {
+            // Comprobamos si el jugador tiene la llave correcta en el inventario del grupo
+            if (Inventory.Instance != null && Inventory.Instance.HasKey(requiredKeyId))
+            {
+                isLocked = false;
+                Debug.Log("馃敁 Puerta desbloqueada con la llave correcta.");
+
+                // Si el jugador ya estaba dentro del trigger cuando la desbloque贸, se abre inmediatamente
+                if (playerInsideTrigger)
+                {
+                    Open();
+                }
+            }
+            else
+            {
+                Debug.LogWarning("馃攽 La puerta est谩 cerrada. Necesitas la llave: " + requiredKeyId);
+            }
+        }
     }
 
-    private void Update()
+    private void OnTriggerEnter(Collider other)
     {
-        // Interpolamos suavemente entre abierta y cerrada
-        Quaternion targetRotation = isOpen ? openRotation : closedRotation;
-        transform.rotation = Quaternion.Slerp(transform.rotation, targetRotation, Time.deltaTime * speed);
+        if (other.CompareTag("Player"))
+        {
+            playerInsideTrigger = true;
+
+            // Solo se abre si est谩 desbloqueada
+            if (!isLocked)
+            {
+                Open();
+            }
+        }
+    }
+
+    void Open()
+    {
+        if (door != null)
+        {
+            // Va a la rotaci贸n base original + los 90 grados configurados
+            door.transform.localEulerAngles = calculatedOpenRotation;
+        }
+    }
+
+    private void OnTriggerExit(Collider other)
+    {
+        if (other.CompareTag("Player"))
+        {
+            playerInsideTrigger = false;
+            Close();
+        }
+    }
+
+    void Close()
+    {
+        if (door != null)
+        {
+            // Vuelve exactamente a su rotaci贸n original del inspector, sin importar cu谩l era
+            door.transform.localEulerAngles = baseRotation;
+        }
     }
 }

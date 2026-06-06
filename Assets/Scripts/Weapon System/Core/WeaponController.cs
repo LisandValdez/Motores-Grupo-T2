@@ -133,6 +133,7 @@ public class WeaponController : MonoBehaviour
 
         if (movementScript != null) movementScript.SetAiming(false);
         if (lookScript != null) lookScript.SetAiming(false);
+        FindFirstObjectByType<WeaponAmmoUI>()?.SetupWeaponUI(currentWeapon as FireWeaponBase);
     }
 
     private Vector3 GetCrosshairTargetPoint()

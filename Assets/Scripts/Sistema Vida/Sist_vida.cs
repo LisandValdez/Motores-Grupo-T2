@@ -4,90 +4,41 @@ using UnityEngine.SceneManagement;
 using Unity.Mathematics;
 using System.Collections;
 
-public class Sist_vida : MonoBehaviour
+public class Sist_vida : MonoBehaviour, IDamageable, IHealt
 {
-    //este codigo el recibe daño y actualiza la vida, animaciones y muerte.
-    [SerializeField] private GameObject player;
-    public Action<int> player_take_damage;
-    public Action<int> player_take_health;
+    [SerializeField] private int maxLife;
+    private int actualLife;
 
-    [SerializeField] private int maxlife;
-
-    [SerializeField] private int actual_life;
-    private Animator anim;
-    private Rigidbody rb;
-
+    public Action<int> OnHealthChanged;
+    public Action OnDeath;
 
     private void Awake()
     {
-        actual_life = maxlife;
-        anim = GetComponent<Animator>();
-        rb = GetComponent<Rigidbody>();
-
-        PlayerMove ps = player.GetComponent<PlayerMove>();
-        if (ps != null)
-            ps.SetMaxLife(maxlife);
-
+        actualLife = maxLife;
+        OnHealthChanged?.Invoke(actualLife);
     }
 
-    public void Take_damage(int damage)
+    // Implementación de daño
+    public void TakeDamage(int damage)
     {
-        actual_life = math.clamp(actual_life - damage, 0, maxlife);
-        player_take_damage?.Invoke(actual_life);
+        actualLife = Mathf.Clamp(actualLife - damage, 0, maxLife);
+        OnHealthChanged?.Invoke(actualLife);
 
-        if (actual_life > 0)
+        if (actualLife <= 0)
         {
-            Debug.Log("Recibiste daño te queda: " + actual_life);
-            if (anim != null)
-            {
-                //anim.SetTrigger("t_damage");
-                Debug.Log("Recibiste daño pero con animacion" + actual_life);
-            }
+            OnDeath?.Invoke();
         }
-        else
-        { 
-             StartCoroutine(DeathSequence());
-        }
-
     }
-    private IEnumerator DeathSequence()
+
+    // Implementación de curación
+    public void Take_health(int healthAmount)
     {
-        PlayerMove ps = player.GetComponent<PlayerMove>();
-
-        Debug.Log("El jugador ha muerto");
-
-        if (ps != null)
-            ps.die();
-
-        if (anim != null)
-        {
-
-            ps.die();
-            //anim.SetTrigger("isdead");
-            Debug.Log("El jugador ha muerto con animacion");
-
-            yield return new WaitForSeconds(1f);
-
-        }
-
-        Destroy_player();
-
-        //SceneManager.LoadScene("defeat");
+        actualLife = Mathf.Clamp(actualLife + healthAmount, 0, maxLife);
+        OnHealthChanged?.Invoke(actualLife);
     }
 
-    public void Take_health(int health)
-    {
-        actual_life = math.clamp(actual_life + health, 0, maxlife);
-        player_take_health?.Invoke(actual_life);
-    }
-
-    public void Destroy_player()
-    {
-        Destroy(gameObject, 1f);
-    }
-
-    public int get_maxlife() => maxlife;
-
-
-    public int get_actual_life() => actual_life;
+    // Getters
+    public int GetMaxLife() => maxLife;
+    public int GetActualLife() => actualLife;
+    public bool IsDead() => actualLife <= 0;
 }
