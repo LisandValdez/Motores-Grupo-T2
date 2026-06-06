@@ -6,9 +6,12 @@ public class Tomar_Daño : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.TryGetComponent(out Sist_vida life_Player))
+       
+        if (other.TryGetComponent<IDamageable>(out var damageable))
         {
-            life_Player.Take_damage(damage);
+            damageable.TakeDamage(damage);
+            
         }
+
     }
 }

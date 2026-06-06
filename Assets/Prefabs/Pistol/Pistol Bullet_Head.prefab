@@ -218,13 +218,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ed1f98b5e3480cd498abc4eac787df4f, type: 3}
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::BulletPistol
-  speed: 40
+  speed: 80
   lifeTime: 5
   maxDistance: 500
   destroyOnImpact: 1
-  ignorePlayerCollision: 1
-  useRaycastDetection: 1
-  detectionRadius: 0.2
+  damage: 20
+  bloodParticlePrefab: {fileID: 4410620833271902474, guid: 3b1c6819d8b0abe42aa89e4a9f0dddb9, type: 3}
 --- !u!136 &2055820469766882559
 CapsuleCollider:
   m_ObjectHideFlags: 0

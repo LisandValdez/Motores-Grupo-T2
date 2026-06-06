@@ -47,6 +47,8 @@ public class VictoryButton : MonoBehaviour, IInteractable
     private Vector3 targetPosition;
 
     public VictoryManager victoryManager;
+    public ElevatorDoor elevatorDoor;  // ← Referencia a la puerta
+    public bool openDoorOnVictory = true;
 
     void Start()
     {
@@ -267,9 +269,21 @@ public class VictoryButton : MonoBehaviour, IInteractable
         
         if (victorySound != null)
             AudioSource.PlayClipAtPoint(victorySound, transform.position, 1f);
-        
-        EndGame();
+
+        if (openDoorOnVictory && elevatorDoor != null)
+    {
+        elevatorDoor.OpenDoor();
+        Debug.Log("🚪 Puerta del ascensor abriéndose...");
     }
+    else if (openDoorOnVictory && elevatorDoor == null)
+    {
+        Debug.LogWarning("⚠️ No se asignó la puerta del ascensor en el VictoryButton");
+    }
+        
+        // EndGame();
+    }
+    
+
     
     void EndGame()
     {

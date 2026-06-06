@@ -2,15 +2,22 @@ using UnityEngine;
 
 public class Curacion : MonoBehaviour
 {
-    [SerializeField] private int healthAmount;
+    [SerializeField] private int healtAmount = 1;
 
     private void OnTriggerEnter(Collider other)
     {
-  
-        if (other.TryGetComponent<Sist_vida>(out Sist_vida vida))
+        Debug.Log("Botiquín tocó: " + other.name);
+
+        if (other.TryGetComponent<IHealt>(out var healt))
         {
-            vida.Take_health(healthAmount);
+            healt.Take_health(healtAmount);
+            Debug.Log("Curación aplicada: " + healtAmount);
+
             Destroy(gameObject); 
+        }
+        else
+        {
+            Debug.Log("El objeto no tiene IHealt");
         }
     }
 }

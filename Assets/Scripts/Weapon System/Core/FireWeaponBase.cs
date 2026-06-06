@@ -31,6 +31,17 @@ public abstract class FireWeaponBase : WeaponBase
     public Transform casingExitPoint;
     public float casingEjectForce = 5f;
 
+    [Header("Ajustes de Munición del Inventario")]
+    public string ammoTypeName = "Pistol Ammo"; // Debe coincidir con el 'itemName' que le pones a tu ItemPickup[cite: 1, 2]
+
+    // Evento para avisarle a la UI que disparamos o recargamos y que debe actualizarse
+    public System.Action OnWeaponAmmoChanged;
+
+    // Métodos públicos para que la UI pueda consultar los datos fácilmente
+    public int GetCurrentAmmo() => currentAmmo;
+    public int GetMaxAmmo() => maxAmmo;
+
+
     protected virtual void Awake()
     {
         anim = GetComponent<Animator>();
@@ -44,34 +55,32 @@ public abstract class FireWeaponBase : WeaponBase
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
         }
-        
+        currentAmmo = maxAmmo;
+
         // Configurar AudioSource
         audioSource.spatialBlend = 1f; // Sonido 3D
         audioSource.rolloffMode = AudioRolloffMode.Linear;
         audioSource.maxDistance = 50f;
     }
 
-    protected virtual void Start()
-    {
-        currentAmmo = maxAmmo;
-    }
+ 
 
     public override void Attack(Vector3 targetPoint)
     {
-        // Lógica de disparo centralizada para todas las armas de fuego
         if (CanShoot())
         {
             nextAttackTime = Time.time + (1f / fireRate);
             currentAmmo--;
 
-            PlayFireAnimation();
-            PlayShootSound(); // 🔫 Reproducir sonido de disparo
+            // Invocar el evento para actualizar la UI del juego al disparar
+            OnWeaponAmmoChanged?.Invoke();
 
-            // Cálculo de dirección e instanciación del proyectil
+            PlayFireAnimation();
+            PlayShootSound();
+
             Vector3 fireDirection = (targetPoint - firePoint.position).normalized;
             GameObject projObj = Instantiate(projectilePrefab, firePoint.position, Quaternion.LookRotation(fireDirection));
 
-            // Inicialización del proyectil con el daño del arma
             ProjectileBase proj = projObj.GetComponent<ProjectileBase>();
             if (proj != null)
             {
@@ -83,7 +92,7 @@ public abstract class FireWeaponBase : WeaponBase
         else if (currentAmmo <= 0 && !isReloading)
         {
             Debug.Log("¡Click click! (Sin balas)");
-            PlayDryFireSound(); // 🔇 Sonido de dry fire (sin balas)
+            PlayDryFireSound();
         }
     }
 
@@ -99,9 +108,20 @@ public abstract class FireWeaponBase : WeaponBase
 
     public override void Reload()
     {
-        if (!isReloading && currentAmmo < maxAmmo)
+        // No recargar si ya está lleno o si ya está recargando[cite: 5]
+        if (isReloading || currentAmmo >= maxAmmo) return;
+
+        // Verificar si el inventario tiene balas de este tipo
+        int ammoInInventory = Inventory.Instance != null ? Inventory.Instance.GetAmmo(ammoTypeName) : 0; //[cite: 2]
+
+        if (ammoInInventory > 0)
         {
             StartCoroutine(ReloadRoutine());
+        }
+        else
+        {
+            Debug.LogWarning($"❌ No hay munición de tipo '{ammoTypeName}' en el inventario.");
+            PlayDryFireSound(); // Sonido de vacío
         }
     }
 
@@ -110,18 +130,36 @@ public abstract class FireWeaponBase : WeaponBase
         isReloading = true;
         Debug.Log($"Recargando {weaponName}...");
 
-        PlayReloadSound(); // 🔄 Sonido de inicio de recarga
+        PlayReloadSound();
 
         if (anim != null && HasParameter("ReloadTrigger", anim))
         {
             anim.SetTrigger("ReloadTrigger");
         }
 
-        yield return new WaitForSeconds(reloadTime);
+        yield return new WaitForSeconds(reloadTime); //[cite: 5]
 
-        currentAmmo = maxAmmo;
+        // Lógica de transferencia desde el Inventario[cite: 2]
+        if (Inventory.Instance != null) //[cite: 2]
+        {
+            int ammoNeeded = maxAmmo - currentAmmo;
+            int ammoInInventory = Inventory.Instance.GetAmmo(ammoTypeName); //[cite: 2]
+
+            // Calculamos cuántas balas podemos pasar realmente al arma
+            int ammoToLoad = Mathf.Min(ammoNeeded, ammoInInventory);
+
+            // Restamos del inventario y sumamos al cargador[cite: 2]
+            if (Inventory.Instance.UseAmmo(ammoTypeName, ammoToLoad)) //[cite: 2]
+            {
+                currentAmmo += ammoToLoad;
+                Debug.Log($"🔄 {weaponName} recargada. Cargador: {currentAmmo}/{maxAmmo}");
+            }
+        }
+
         isReloading = false;
-        Debug.Log($"{weaponName} lista.");
+
+        // Invocar el evento para actualizar la UI del juego al terminar de recargar
+        OnWeaponAmmoChanged?.Invoke();
     }
 
     protected bool CanShoot()
