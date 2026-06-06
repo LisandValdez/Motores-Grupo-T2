@@ -12718,17 +12718,6 @@ Transform:
   - {fileID: 2024723569}
   m_Father: {fileID: 765599227}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &213883888 stripped
-MonoBehaviour:
-  m_CorrespondingSourceObject: {fileID: 5870696036038998878, guid: b73660cd1d8dd8f49a0ac3335c73c757, type: 3}
-  m_PrefabInstance: {fileID: 1129477263}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1826302900}
-  m_Enabled: 0
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cea7d8a8915c9a428994665c5e00842, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
 --- !u!4 &213883897 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 269575521472645268, guid: b73660cd1d8dd8f49a0ac3335c73c757, type: 3}
@@ -66196,7 +66185,12 @@ PrefabInstance:
       propertyPath: shootSound
       value: 
       objectReference: {fileID: 8300000, guid: 8cb852c0c5ade5f419cbd36684be4710, type: 3}
-    m_RemovedComponents: []
+    - target: {fileID: 8875736214031861057, guid: b73660cd1d8dd8f49a0ac3335c73c757, type: 3}
+      propertyPath: reloadSound
+      value: 
+      objectReference: {fileID: 8300000, guid: e8a6eaaf18e9ef844b44830a5f076857, type: 3}
+    m_RemovedComponents:
+    - {fileID: 5870696036038998878, guid: b73660cd1d8dd8f49a0ac3335c73c757, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
@@ -93753,6 +93747,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 213883897}
     - target: {fileID: 4282660328199039519, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
+      propertyPath: hurtClip
+      value: 
+      objectReference: {fileID: 8300000, guid: a0087d7df53697240bc96f021e40016a, type: 3}
+    - target: {fileID: 4282660328199039519, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       propertyPath: puntosPatrulla.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -93779,7 +93777,7 @@ PrefabInstance:
     - target: {fileID: 8032043061348124646, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       propertyPath: playerHealth
       value: 
-      objectReference: {fileID: 213883888}
+      objectReference: {fileID: 0}
     - target: {fileID: 9094257623344736328, guid: 6dc4cf4496348884d8ee27743ae38562, type: 3}
       propertyPath: m_Height
       value: 2.5
@@ -105869,6 +105867,10 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: Assembly-CSharp::Sist_vida
   maxLife: 3
+  damageSound: {fileID: 8300000, guid: 54d58080dd5a58541855cb3daae766e3, type: 3}
+  deathSound: {fileID: 8300000, guid: f35e2d74e069c004d95e4d6a6d2e2301, type: 3}
+  damageVolume: 1
+  deathVolume: 1
 --- !u!114 &1826302918
 MonoBehaviour:
   m_ObjectHideFlags: 0

@@ -6,11 +6,18 @@ using System.Collections;
 
 public class Sist_vida : MonoBehaviour, IDamageable, IHealt
 {
-    [SerializeField] private int maxLife;
+    [Header("Vida")]
+    [SerializeField] private int maxLife = 3;
     private int actualLife;
 
     public Action<int> OnHealthChanged;
     public Action OnDeath;
+
+    [Header("Audio (simple, sin componentes extra)")]
+    [SerializeField] private AudioClip damageSound;
+    [SerializeField] private AudioClip deathSound;
+    [SerializeField][Range(0f, 1f)] private float damageVolume = 1f;
+    [SerializeField][Range(0f, 1f)] private float deathVolume = 1f;
 
     private void Awake()
     {
@@ -21,12 +28,19 @@ public class Sist_vida : MonoBehaviour, IDamageable, IHealt
     // Implementación de daño
     public void TakeDamage(int damage)
     {
+        // Reproducir sonido de daño (fallback posicional)
+        if (damageSound != null)
+            AudioSource.PlayClipAtPoint(damageSound, transform.position, damageVolume);
+
         actualLife = Mathf.Clamp(actualLife - damage, 0, maxLife);
         OnHealthChanged?.Invoke(actualLife);
 
         if (actualLife <= 0)
         {
             OnDeath?.Invoke();
+
+            if (deathSound != null)
+                AudioSource.PlayClipAtPoint(deathSound, transform.position, deathVolume);
         }
     }
 
