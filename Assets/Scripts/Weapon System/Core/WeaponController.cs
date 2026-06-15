@@ -1,6 +1,6 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-using System.Collections; // Necesario para la corrutina de cambio
+using System.Collections;
 
 public class WeaponController : MonoBehaviour
 {
@@ -9,7 +9,7 @@ public class WeaponController : MonoBehaviour
     private int currentWeaponIndex = 0;
     private WeaponBase currentWeapon;
     private bool isAttackPressed = false;
-    private bool isSwitching = false; // Bloqueo para evitar spam de cambio
+    private bool isSwitching = false;
 
     [Header("Camera & Crosshair")]
     public Camera mainCamera;
@@ -21,7 +21,6 @@ public class WeaponController : MonoBehaviour
 
     private void Start()
     {
-        // Inicializar: desactivar todas y equipar la primera
         foreach (var weapon in arsenal)
         {
             weapon.gameObject.SetActive(false);
@@ -31,7 +30,6 @@ public class WeaponController : MonoBehaviour
 
     private void Update()
     {
-        // Solo permite atacar si hay un arma y no estamos en medio de un cambio
         if (isAttackPressed && currentWeapon != null && !isSwitching)
         {
             currentWeapon.Attack(GetCrosshairTargetPoint());
@@ -51,12 +49,9 @@ public class WeaponController : MonoBehaviour
 
     public void OnAim(InputAction.CallbackContext context)
     {
-        // 1. Verificamos que haya un arma, que no estemos cambiando y...
-        // 2. QUE EL ARMA NO SEA MELEE
         if (currentWeapon != null && !isSwitching && !(currentWeapon is MeleeBase))
         {
             bool aiming = context.ReadValueAsButton();
-
             currentWeapon.Aim(aiming);
 
             if (movementScript != null) movementScript.SetAiming(aiming);
@@ -64,7 +59,6 @@ public class WeaponController : MonoBehaviour
         }
         else if (currentWeapon is MeleeBase)
         {
-            // Opcional: Asegurarnos de que el estado de apuntado sea falso si cambiamos de arma rápido
             if (movementScript != null) movementScript.SetAiming(false);
             if (lookScript != null) lookScript.SetAiming(false);
         }
@@ -87,43 +81,38 @@ public class WeaponController : MonoBehaviour
         }
     }
 
-    // Corrutina para manejar la transición visual de salida y entrada
     private IEnumerator SwitchWeaponRoutine(int newIndex)
     {
         isSwitching = true;
 
-        // 1. Cancelar estados actuales (dejar de apuntar/correr con el arma)
         if (currentWeapon != null)
         {
             currentWeapon.Aim(false);
             if (movementScript != null) movementScript.SetAiming(false);
             if (lookScript != null) lookScript.SetAiming(false);
 
-            // 2. Ejecutar animación de "Bajar Arma" (GunChangeDOWN)
-            // Debes tener el Trigger "SwitchTrigger" configurado en tu Animator
             Animator anim = currentWeapon.GetComponent<Animator>();
             if (anim != null)
             {
                 anim.SetTrigger("SwitchTrigger");
             }
 
-            // 3. Esperar a que la animación de guardado termine (ajusta este tiempo al de tu clip)
             yield return new WaitForSeconds(0.5f);
             currentWeapon.gameObject.SetActive(false);
         }
 
-        // 4. Activar la nueva arma
         currentWeaponIndex = newIndex;
         currentWeapon = arsenal[currentWeaponIndex];
         currentWeapon.gameObject.SetActive(true);
 
-        // Al activarse, el Animator de la nueva arma entrará por GunChangeUP automáticamente
         Debug.Log($"Arma equipada: {currentWeapon.weaponName}");
+
+        // ?? NUEVO: Actualizar la UI tras cambiar de arma
+        FindFirstObjectByType<WeaponAmmoUI>()?.SetupWeaponUI(currentWeapon as FireWeaponBase);
 
         isSwitching = false;
     }
 
-    // Método para la configuración inicial sin esperas
     private void EquipWeaponInstant(int index)
     {
         currentWeaponIndex = index;
@@ -133,6 +122,8 @@ public class WeaponController : MonoBehaviour
 
         if (movementScript != null) movementScript.SetAiming(false);
         if (lookScript != null) lookScript.SetAiming(false);
+
+        // ?? NUEVO: Forzar a la UI a enlazarse con el arma inicial al arrancar el nivel
         FindFirstObjectByType<WeaponAmmoUI>()?.SetupWeaponUI(currentWeapon as FireWeaponBase);
     }
 

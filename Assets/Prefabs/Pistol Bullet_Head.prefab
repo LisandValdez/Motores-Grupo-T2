@@ -100,7 +100,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 3625037896966406280, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
       propertyPath: m_Name
-      value: 45ACP Bullet_Head
+      value: Pistol Bullet_Head
+      objectReference: {fileID: 0}
+    - target: {fileID: 8403992145370945202, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
+      propertyPath: m_IsKinematic
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 8535412081993147290, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
       propertyPath: m_RootOrder
@@ -162,13 +166,17 @@ PrefabInstance:
       propertyPath: m_ConstrainProportionsScale
       value: 1
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 3966318793219071718, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects:
     - targetCorrespondingSourceObject: {fileID: 8535412081993147290, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6291989069644143154}
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 3625037896966406280, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
+      insertIndex: 2
+      addedObject: {fileID: -252582117193245324}
     - targetCorrespondingSourceObject: {fileID: 3625037896966406280, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6220102464765764907}
@@ -183,6 +191,24 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 3625037896966406280, guid: 9e0ef2cf9cfc11c46bbe7f28b272f6fb, type: 3}
   m_PrefabInstance: {fileID: 7799836738284049863}
   m_PrefabAsset: {fileID: 0}
+--- !u!114 &-252582117193245324
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6804990658058999119}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: ed1f98b5e3480cd498abc4eac787df4f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::BulletPistol
+  speed: 80
+  lifeTime: 5
+  maxDistance: 500
+  destroyOnImpact: 1
+  damage: 20
+  bloodParticlePrefab: {fileID: 0}
 --- !u!114 &6220102464765764907
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -197,3 +223,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::BulletPistol
   speed: 50
   lifeTime: 3
+  maxDistance: 500
+  destroyOnImpact: 1
+  damage: 20
+  bloodParticlePrefab: {fileID: 4410620833271902474, guid: 3b1c6819d8b0abe42aa89e4a9f0dddb9, type: 3}
