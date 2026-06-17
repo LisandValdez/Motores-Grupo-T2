@@ -6,7 +6,8 @@ public class ElevatorButton : MonoBehaviour, IInteractable
 {
     [Header("Configuración")]
     public ElevatorDoor elevatorDoor;  // Referencia a la puerta
-    public bool requirePowerToOpen = true;  // Si necesita el fusible
+    public FuseBox fuseBox;            // Referencia a la caja de fusibles
+    public bool requireFuseBoxCompletion = true;
     
     [Header("Movimiento del Botón")]
     public float pressedPositionX = -96.30f;
@@ -24,7 +25,6 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     [Header("Efectos")]
     public AudioClip pressSound;
     public AudioClip errorSound;
-    public AudioClip doorOpenSound;
     
     [Header("Visual")]
     public float interactionRange = 3f;
@@ -36,12 +36,10 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     private GameObject currentPrompt;
     private GameObject currentPlayer;
     private bool playerInRange = false;
-    private FuseBox fuseBox;
-    
     private bool isPressed = false;
     private bool isMoving = false;
     private Vector3 targetPosition;
-    
+
     void Start()
     {
         Vector3 pos = transform.localPosition;
@@ -49,7 +47,10 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         transform.localPosition = pos;
         targetPosition = transform.localPosition;
         
-        FindFuseBox();
+        // Buscar FuseBox automáticamente si no está asignado
+        if (fuseBox == null)
+            fuseBox = FindFirstObjectByType<FuseBox>();
+        
         CreateInteractionPrompt();
     }
     
@@ -69,13 +70,6 @@ public class ElevatorButton : MonoBehaviour, IInteractable
                 isMoving = false;
             }
         }
-    }
-    
-    void FindFuseBox()
-    {
-        fuseBox = FindFirstObjectByType<FuseBox>();
-        if (fuseBox == null)
-            Debug.LogWarning("⚠️ No se encontró la caja de fusibles en la escena!");
     }
     
     void OnTriggerEnter(Collider other)
@@ -107,7 +101,7 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
         
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        textMesh.text = $"Presiona <color=yellow>E</color> para abrir puerta\n<color=cyan>🚪 Ascensor</color>";
+        textMesh.text = $"Presiona <color=yellow>E</color> para abrir puerta\n<color=cyan>🚪 Botón del Ascensor</color>";
         textMesh.fontSize = 30;
         textMesh.characterSize = 0.03f;
         textMesh.color = Color.white;
@@ -137,9 +131,9 @@ public class ElevatorButton : MonoBehaviour, IInteractable
             return;
         }
         
-        // Verificar si hay energía (si se requiere)
+        // Verificar si hay energía
         bool hasPower = true;
-        if (requirePowerToOpen && fuseBox != null)
+        if (requireFuseBoxCompletion && fuseBox != null)
         {
             hasPower = fuseBox.isCompleted;
         }
@@ -161,13 +155,13 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     
     IEnumerator PressAndOpenDoor()
     {
-        // Presionar botón
+        isPressed = true;
         isMoving = true;
         targetPosition = new Vector3(pressedPositionX, transform.localPosition.y, transform.localPosition.z);
         if (pressSound != null)
             AudioSource.PlayClipAtPoint(pressSound, transform.position, 1f);
         
-        yield return new WaitForSeconds(0.2f);
+        yield return new WaitForSeconds(0.3f);
         
         // Soltar botón
         isMoving = true;
@@ -180,7 +174,7 @@ public class ElevatorButton : MonoBehaviour, IInteractable
             ShowMessage(successMessage, Color.green);
             isDoorOpen = true;
             
-            // Opcional: Cambiar el prompt después de abrir
+            // Actualizar prompt
             if (currentPrompt != null)
             {
                 TextMesh textMesh = currentPrompt.GetComponent<TextMesh>();
@@ -192,6 +186,9 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         {
             Debug.LogError("❌ No se asignó la puerta del ascensor!");
         }
+        
+        yield return new WaitForSeconds(0.2f);
+        isPressed = false;
     }
     
     IEnumerator ErrorPress()

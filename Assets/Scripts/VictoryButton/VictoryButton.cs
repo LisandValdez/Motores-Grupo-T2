@@ -5,29 +5,27 @@ using System.Collections;
 public class VictoryButton : MonoBehaviour, IInteractable
 {
     [Header("Configuración")]
-    public string requiredFuseBoxName = "FuseBox";
-    public bool requireFuseBoxCompletion = true;
+    public ElevatorDoor elevatorDoor;
+    public VictoryManager victoryManager;
     
-    [Header("Movimiento del Botón")]
-    public float pressedPositionX = -96.30f;   // Posición X cuando está presionado
-    public float releasedPositionX = -96f;     // Posición X cuando está en reposo
-    public float moveSpeed = 5f;               // Velocidad de movimiento
+    [Header("Movimiento del Botón (Eje Z)")]
+    public float pressedPositionZ;
+    public float releasedPositionZ;
+    public float moveSpeed = 5f;
     
     [Header("Mensajes")]
     [TextArea(3, 5)]
-    public string victoryMessage = "🎉 ¡VICTORIA! ¡Has restaurado la energía! 🎉";
-    
+    public string victoryMessage;
     [TextArea(3, 5)]
-    public string noPowerMessage = "🔌 No hay energía. Necesito colocar el fusible primero.";
-    
+    public string alreadyVictoryMessage;
     [TextArea(3, 5)]
-    public string alreadyVictoryMessage = "El sistema ya está activado. ¡Victoria!";
+    public string closingDoorMessage;
     
     [Header("Efectos")]
     public GameObject victoryEffect;
     public AudioClip victorySound;
-    public AudioClip errorSound;
     public AudioClip pressSound;
+    public AudioClip doorCloseSound;
     
     [Header("Visual")]
     public float interactionRange = 3f;
@@ -39,34 +37,21 @@ public class VictoryButton : MonoBehaviour, IInteractable
     private GameObject currentPrompt;
     private GameObject currentPlayer;
     private bool playerInRange = false;
-    private FuseBox fuseBox;
-    
-    // Variables para el movimiento
     private bool isPressed = false;
     private bool isMoving = false;
     private Vector3 targetPosition;
 
-    public VictoryManager victoryManager;
-
     void Start()
     {
-        // Asegurar posición inicial
         Vector3 pos = transform.localPosition;
-        pos.x = releasedPositionX;
+        pos.z = releasedPositionZ;
         transform.localPosition = pos;
         targetPosition = transform.localPosition;
         
-        FindFuseBox();
-        CreateInteractionPrompt();
-
         if (victoryManager == null)
-        {
             victoryManager = FindFirstObjectByType<VictoryManager>();
-            if (victoryManager != null)
-                Debug.Log("✅ VictoryManager encontrado automáticamente");
-            else
-                Debug.LogWarning("⚠️ No se encontró VictoryManager en la escena");
-        }
+        
+        CreateInteractionPrompt();
     }
 
     void Update()
@@ -76,7 +61,6 @@ public class VictoryButton : MonoBehaviour, IInteractable
             currentPrompt.SetActive(playerInRange);
         }
         
-        // Movimiento suave del botón
         if (isMoving)
         {
             transform.localPosition = Vector3.Lerp(transform.localPosition, targetPosition, Time.deltaTime * moveSpeed);
@@ -86,27 +70,6 @@ public class VictoryButton : MonoBehaviour, IInteractable
                 isMoving = false;
             }
         }
-    }
-
-    void FindFuseBox()
-    {
-        GameObject fuseBoxObj = GameObject.Find(requiredFuseBoxName);
-        
-        if (fuseBoxObj == null)
-        {
-            fuseBox = FindFirstObjectByType<FuseBox>();
-            if (fuseBox != null)
-                Debug.Log($"✅ Caja de fusibles encontrada: {fuseBox.gameObject.name}");
-        }
-        else
-        {
-            fuseBox = fuseBoxObj.GetComponent<FuseBox>();
-            if (fuseBox != null)
-                Debug.Log($"✅ Caja de fusibles encontrada: {fuseBoxObj.name}");
-        }
-        
-        if (fuseBox == null)
-            Debug.LogWarning("⚠️ No se encontró la caja de fusibles en la escena!");
     }
 
     void OnTriggerEnter(Collider other)
@@ -138,7 +101,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
         promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
         
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        textMesh.text = $"Presiona <color=yellow>E</color> para activar\n<color=cyan>🔘 Botón de Energía</color>";
+        textMesh.text = $"Presiona <color=yellow>E</color> para activar\n<color=red>🔴 Botón de Emergencia</color>";
         textMesh.fontSize = 30;
         textMesh.characterSize = 0.03f;
         textMesh.color = Color.white;
@@ -169,98 +132,47 @@ public class VictoryButton : MonoBehaviour, IInteractable
             return;
         }
         
-        // Verificar si la caja de fusibles está completada
-        bool hasPower = CheckPowerStatus();
-        
-        if (hasPower)
-        {
-            // VICTORIA - El botón se queda presionado
-            isVictoryAchieved = true;
-            PressButton(true);
-            ShowVictory();
-        }
-        else
-        {
-            // SIN ENERGÍA - Solo animación de error (presiona y vuelve rápido)
-            Debug.Log("🔌 Botón presionado pero NO hay energía");
-            ShowMessage(noPowerMessage, Color.red);
-            
-            if (errorSound != null)
-                AudioSource.PlayClipAtPoint(errorSound, transform.position, 1f);
-            
-            StartCoroutine(ErrorPress());
-        }
+        isVictoryAchieved = true;
+        PressButton(true);
+        StartCoroutine(VictorySequence());
     }
     
     void PressButton(bool permanent)
     {
         isPressed = true;
         isMoving = true;
-        targetPosition = new Vector3(pressedPositionX, transform.localPosition.y, transform.localPosition.z);
+        targetPosition = new Vector3(transform.localPosition.x, transform.localPosition.y, pressedPositionZ);
         
         if (pressSound != null)
             AudioSource.PlayClipAtPoint(pressSound, transform.position, 1f);
         
-        Debug.Log($"🔘 Botón presionado: X = {pressedPositionX}");
-        
-        if (!permanent)
-        {
-            StartCoroutine(ReturnButton());
-        }
+        Debug.Log($"🔘 Botón presionado: Z = {pressedPositionZ}");
     }
     
-    IEnumerator ReturnButton()
+    IEnumerator VictorySequence()
     {
-        yield return new WaitForSeconds(0.5f);
+        Debug.Log("🎉 ¡Iniciando secuencia de victoria!");
         
-        if (!isVictoryAchieved)
+        // 1. CERRAR LA PUERTA (rápido)
+        if (elevatorDoor != null)
         {
-            isMoving = true;
-            targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
-            isPressed = false;
-            Debug.Log($"🔘 Botón liberado: X = {releasedPositionX}");
-        }
-    }
-    
-    IEnumerator ErrorPress()
-    {
-        // Presionar rápidamente
-        isMoving = true;
-        targetPosition = new Vector3(pressedPositionX, transform.localPosition.y, transform.localPosition.z);
-        
-        yield return new WaitForSeconds(0.15f);
-        
-        // Volver inmediatamente
-        isMoving = true;
-        targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
-        
-        yield return new WaitForSeconds(0.1f);
-        isPressed = false;
-    }
-    
-    bool CheckPowerStatus()
-    {
-        if (fuseBox != null)
-        {
-            return fuseBox.isCompleted;
+            Debug.Log("🚪 Cerrando puerta...");
+            ShowMessage(closingDoorMessage, Color.yellow);
+            
+            elevatorDoor.CloseDoor();
+            
+            if (doorCloseSound != null)
+                AudioSource.PlayClipAtPoint(doorCloseSound, transform.position, 1f);
+            
+            // Esperar SOLO el tiempo necesario para cerrar
+            yield return StartCoroutine(WaitForDoorToClose());
         }
         
-        GameObject fuseBoxObj = GameObject.FindGameObjectWithTag("FuseBox");
-        if (fuseBoxObj != null)
-        {
-            FuseBox fb = fuseBoxObj.GetComponent<FuseBox>();
-            if (fb != null)
-                return fb.isCompleted;
-        }
+        // 2. PAUSA MÍNIMA para que se vea el mensaje de cierre
+        yield return new WaitForSeconds(0.2f);
         
-        return false;
-    }
-    
-    void ShowVictory()
-    {
-        Debug.Log("🎉 ¡VICTORIA! El botón fue presionado con energía.");
-        
-        ShowMessage(victoryMessage, Color.green);
+        // 3. EFECTOS DE VICTORIA (inmediato)
+        Debug.Log("🎆 ¡VICTORIA!");
         
         if (victoryEffect != null)
             Instantiate(victoryEffect, transform.position, Quaternion.identity);
@@ -268,51 +180,98 @@ public class VictoryButton : MonoBehaviour, IInteractable
         if (victorySound != null)
             AudioSource.PlayClipAtPoint(victorySound, transform.position, 1f);
         
+        ShowMessage(victoryMessage, Color.green);
+        
+        // 4. PAUSA CORTA para ver el efecto
+        yield return new WaitForSeconds(1f);
+        
+        // 5. FINALIZAR EL JUEGO
         EndGame();
     }
     
-    void EndGame()
+    IEnumerator WaitForDoorToClose()
     {
-        Debug.Log("🏆 JUEGO COMPLETADO 🏆");
+        // Esperar mientras la puerta se está moviendo
+        float maxWaitTime = 3f;
+        float elapsedTime = 0f;
         
-        // 🔥 ACTIVAR EL PANEL DE VICTORIA 🔥
-        if (victoryManager != null)
+        while (elevatorDoor != null && elevatorDoor.isMoving && elapsedTime < maxWaitTime)
         {
-            Time.timeScale = 0f;
-            victoryManager.Victory();
-            Debug.Log("✅ VictoryManager.Victory() llamado");
+            elapsedTime += Time.deltaTime;
+            yield return null;
         }
-        else
+        
+        // Si la puerta sigue abierta después del tiempo máximo, forzar cierre
+        if (elevatorDoor != null && elevatorDoor.isOpen)
         {
-            Debug.LogError("❌ No se encontró VictoryManager!");
+            Debug.LogWarning("⚠️ Forzando cierre de puerta");
+            elevatorDoor.ForceClose();
         }
+        
+        yield return null;
     }
     
-    void ShowMessage(string message, Color color)
+    void EndGame()
+{
+    Debug.Log("🏆 JUEGO COMPLETADO 🏆");
+    
+    if (victoryManager != null)
     {
-        GameObject messageObj = new GameObject("ButtonMessage");
-        messageObj.transform.SetParent(transform);
-        messageObj.transform.localPosition = new Vector3(0, promptHeight + 0.8f, 0);
+        // Mostrar la victoria ANTES de pausar
+        victoryManager.Victory();
         
-        TextMesh textMesh = messageObj.AddComponent<TextMesh>();
-        textMesh.text = message;
-        textMesh.fontSize = 35;
-        textMesh.characterSize = 0.04f;
-        textMesh.color = color;
-        textMesh.alignment = TextAlignment.Center;
-        textMesh.fontStyle = FontStyle.Bold;
-        
-        messageObj.AddComponent<Billboard>();
-        
-        FadeMessage fade = messageObj.AddComponent<FadeMessage>();
-        fade.lifetime = 3f;
-        
-        Destroy(messageObj, 3f);
+        // Pequeña pausa para que se vea el efecto
+        StartCoroutine(PauseAfterVictory());
     }
+    else
+    {
+        Debug.LogError("❌ No se encontró VictoryManager!");
+    }
+}
+
+IEnumerator PauseAfterVictory()
+{
+    // Esperar un frame para que VictoryManager pueda procesar
+    yield return null;
+    
+    // Ahora sí pausamos el juego
+    Time.timeScale = 0f;
+    Debug.Log("⏸️ Juego pausado");
+}
+    
+    void ShowMessage(string message, Color color)
+{
+    // 🔥 Buscar por componente en lugar de tag
+    FadeMessage[] oldMessages = FindObjectsOfType<FadeMessage>();
+    foreach (FadeMessage msg in oldMessages)
+    {
+        Destroy(msg.gameObject);
+    }
+    
+    GameObject messageObj = new GameObject("ButtonMessage");
+    // Ya no necesitas asignar tag
+    messageObj.transform.SetParent(transform);
+    messageObj.transform.localPosition = new Vector3(0, promptHeight + 0.8f, 0);
+    
+    TextMesh textMesh = messageObj.AddComponent<TextMesh>();
+    textMesh.text = message;
+    textMesh.fontSize = 35;
+    textMesh.characterSize = 0.04f;
+    textMesh.color = color;
+    textMesh.alignment = TextAlignment.Center;
+    textMesh.fontStyle = FontStyle.Bold;
+    
+    messageObj.AddComponent<Billboard>();
+    
+    FadeMessage fade = messageObj.AddComponent<FadeMessage>();
+    fade.lifetime = 2.5f;
+    
+    Destroy(messageObj, 2.5f);
+}
     
     void OnDrawGizmosSelected()
     {
-        Gizmos.color = Color.green;
+        Gizmos.color = Color.red;
         Gizmos.DrawWireSphere(transform.position, interactionRange);
     }
 }
