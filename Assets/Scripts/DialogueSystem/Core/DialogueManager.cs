@@ -35,9 +35,22 @@ public class DialogueManager : MonoBehaviour
         else
         {
             Destroy(gameObject);
+            return;
         }
 
         linesQueue = new Queue<DialogueLine>();
+    }
+
+    public void RegisterUIElements(GameObject panel, TMP_Text nameTxt, TMP_Text dialogueTxt, GameObject gameplayCanv)
+    {
+        dialoguePanel = panel;
+        nameText = nameTxt;
+        dialogueText = dialogueTxt;
+        gameplayCanvas = gameplayCanv;
+
+        // Ocultar el panel recién registrado por seguridad
+        if (dialoguePanel != null)
+            dialoguePanel.SetActive(false);
     }
 
     void Start()

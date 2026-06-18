@@ -13,6 +13,6 @@ public class StartGame : MonoBehaviour
 
     void CargarJuego()
     {
-        SceneManager.LoadScene("MapaHotel");
+        SceneManager.LoadScene("MapaHotelJuan");
     }
 }

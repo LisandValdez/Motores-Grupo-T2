@@ -363,6 +363,7 @@ GameObject:
   - component: {fileID: 8119601853550078277}
   - component: {fileID: 3117799645425037848}
   - component: {fileID: 4519885593028883436}
+  - component: {fileID: 6848314230423277354}
   m_Layer: 5
   m_Name: DialogueCanvas
   m_TagString: Untagged
@@ -453,3 +454,19 @@ MonoBehaviour:
   m_BlockingMask:
     serializedVersion: 2
     m_Bits: 4294967295
+--- !u!114 &6848314230423277354
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8469156864687768904}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 857ed74fc2ebb4244bcf6d4065e564d9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::DialogueCanvasBinder
+  dialoguePanel: {fileID: 6024875827173029373}
+  nameText: {fileID: 4783668560174228730}
+  dialogueText: {fileID: 119770030690412143}
+  gameplayCanvas: {fileID: 0}
