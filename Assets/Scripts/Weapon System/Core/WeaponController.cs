@@ -30,6 +30,9 @@ public class WeaponController : MonoBehaviour
 
     private void Update()
     {
+        // Bloqueamos el bucle de ráfaga automática si el juego está pausado
+        if (Time.timeScale == 0f) return;
+
         if (isAttackPressed && currentWeapon != null && !isSwitching)
         {
             currentWeapon.Attack(GetCrosshairTargetPoint());
@@ -38,6 +41,13 @@ public class WeaponController : MonoBehaviour
 
     public void OnAttack(InputAction.CallbackContext context)
     {
+        // SI EL JUEGO ESTÁ PAUSADO, IGNORAMOS POR COMPLETO EL INPUT
+        if (Time.timeScale == 0f)
+        {
+            isAttackPressed = false; // Nos aseguramos de limpiar el estado
+            return;
+        }
+
         if (context.performed) isAttackPressed = true;
         else if (context.canceled) isAttackPressed = false;
 
@@ -49,6 +59,9 @@ public class WeaponController : MonoBehaviour
 
     public void OnAim(InputAction.CallbackContext context)
     {
+        // SI EL JUEGO ESTÁ PAUSADO, IGNORAMOS EL APUNTADO
+        if (Time.timeScale == 0f) return;
+
         if (currentWeapon != null && !isSwitching && !(currentWeapon is MeleeBase))
         {
             bool aiming = context.ReadValueAsButton();
@@ -66,6 +79,9 @@ public class WeaponController : MonoBehaviour
 
     public void OnReload(InputAction.CallbackContext context)
     {
+        // SI EL JUEGO ESTÁ PAUSADO, NO RECARGAMOS
+        if (Time.timeScale == 0f) return;
+
         if (context.started && currentWeapon != null && !isSwitching)
         {
             currentWeapon.Reload();
@@ -74,6 +90,9 @@ public class WeaponController : MonoBehaviour
 
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
+        // SI EL JUEGO ESTÁ PAUSADO, NO CAMBIAMOS DE ARMA
+        if (Time.timeScale == 0f) return;
+
         if (context.started && !isSwitching && arsenal.Length > 1)
         {
             int nextIndex = (currentWeaponIndex + 1) % arsenal.Length;
@@ -107,7 +126,6 @@ public class WeaponController : MonoBehaviour
 
         Debug.Log($"Arma equipada: {currentWeapon.weaponName}");
 
-        // ?? NUEVO: Actualizar la UI tras cambiar de arma
         FindFirstObjectByType<WeaponAmmoUI>()?.SetupWeaponUI(currentWeapon as FireWeaponBase);
 
         isSwitching = false;
@@ -123,7 +141,6 @@ public class WeaponController : MonoBehaviour
         if (movementScript != null) movementScript.SetAiming(false);
         if (lookScript != null) lookScript.SetAiming(false);
 
-        // ?? NUEVO: Forzar a la UI a enlazarse con el arma inicial al arrancar el nivel
         FindFirstObjectByType<WeaponAmmoUI>()?.SetupWeaponUI(currentWeapon as FireWeaponBase);
     }
 

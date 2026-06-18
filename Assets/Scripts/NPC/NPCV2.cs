@@ -1,8 +1,10 @@
 using UnityEngine;
 using UnityEngine.UI;
+using UnityEngine.AI; // 1. REQUISITO: Importar la librería de IA
 
-[RequireComponent(typeof(Rigidbody))] // Asegura que el NPC tenga un Rigidbody
-public class NPCFollow : MonoBehaviour, IInteractable
+[RequireComponent(typeof(Rigidbody))]
+[RequireComponent(typeof(NavMeshAgent))] // 2. Asegura que tenga el NavMeshAgent
+public class NPCV2 : MonoBehaviour, IInteractable
 {
     public GameObject player;
     public float followSpeed = 3f;
@@ -16,19 +18,21 @@ public class NPCFollow : MonoBehaviour, IInteractable
     private GameObject currentPrompt;
     private GameObject currentWorldMessage;
 
-    // Variables para la física
     private Rigidbody rb;
+    private NavMeshAgent agent; // 3. Componente para la IA de movimiento
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
+        agent = GetComponent<NavMeshAgent>();
 
-        // 1. CONFIGURACIÓN CRÍTICA POR CÓDIGO: 
-        // Congelamos las rotaciones en X y Z para que el NPC NUNCA se caiga de cabeza o de lado.
+        // Configuración del Rigidbody para que no interfiera negativamente con el agente
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
+        rb.isKinematic = true; // RECOMENDACIÓN: El NavMeshAgent funciona mejor si el RB es kinematic
 
-        // Asegúrate de que isKinematic esté en FALSE en el inspector para que choque con las paredes.
-        rb.isKinematic = false;
+        // Configuración inicial del NavMeshAgent según tus variables
+        agent.speed = followSpeed;
+        agent.stoppingDistance = stopDistance;
 
         if (player == null)
         {
@@ -43,7 +47,6 @@ public class NPCFollow : MonoBehaviour, IInteractable
             interactionPanel.SetActive(false);
     }
 
-    // Dejamos el Update solo para la lógica visual y detección de distancia del prompt
     void Update()
     {
         // Mostrar/ocultar prompt según distancia
@@ -53,57 +56,35 @@ public class NPCFollow : MonoBehaviour, IInteractable
             bool isInRange = distanceToPlayer <= interactionRange;
             currentPrompt.SetActive(isInRange);
         }
-    }
 
-    // Todo lo que sea movimiento físico DEBE ir en FixedUpdate
-    void FixedUpdate()
-    {
+        // LÓGICA DE MOVIMIENTO DE IA: El NavMesh se actualiza en el Update normal de Unity
         if (isFollowing && player != null)
         {
-            float distance = Vector3.Distance(transform.position, player.transform.position);
+            // Habilitamos el agente si estaba apagado
+            if (!agent.enabled) agent.enabled = true;
 
-            if (distance > stopDistance)
-            {
-                // Calcular dirección ignorando el eje Y (para que no intente volar hacia el jugador)
-                Vector3 direction = (player.transform.position - transform.position);
-                direction.y = 0;
-                direction.Normalize();
-
-                // Rotar suavemente hacia el jugador
-                if (direction != Vector3.zero)
-                {
-                    Quaternion targetRotation = Quaternion.LookRotation(direction);
-                    rb.MoveRotation(Quaternion.Slerp(transform.rotation, targetRotation, Time.fixedDeltaTime * 10f));
-                }
-
-                // Mover al NPC aplicando velocidad al Rigidbody.
-                // Mantenemos la rb.velocity.y actual para que la gravedad normal siga funcionando.
-                Vector3 targetVelocity = direction * followSpeed;
-                targetVelocity.y = rb.linearVelocity.y;
-
-                rb.linearVelocity = targetVelocity;
-            }
-            else
-            {
-                // Si está cerca, frenamos el movimiento horizontal pero dejamos que actúe la gravedad
-                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
-            }
+            // Le decimos al agente que su destino es la posición del jugador
+            // El NavMesh automáticamente buscará la puerta o salida si está en otra habitación
+            agent.SetDestination(player.transform.position);
         }
         else
         {
-            // Si no está siguiendo, que se quede quieto (respetando la gravedad)
-            if (rb.linearVelocity.x != 0 || rb.linearVelocity.z != 0)
+            // Si no debe seguir, detenemos el agente
+            if (agent.enabled)
             {
-                rb.linearVelocity = new Vector3(0, rb.linearVelocity.y, 0);
+                agent.ResetPath();
+                agent.enabled = false;
             }
         }
     }
+
+    // Removimos el FixedUpdate porque el NavMeshAgent se encarga de la física y la rotación por sí solo.
 
     void CreateInteractionPrompt()
     {
         GameObject promptObj = new GameObject("InteractionPrompt");
         promptObj.transform.SetParent(transform);
-        promptObj.transform.localPosition = new Vector3(0, 2.0f, 0); // Lo subí un poco para que no spawnee en el suelo
+        promptObj.transform.localPosition = new Vector3(0, 2.0f, 0);
 
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
         textMesh.text = $"<color=yellow>E</color> - {(isFollowing ? "Detener" : "Seguir")}";

@@ -53,7 +53,7 @@ public class Door : ActivableBase
 
     private void OnTriggerEnter(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("Npc"))
         {
             playerInsideTrigger = true;
 
@@ -76,7 +76,7 @@ public class Door : ActivableBase
 
     private void OnTriggerExit(Collider other)
     {
-        if (other.CompareTag("Player"))
+        if (other.CompareTag("Player") || other.CompareTag("Npc"))
         {
             playerInsideTrigger = false;
             Close();

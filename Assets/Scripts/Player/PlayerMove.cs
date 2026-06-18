@@ -14,6 +14,8 @@ public class PlayerMove : MonoBehaviour
     private CharacterController controller;
     private Vector3 velocity;
     private bool isRunning = false;
+    public bool IsRunning => isRunning;
+    public bool IsMoving => moveInput.sqrMagnitude > 0.01f;
     private bool isAiming = false;
     
     private Transform cameraTransform;
@@ -25,7 +27,8 @@ public class PlayerMove : MonoBehaviour
     {
         controller = GetComponent<CharacterController>();
     }
-    
+
+    [System.Obsolete]
     void Start()
     {
         // Simplemente obtener la cámara principal
