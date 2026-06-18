@@ -11,7 +11,7 @@ public class PlayerCameraController : MonoBehaviour
     public Vector2 rotationLimits = new Vector2(-90f, 90f);
     
     [Header("Referencias")]
-    public Transform playerBody;
+    public Transform playerBody;  // El GameObject del jugador
     
     private Vector2 lookInput;
     private bool isAiming = false;
@@ -33,18 +33,15 @@ public class PlayerCameraController : MonoBehaviour
             return;
         }
         
-        // Configurar seguimiento
         virtualCamera.Follow = playerBody;
         virtualCamera.LookAt = playerBody;
         
-        // 🔥 CAMBIO IMPORTANTE: En CM3 se usa GetOrAddComponent en el GameObject
         panTilt = GetComponent<CinemachinePanTilt>();
         if (panTilt == null)
         {
             panTilt = gameObject.AddComponent<CinemachinePanTilt>();
         }
         
-        // Configurar rangos
         if (panTilt != null)
         {
             panTilt.PanAxis.Range = new Vector2(-360f, 360f);
@@ -71,6 +68,12 @@ public class PlayerCameraController : MonoBehaviour
         
         panTilt.PanAxis.Value = currentPan;
         panTilt.TiltAxis.Value = currentTilt;
+        
+        // 🔥 NUEVO: Rotar al jugador horizontalmente
+        if (playerBody != null)
+        {
+            playerBody.rotation = Quaternion.Euler(0, currentPan, 0);
+        }
     }
     
     public void OnLook(InputAction.CallbackContext context)
