@@ -25,6 +25,7 @@ public class DialogueManager : MonoBehaviour
     private string currentLineText = "";
     private bool isDialogueActive = false;
 
+    private Coroutine typingCoroutine;
     void Awake()
     {
         if (Instance == null)
@@ -96,12 +97,22 @@ public class DialogueManager : MonoBehaviour
     {
         if (isTyping)
         {
-            StopAllCoroutines();
-            dialogueText.text = currentLineText;
+            // CAMBIO CRÍTICO: Detenemos la corrutina de escritura de forma segura utilizando su referencia
+            if (typingCoroutine != null)
+            {
+                StopCoroutine(typingCoroutine);
+                typingCoroutine = null; // Limpiamos la referencia
+            }
+
+            // Forzamos a TMP a mostrar todos los caracteres inmediatamente
+            dialogueText.maxVisibleCharacters = dialogueText.textInfo.characterCount;
+
+            // Le avisamos al sistema que ya NO está escribiendo
             isTyping = false;
         }
         else
         {
+            // Si ya no estaba escribiendo, el clic pasa de manera segura a la siguiente línea
             DisplayNextLine();
         }
     }
@@ -118,7 +129,9 @@ public class DialogueManager : MonoBehaviour
         nameText.text = currentLine.characterName;
         currentLineText = currentLine.text;
 
-        StartCoroutine(TypeSentence(currentLineText));
+        // CAMBIO: Si había una corrutina vieja por seguridad la detenemos e iniciamos la nueva guardando su referencia
+        if (typingCoroutine != null) StopCoroutine(typingCoroutine);
+        typingCoroutine = StartCoroutine(TypeSentence(currentLineText));
     }
 
     IEnumerator TypeSentence(string sentence)
