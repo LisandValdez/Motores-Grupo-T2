@@ -25,11 +25,14 @@ public class PauseManager : MonoBehaviour
 
     public void Pause()
     {
-        pauseMenu.SetActive(true);
-        Time.timeScale = 0f;
-        isPaused = true;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        if (Time.timeScale != 0)
+        {
+            pauseMenu.SetActive(true);
+            Time.timeScale = 0f;
+            isPaused = true;
+            Cursor.lockState = CursorLockMode.None;
+            Cursor.visible = true;
+        }
     }
 
     public void Resume()
@@ -37,8 +40,8 @@ public class PauseManager : MonoBehaviour
         pauseMenu.SetActive(false);
         Time.timeScale = 1f;
         isPaused = false;
-        Cursor.lockState = CursorLockMode.None;
-        Cursor.visible = true;
+        Cursor.lockState = CursorLockMode.Locked;
+        Cursor.visible = false;
     }
 
     public void GoToMainMenu()
