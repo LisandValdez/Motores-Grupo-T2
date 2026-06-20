@@ -35903,6 +35903,10 @@ PrefabInstance:
       value: 
       objectReference: {fileID: 0}
     - target: {fileID: 316596190606473978, guid: 86a4cb297062bb140adf4af0fd78c247, type: 3}
+      propertyPath: arsenal.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 316596190606473978, guid: 86a4cb297062bb140adf4af0fd78c247, type: 3}
       propertyPath: 'arsenal.Array.data[0]'
       value: 
       objectReference: {fileID: 991959067}
@@ -36010,6 +36014,10 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 4021521027158652590, guid: 86a4cb297062bb140adf4af0fd78c247, type: 3}
+      propertyPath: Sound
+      value: 
+      objectReference: {fileID: 2138100350}
     - target: {fileID: 4635975031425126487, guid: 86a4cb297062bb140adf4af0fd78c247, type: 3}
       propertyPath: m_ActionEvents.Array.data[1].m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 

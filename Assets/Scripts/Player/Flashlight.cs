@@ -4,6 +4,7 @@ using UnityEngine.InputSystem;
 public class Flashlight : MonoBehaviour
 {
     public Light flashlight; 
+    public AudioSource Sound;
     private bool isOn = false;
 
     void Start()
@@ -21,6 +22,7 @@ public class Flashlight : MonoBehaviour
         {
             isOn = !isOn;
             flashlight.enabled = isOn;
+            Sound.Play();
         }
     }
 }
