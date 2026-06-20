@@ -1,23 +1,23 @@
 using UnityEngine;
-using System.Collections; // Necesario para usar Corrutinas
+using System.Collections;
 
 public abstract class FireWeaponBase : WeaponBase
 {
     [Header("FireWeapon Settings")]
-    public GameObject projectilePrefab; // Prefab que hereda de ProjectileBase
+    public GameObject projectilePrefab;
     public Transform firePoint;
     public int maxAmmo = 10;
     public float reloadTime = 2f;
 
     [Header("Audio")]
-    public AudioClip shootSound;        // Sonido de disparo
-    public AudioClip dryFireSound;      // Sonido cuando no hay balas (click)
-    public AudioClip reloadSound;       // Sonido de recarga
-    public float shootVolume = 1f;      // Volumen del disparo
-    public float dryFireVolume = 0.8f;  // Volumen del click
-    
+    public AudioClip shootSound;
+    public AudioClip dryFireSound;
+    public AudioClip reloadSound;
+    public float shootVolume = 1f;
+    public float dryFireVolume = 0.8f;
+
     [Header("Audio Source (Opcional)")]
-    public AudioSource audioSource;     // Si no se asigna, se crea automáticamente
+    public AudioSource audioSource;
 
     [Header("Animations")]
     protected Animator anim;
@@ -32,7 +32,7 @@ public abstract class FireWeaponBase : WeaponBase
     public float casingEjectForce = 5f;
 
     [Header("Ajustes de Munición del Inventario")]
-    public string ammoTypeName = "Pistol Ammo"; // Debe coincidir con el 'itemName' que le pones a tu ItemPickup[cite: 1, 2]
+    public string ammoTypeName = "Pistol Ammo"; // Debe coincidir con el 'itemName' de tu ItemPickup
 
     // Evento para avisarle a la UI que disparamos o recargamos y que debe actualizarse
     public System.Action OnWeaponAmmoChanged;
@@ -41,12 +41,10 @@ public abstract class FireWeaponBase : WeaponBase
     public int GetCurrentAmmo() => currentAmmo;
     public int GetMaxAmmo() => maxAmmo;
 
-
     protected virtual void Awake()
     {
         anim = GetComponent<Animator>();
-        
-        // Configurar AudioSource si no está asignado
+
         if (audioSource == null)
         {
             audioSource = GetComponent<AudioSource>();
@@ -55,15 +53,17 @@ public abstract class FireWeaponBase : WeaponBase
                 audioSource = gameObject.AddComponent<AudioSource>();
             }
         }
-        currentAmmo = maxAmmo;
 
-        // Configurar AudioSource
-        audioSource.spatialBlend = 1f; // Sonido 3D
-        audioSource.rolloffMode = AudioRolloffMode.Linear;
-        audioSource.maxDistance = 50f;
+
+
+        // SOLUCIÓN AL 00/00: Establecemos las balas aquí para que estén listas antes de que el Start de la UI pregunte por ellas
+        currentAmmo = maxAmmo;
     }
 
- 
+    protected virtual void Start()
+    {
+        // Dejado vacío por si tus armas hijas (Pistol) lo extienden
+    }
 
     public override void Attack(Vector3 targetPoint)
     {
@@ -99,7 +99,6 @@ public abstract class FireWeaponBase : WeaponBase
     public override void Aim(bool isAimingState)
     {
         isAiming = isAimingState;
-
         if (anim != null)
         {
             anim.SetBool("isAimingAnim", isAiming);
@@ -108,11 +107,10 @@ public abstract class FireWeaponBase : WeaponBase
 
     public override void Reload()
     {
-        // No recargar si ya está lleno o si ya está recargando[cite: 5]
         if (isReloading || currentAmmo >= maxAmmo) return;
 
         // Verificar si el inventario tiene balas de este tipo
-        int ammoInInventory = Inventory.Instance != null ? Inventory.Instance.GetAmmo(ammoTypeName) : 0; //[cite: 2]
+        int ammoInInventory = Inventory.Instance != null ? Inventory.Instance.GetAmmo(ammoTypeName) : 0;
 
         if (ammoInInventory > 0)
         {
@@ -121,7 +119,7 @@ public abstract class FireWeaponBase : WeaponBase
         else
         {
             Debug.LogWarning($"❌ No hay munición de tipo '{ammoTypeName}' en el inventario.");
-            PlayDryFireSound(); // Sonido de vacío
+            PlayDryFireSound();
         }
     }
 
@@ -137,19 +135,17 @@ public abstract class FireWeaponBase : WeaponBase
             anim.SetTrigger("ReloadTrigger");
         }
 
-        yield return new WaitForSeconds(reloadTime); //[cite: 5]
+        yield return new WaitForSeconds(reloadTime);
 
-        // Lógica de transferencia desde el Inventario[cite: 2]
-        if (Inventory.Instance != null) //[cite: 2]
+        // Lógica de transferencia desde el Inventario
+        if (Inventory.Instance != null)
         {
             int ammoNeeded = maxAmmo - currentAmmo;
-            int ammoInInventory = Inventory.Instance.GetAmmo(ammoTypeName); //[cite: 2]
+            int ammoInInventory = Inventory.Instance.GetAmmo(ammoTypeName);
 
-            // Calculamos cuántas balas podemos pasar realmente al arma
             int ammoToLoad = Mathf.Min(ammoNeeded, ammoInInventory);
 
-            // Restamos del inventario y sumamos al cargador[cite: 2]
-            if (Inventory.Instance.UseAmmo(ammoTypeName, ammoToLoad)) //[cite: 2]
+            if (Inventory.Instance.UseAmmo(ammoTypeName, ammoToLoad))
             {
                 currentAmmo += ammoToLoad;
                 Debug.Log($"🔄 {weaponName} recargada. Cargador: {currentAmmo}/{maxAmmo}");
@@ -158,7 +154,7 @@ public abstract class FireWeaponBase : WeaponBase
 
         isReloading = false;
 
-        // Invocar el evento para actualizar la UI del juego al terminar de recargar
+        // Invocar el evento para actualizar la UI al terminar de recargar
         OnWeaponAmmoChanged?.Invoke();
     }
 
@@ -174,9 +170,7 @@ public abstract class FireWeaponBase : WeaponBase
             anim.SetTrigger("FireTrigger");
         }
     }
-    
-    // 🔫 MÉTODOS DE SONIDO
-    
+
     protected void PlayShootSound()
     {
         if (shootSound != null && audioSource != null)
@@ -184,7 +178,7 @@ public abstract class FireWeaponBase : WeaponBase
             audioSource.PlayOneShot(shootSound, shootVolume);
         }
     }
-    
+
     protected void PlayDryFireSound()
     {
         if (dryFireSound != null && audioSource != null)
@@ -192,7 +186,7 @@ public abstract class FireWeaponBase : WeaponBase
             audioSource.PlayOneShot(dryFireSound, dryFireVolume);
         }
     }
-    
+
     protected void PlayReloadSound()
     {
         if (reloadSound != null && audioSource != null)

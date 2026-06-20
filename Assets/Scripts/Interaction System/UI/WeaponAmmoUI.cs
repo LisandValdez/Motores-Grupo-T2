@@ -4,7 +4,6 @@ using TMPro;
 public class WeaponAmmoUI : MonoBehaviour
 {
     [Header("Componentes de UI")]
-    // 2. CAMBIA 'Text' por 'TextMeshProUGUI'
     public TextMeshProUGUI ammoText;
 
     [Header("Referencia del Arma Activa")]
@@ -12,26 +11,24 @@ public class WeaponAmmoUI : MonoBehaviour
 
     private void Start()
     {
-        // Escuchar si el inventario cambia (por ejemplo, al recoger balas del suelo)
+        // Escuchar si el inventario cambia (por ejemplo, al levantar munición del suelo)
         if (Inventory.Instance != null)
         {
             Inventory.Instance.OnInventoryChanged += UpdateAmmoDisplay;
         }
 
-        // Intentar buscar de forma activa el controlador de armas si no se asignó en el inspector
         if (activeWeapon == null)
         {
-            // Buscamos cualquier arma de fuego base que esté activa en la escena al iniciar
             activeWeapon = FindFirstObjectByType<FireWeaponBase>();
         }
 
         if (activeWeapon != null)
         {
             SetupWeaponUI(activeWeapon);
+            UpdateAmmoDisplay();
         }
         else
         {
-            // Si aún no encuentra el arma, dejamos un texto temporal realista
             ammoText.text = "- / -";
         }
     }
@@ -59,14 +56,9 @@ public class WeaponAmmoUI : MonoBehaviour
         activeWeapon = newWeapon;
 
         if (activeWeapon != null)
-        {
             activeWeapon.OnWeaponAmmoChanged += UpdateAmmoDisplay;
-            UpdateAmmoDisplay();
-        }
-        else
-        {
-            ammoText.text = "- / -";
-        }
+
+        UpdateAmmoDisplay();
     }
 
     public void UpdateAmmoDisplay()

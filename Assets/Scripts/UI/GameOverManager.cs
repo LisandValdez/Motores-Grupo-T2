@@ -32,7 +32,7 @@ public class GameOverManager : MonoBehaviour
     public void Retry()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MapaHotel");
+        SceneManager.LoadScene("MapaHotelJuan");
     }
 
     public void MainMenu()

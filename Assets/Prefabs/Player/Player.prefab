@@ -27,7 +27,7 @@ Transform:
   m_GameObject: {fileID: 308293461639593197}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0.04981506, z: -0, w: 0.9987585}
-  m_LocalPosition: {x: -0.745, y: 0.68, z: 0.729}
+  m_LocalPosition: {x: -0.653, y: 0.478, z: -0.213}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -209,7 +209,10 @@ GameObject:
   - component: {fileID: 572299299440289367}
   - component: {fileID: 1418056535964597951}
   - component: {fileID: 7809096889203115431}
-  - component: {fileID: 5870696036038998878}
+  - component: {fileID: 7298695520131948449}
+  - component: {fileID: 2407514627992013588}
+  - component: {fileID: 5016021281607499202}
+  - component: {fileID: 8983623370317403313}
   m_Layer: 3
   m_Name: Player
   m_TagString: Player
@@ -359,8 +362,8 @@ MonoBehaviour:
       m_Calls:
       - m_Target: {fileID: 0}
         m_TargetAssemblyTypeName: PauseManager, Assembly-CSharp
-        m_MethodName: Pause
-        m_Mode: 1
+        m_MethodName: OnPause
+        m_Mode: 0
         m_Arguments:
           m_ObjectArgument: {fileID: 0}
           m_ObjectArgumentAssemblyTypeName: UnityEngine.Object, UnityEngine
@@ -561,10 +564,10 @@ CapsuleCollider:
   m_ProvidesContacts: 0
   m_Enabled: 1
   serializedVersion: 2
-  m_Radius: 1
-  m_Height: 1
+  m_Radius: 0.82
+  m_Height: 2.72
   m_Direction: 1
-  m_Center: {x: 0, y: 0, z: 0}
+  m_Center: {x: 0, y: 1.01, z: 0}
 --- !u!114 &7809096889203115431
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -581,7 +584,7 @@ MonoBehaviour:
   maxStackSize: 99
   keys: []
   items: []
---- !u!114 &5870696036038998878
+--- !u!114 &7298695520131948449
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -590,11 +593,53 @@ MonoBehaviour:
   m_GameObject: {fileID: 3241444377585245299}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3cea7d8a8915c9a428994665c5e00842, type: 3}
+  m_Script: {fileID: 11500000, guid: 314532f90a9bf1b4ca8f3a003976ff07, type: 3}
   m_Name: 
-  m_EditorClassIdentifier: Assembly-CSharp::PlayerHealth
-  maxHealth: 3
-  currentHealth: 3
+  m_EditorClassIdentifier: Assembly-CSharp::Sist_vida
+  maxLife: 3
+  damageSound: {fileID: 0}
+  deathSound: {fileID: 0}
+  damageVolume: 1
+  deathVolume: 1
+--- !u!114 &2407514627992013588
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241444377585245299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 51c8f872cda44b047a8bd0f728e1a91e, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::PlayerManager
+  vida: {fileID: 7298695520131948449}
+  gameOverManager: {fileID: 5016021281607499202}
+--- !u!114 &5016021281607499202
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241444377585245299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 90a2acaacaf455b4ea318ba0ca4fc637, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::GameOverManager
+  gameOverPanel: {fileID: 0}
+--- !u!114 &8983623370317403313
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 3241444377585245299}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a1bdef5f9b80e7c479b7e9a716a7317b, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: Assembly-CSharp::HealthUIManager
   heartsPanel: {fileID: 0}
   heartImages:
   - {fileID: 0}
@@ -602,12 +647,7 @@ MonoBehaviour:
   - {fileID: 0}
   fullHeartSprite: {fileID: 0}
   emptyHeartSprite: {fileID: 0}
-  damageEffect: {fileID: 0}
-  damageSound: {fileID: 0}
-  deathSound: {fileID: 0}
-  invincibilityDuration: 1.5
-  blinkInterval: 0.1
-  gameOverManager: {fileID: 0}
+  healthSystem: {fileID: 7298695520131948449}
 --- !u!1 &3364231681043539571
 GameObject:
   m_ObjectHideFlags: 0
@@ -1120,9 +1160,16 @@ MonoBehaviour:
   firePoint: {fileID: 4609886933572806627}
   maxAmmo: 15
   reloadTime: 2
+  shootSound: {fileID: 8300000, guid: 8cb852c0c5ade5f419cbd36684be4710, type: 3}
+  dryFireSound: {fileID: 8300000, guid: 2b0e9022d6bb22444b61df83521765a3, type: 3}
+  reloadSound: {fileID: 8300000, guid: e8a6eaaf18e9ef844b44830a5f076857, type: 3}
+  shootVolume: 1
+  dryFireVolume: 0.8
+  audioSource: {fileID: 0}
   casingPrefab: {fileID: 4362657251999731927, guid: 4cb20e8abae957146a8b78e670d3fe74, type: 3}
   casingExitPoint: {fileID: 5762505610908407645}
   casingEjectForce: 5
+  ammoTypeName: Pistol Ammo
 --- !u!95 &6623531265886877671
 Animator:
   serializedVersion: 7

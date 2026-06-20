@@ -238,6 +238,7 @@ IEnumerator PauseAfterVictory()
     Time.timeScale = 0f;
     Debug.Log("⏸️ Juego pausado");
 }
+
     
     void ShowMessage(string message, Color color)
 {
