@@ -7,7 +7,7 @@ public class Door : ActivableBase
 
     [Header("Configuración de Llaves (Arrastra el Item aquí)")]
     [Tooltip("Arrastra aquí el Prefab o el GameObject de la llave que abre esta puerta.")]
-    [SerializeField] private ItemPickup requiredKeyItem; // <- CAMBIO: Ahora es una referencia al script del item
+    [SerializeField] private ItemPickup requiredKeyItem;
 
     // Variables ocultas que se rellenarán solas en el Start
     private string requiredKeyId = "";
@@ -48,7 +48,7 @@ public class Door : ActivableBase
     // Método obligatorio de ActivableBase (Se ejecuta al usar la E o el Raycast)
     protected override void Activate()
     {
-        // 🚨 BLOQUEO HISTÓRICO: Si no ha leído la nota del inicio, la puerta no procesa llaves
+        // 🚨 BLOQUEO DE PRÓLOGO: Si no se ha leído la nota, la puerta no se puede usar
         if (!IntroNote.HasReadIntroNote)
         {
             TriggerIntroBlockDialogue();
@@ -63,6 +63,7 @@ public class Door : ActivableBase
                 isLocked = false;
                 Debug.Log("🔓 Puerta desbloqueada con la llave correcta.");
 
+                // Si el jugador ya estaba dentro del trigger cuando la desbloqueó, se abre inmediatamente
                 if (playerInsideTrigger)
                 {
                     Open();
@@ -71,6 +72,8 @@ public class Door : ActivableBase
             else
             {
                 Debug.LogWarning("🔑 La puerta está cerrada. Necesitas la llave: " + requiredKeyId);
+
+                // 💬 Disparar diálogo dinámico usando el nombre extraído automáticamente
                 TriggerLockedDoorDialogue();
             }
         }
@@ -83,7 +86,8 @@ public class Door : ActivableBase
             Dialogue lockedDialogue = new Dialogue();
             lockedDialogue.lines = new DialogueLine[1];
 
-            lockedDialogue.lines[0].characterName = "";
+            // 👤 ASIGNAMOS EL NOMBRE DEL PROTAGONISTA
+            lockedDialogue.lines[0].characterName = "Damian";
 
             // Si por alguna razón no hay nombre asignado, usamos un respaldo genérico
             string finalKeyName = !string.IsNullOrEmpty(keyName) ? keyName : "una llave";
@@ -103,11 +107,9 @@ public class Door : ActivableBase
         {
             playerInsideTrigger = true;
 
-            // 🚨 BLOQUEO HISTÓRICO: Si se acerca caminando y no leyó la nota, se le niega el paso automático
+            // 🚨 BLOQUEO DE PRÓLOGO: Si se acerca caminando, se le niega el paso automático
             if (!IntroNote.HasReadIntroNote)
             {
-                // Si la puerta es de las que se abren solas por aproximación, 
-                // le recordamos al jugador su objetivo al chocar con el trigger.
                 if (other.CompareTag("Player"))
                 {
                     TriggerIntroBlockDialogue();
@@ -115,7 +117,7 @@ public class Door : ActivableBase
                 return;
             }
 
-            // Solo se abre automáticamente si está completamente desbloqueada
+            // Solo se abre si está desbloqueada
             if (!isLocked)
             {
                 Open();
@@ -148,15 +150,16 @@ public class Door : ActivableBase
         }
     }
 
-    void TriggerIntroBlockDialogue()
+    // Muestra el recordatorio narrativo en el DialogueManager
+    private void TriggerIntroBlockDialogue()
     {
         if (DialogueManager.Instance != null)
         {
             Dialogue blockDialogue = new Dialogue();
             blockDialogue.lines = new DialogueLine[1];
-            blockDialogue.lines[0].characterName = "";
 
-            // Texto del pensamiento en voz alta
+            // 👤 TAMBIÉN LE ASIGNAMOS EL NOMBRE AL RECORDATORIO DE LA NOTA
+            blockDialogue.lines[0].characterName = "Damian";
             blockDialogue.lines[0].text = "Debería leer la nota que hay en mi mesa...";
 
             DialogueManager.Instance.StartDialogue(blockDialogue);
