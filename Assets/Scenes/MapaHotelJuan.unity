@@ -34253,6 +34253,58 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 90
       objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[0].text
+      value: "Hola Damian, el jefe me pidi\xF3 que te explique lo esencial respecto
+        al hotel."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[1].text
+      value: "Para empezar habr\xE1s visto un cartel blanco en la puerta de tu habitaci\xF3n,
+        eso indica que eres una empleado de jerarqu\xEDa en Argos, el subjefe de
+        seguridad. "
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[2].text
+      value: "Dado tu cargo, la llave de tu habitaci\xF3n abrir\xE1 las  puertas
+        de los miembros m\xE1s importantes de nuestra comunidad que se hospedan en
+        este hotel. "
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[3].text
+      value: "Por el camino habr\xE1s visto carteles de otros colores.\nTe explicare
+        qu\xE9 significa cada uno: "
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[4].text
+      value: "El cartel Verde es para el Almac\xE9n y su llave la tiene tu vecino
+        Don. "
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[5].text
+      value: "El cartel Negro es de la Habitaci\xF3n 505, deshabitada hasta la semana
+        pr\xF3xima"
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[6].text
+      value: "El cartel Rojo es de la Habitaci\xF3n Auxiliar, \xFAtil por si alg\xFAn
+        miembro del staff debe pasar la noche aqu\xED."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[7].text
+      value: "Por \xFAltimo, el cartel Azul indica el Cuarto de Generadores por si
+        el suministro electrico falla."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[8].text
+      value: "Recuerda que la ciudad Argos aun se est\xE1 desarrollando por lo que
+        podrian darse esta clase de situaciones el\xE9ctricas."
+      objectReference: {fileID: 0}
+    - target: {fileID: 3008788381448525587, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
+      propertyPath: examineDialogue.lines.Array.data[9].text
+      value: "Dicho esto, el jefe ofrece sus disculpas por el desorden en los pasillos.
+        Estamos en \xE9poca de remodelaci\xF3n y el hotel puede ser un poco ca\xF3tico. "
+      objectReference: {fileID: 0}
     - target: {fileID: 5189367894379856953, guid: 14130ed6dc96fcb49b9efcbfae8736cf, type: 3}
       propertyPath: m_Name
       value: IntroNote
@@ -34370,6 +34422,10 @@ PrefabInstance:
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
       objectReference: {fileID: 5472817896206770036}
+    - target: {fileID: 5016957395148482768, guid: 9694dfd726619a545b051fd14b6a71f6, type: 3}
+      propertyPath: m_IsActive
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5058471321934438385, guid: 9694dfd726619a545b051fd14b6a71f6, type: 3}
       propertyPath: m_OnClick.m_PersistentCalls.m_Calls.Array.data[0].m_Target
       value: 
@@ -34377,6 +34433,10 @@ PrefabInstance:
     - target: {fileID: 5797179513380184012, guid: 9694dfd726619a545b051fd14b6a71f6, type: 3}
       propertyPath: m_IsActive
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 5837563156033416892, guid: 9694dfd726619a545b051fd14b6a71f6, type: 3}
+      propertyPath: m_IsActive
+      value: 0
       objectReference: {fileID: 0}
     - target: {fileID: 5864566758452608135, guid: 9694dfd726619a545b051fd14b6a71f6, type: 3}
       propertyPath: m_Name
