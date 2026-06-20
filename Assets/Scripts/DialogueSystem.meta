@@ -1,5 +1,9 @@
 fileFormatVersion: 2
+<<<<<<<< Updated upstream:Assets/Scripts/DialogueSystem.meta
 guid: 911901531905b124fb13fc37f82d9175
+========
+guid: 47e22e2819eefa948bc9d0ec3e8a947e
+>>>>>>>> Stashed changes:Assets/Prefabs/New Prefabs J.meta
 folderAsset: yes
 DefaultImporter:
   externalObjects: {}
