@@ -13,7 +13,7 @@ public class Sist_vida : MonoBehaviour, IDamageable, IHealt
     public Action<int> OnHealthChanged;
     public Action OnDeath;
 
-    [Header("Audio (simple, sin componentes extra)")]
+    [Header("Audio")]
     [SerializeField] private AudioClip damageSound;
     [SerializeField] private AudioClip deathSound;
     [SerializeField][Range(0f, 1f)] private float damageVolume = 1f;
