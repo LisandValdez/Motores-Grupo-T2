@@ -4,11 +4,12 @@ using UnityEngine.AI;
 
 public class Enemy : MonoBehaviour, IDamageable
 {
-    [SerializeField] protected int life_enemy;
-    
+    [SerializeField] protected int life_enemy;  
     [SerializeField] protected int damage;
     protected EnemyFSM fsm;
+    public AudioClip hurtClip;
 
+    public float hurtVolume = 1f;
     protected bool isDead;
     public bool IsDead => isDead;
 
@@ -25,10 +26,13 @@ public class Enemy : MonoBehaviour, IDamageable
 
    public virtual void TakeDamage(int damage)
     {
-        
+
         if (isDead) return;
 
         life_enemy -= damage;
+
+        if (hurtClip != null)
+            AudioSource.PlayClipAtPoint(hurtClip, transform.position, Mathf.Clamp01(hurtVolume));
 
         if (life_enemy <= 0)
         {
