@@ -1,7 +1,7 @@
-using UnityEngine;
+ using UnityEngine;
 
 public class BulletPistol : ProjectileBase
-{
-    // Si la bala estándar no hace nada especial, no necesitas sobrescribir nada.
-    // Simplemente hereda y la base hará el resto.
-}
+ {
+     // Si la bala estï¿½ndar no hace nada especial, no necesitas sobrescribir nada.
+     // Simplemente hereda y la base harï¿½ el resto.
+ }

@@ -10,25 +10,16 @@ public class EnemyAudio : MonoBehaviour
     void Awake()
     {
         sound = GetComponent<AudioSource>();
-        if (sound != null)
-        {
-            sound.playOnAwake = false;
-            
-        }
-        else
-        {
-            Debug.LogError("EnemyAudio necesita un AudioSource en el mismo GameObject.");
-        }
+        sound.playOnAwake = false;
     }
 
     public void PlayAttack() => PlayOneShot(attackClip);
     public void PlayHurt() => PlayOneShot(hurtClip);
     public void PlayDie() => PlayOneShot(dieClip);
 
-    // Opción con volumen por llamada
-    private void PlayOneShot(AudioClip clip, float volume = 1f)
+    private void PlayOneShot(AudioClip clip)
     {
-        if (clip == null || sound == null) return;
-        sound.PlayOneShot(clip, Mathf.Clamp01(volume));
+        if (clip == null) return;
+        sound.PlayOneShot(clip);
     }
 }

@@ -159,6 +159,7 @@ public void OnToggleInventory(InputAction.CallbackContext context)
         isInventoryOpen = true;
         if (inventoryPanel != null)
             inventoryPanel.SetActive(true);
+        Time.timeScale = 0f;
         RefreshUI();
         
         // Cambiar cursor para usar el inventario
@@ -174,7 +175,7 @@ public void OnToggleInventory(InputAction.CallbackContext context)
         
         if (itemDetailPanel != null)
             itemDetailPanel.SetActive(false);
-        
+        Time.timeScale = 1f;
         // Volver al modo de juego
         Cursor.lockState = CursorLockMode.Locked;
         Cursor.visible = false;

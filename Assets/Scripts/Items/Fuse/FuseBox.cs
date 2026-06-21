@@ -1,7 +1,7 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
 using Unity.Cinemachine;
-using System.Collections;  // ← IMPORTANTE: Para IEnumerator
+using System.Collections;
 
 public class FuseBox : MonoBehaviour, IInteractable
 {
@@ -58,6 +58,10 @@ public class FuseBox : MonoBehaviour, IInteractable
         
         if (camaraAscensor != null)
             camaraAscensor.gameObject.SetActive(false);
+        
+        // Asegurar que la luz empiece apagada
+        if (luzAscensor != null)
+            luzAscensor.enabled = false;
     }
 
     void Update()
@@ -174,97 +178,105 @@ public class FuseBox : MonoBehaviour, IInteractable
     }
 
     IEnumerator CinematicaAscensor()
-{
-    enCinematica = true;
+    {
+        enCinematica = true;
 
-    if (canvasUI != null)
-    {
-        canvasUI.SetActive(false);
-        Debug.Log("🖥️ Canvas ocultado durante la cinemática");
-    }
-    
-    // 🔥 OBTENER REFERENCIA AL ARMA
-    GameObject weaponObject = null;
-    if (currentPlayer != null)
-    {
-        // Buscar el arma (ajusta el nombre según tu jerarquía)
-        weaponObject = currentPlayer.transform.Find("Weapon Holder")?.gameObject;
-        if (weaponObject == null)
-            weaponObject = GameObject.FindGameObjectWithTag("Weapon");
+        // Ocultar UI
+        if (canvasUI != null)
+        {
+            canvasUI.SetActive(false);
+            Debug.Log("🖥️ Canvas ocultado durante la cinemática");
+        }
         
-        // Ocultar el arma
+        // Obtener y ocultar el arma
+        GameObject weaponObject = null;
+        if (currentPlayer != null)
+        {
+            weaponObject = currentPlayer.transform.Find("Weapon Holder")?.gameObject;
+            if (weaponObject == null)
+                weaponObject = GameObject.FindGameObjectWithTag("Weapon");
+            
+            if (weaponObject != null)
+            {
+                weaponObject.SetActive(false);
+                Debug.Log("🔫 Arma ocultada para la cinemática");
+            }
+        }
+
+        // Desactivar movimiento del jugador
+        if (currentPlayer != null)
+        {
+            var playerMove = currentPlayer.GetComponent<PlayerMove>();
+            if (playerMove != null)
+                playerMove.SetMovementEnabled(false);
+            
+            var playerInput = currentPlayer.GetComponent<PlayerInput>();
+            if (playerInput != null)
+                playerInput.enabled = false;
+        }
+        
+        // Cambiar cámara al ascensor
+        if (camaraAscensor != null && camaraJugador != null)
+        {
+            camaraJugador.gameObject.SetActive(false);
+            camaraAscensor.gameObject.SetActive(true);
+            Debug.Log("📷 Cámara cambiada al ascensor");
+        }
+        
+        // Esperar 1 segundo antes de encender la luz
+        Debug.Log("⏳ Esperando 1 segundo para encender la luz...");
+        yield return new WaitForSeconds(1f);
+        
+        // Encender la luz verde después de 1 segundo
+        if (luzAscensor != null)
+        {
+            luzAscensor.enabled = true;
+            luzAscensor.color = Color.green;
+            luzAscensor.intensity = 5f;
+            Debug.Log("💡 Luz del ascensor encendida!");
+        }
+        
+        // Esperar 2 segundos adicionales con la luz encendida
+        Debug.Log("⏳ Esperando 2 segundos con la luz encendida...");
+        yield return new WaitForSeconds(2f);
+        
+        // Volver a la cámara del jugador
+        if (camaraAscensor != null && camaraJugador != null)
+        {
+            camaraJugador.gameObject.SetActive(true);
+            camaraAscensor.gameObject.SetActive(false);
+            Debug.Log("📷 Cámara regresó al jugador");
+        }
+        
+        // Mostrar el arma nuevamente
         if (weaponObject != null)
         {
-            weaponObject.SetActive(false);
-            Debug.Log("🔫 Arma ocultada para la cinemática");
+            weaponObject.SetActive(true);
+            Debug.Log("🔫 Arma visible nuevamente");
         }
-    }
 
-    // Desactivar movimiento del jugador
-    if (currentPlayer != null)
-    {
-        var playerMove = currentPlayer.GetComponent<PlayerMove>();
-        if (playerMove != null)
-            playerMove.SetMovementEnabled(false);
+        // Mostrar UI nuevamente
+        if (canvasUI != null)
+        {
+            canvasUI.SetActive(true);
+            Debug.Log("🖥️ Canvas visible nuevamente");
+        }
         
-        var playerInput = currentPlayer.GetComponent<PlayerInput>();
-        if (playerInput != null)
-            playerInput.enabled = false;
-    }
-    
-    // Cambiar cámara
-    if (camaraAscensor != null && camaraJugador != null)
-{
-    camaraJugador.gameObject.SetActive(false);
-    camaraAscensor.gameObject.SetActive(true);
-    Debug.Log("📷 Cámara cambiada al ascensor");
-}
-    
-    // Encender luz verde
-    if (luzAscensor != null)
-    {
-        luzAscensor.enabled = true;
-        luzAscensor.color = Color.green;
-        luzAscensor.intensity = 5f;
-    }
-    
-    yield return new WaitForSeconds(duracionCinematica);
-    
-    // Volver al jugador
-   if (camaraAscensor != null && camaraJugador != null)
-{
-    camaraJugador.gameObject.SetActive(true);
-    camaraAscensor.gameObject.SetActive(false);
-    Debug.Log("📷 Cámara regresó al jugador");
-}
-    
-    // 🔥 MOSTRAR EL ARMA NUEVAMENTE
-    if (weaponObject != null)
-    {
-        weaponObject.SetActive(true);
-        Debug.Log("🔫 Arma visible nuevamente");
-    }
-
-     if (canvasUI != null)
-    {
-        canvasUI.SetActive(true);
-        Debug.Log("🖥️ Canvas visible nuevamente");
-    }
-    
-    // Reactivar movimiento
-    if (currentPlayer != null)
-    {
-        var playerMove = currentPlayer.GetComponent<PlayerMove>();
-        if (playerMove != null)
-            playerMove.SetMovementEnabled(true);
+        // Reactivar movimiento del jugador
+        if (currentPlayer != null)
+        {
+            var playerMove = currentPlayer.GetComponent<PlayerMove>();
+            if (playerMove != null)
+                playerMove.SetMovementEnabled(true);
+            
+            var playerInput = currentPlayer.GetComponent<PlayerInput>();
+            if (playerInput != null)
+                playerInput.enabled = true;
+        }
         
-        var playerInput = currentPlayer.GetComponent<PlayerInput>();
-        if (playerInput != null)
-            playerInput.enabled = true;
+        enCinematica = false;
+        Debug.Log("✅ Cinemática completada");
     }
-    
-    enCinematica = false;
-}
     
     void ShowMessage(string message, Color color)
     {

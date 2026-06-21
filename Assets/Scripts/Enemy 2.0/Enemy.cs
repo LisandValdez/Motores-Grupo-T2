@@ -12,9 +12,6 @@ public class Enemy : MonoBehaviour, IDamageable
     protected bool isDead;
     public bool IsDead => isDead;
 
-    public AudioClip hurtClip;
-    public float hurtVolume = 1f;
-
     protected virtual void Awake()
     {
         if (fsm == null)
@@ -32,9 +29,6 @@ public class Enemy : MonoBehaviour, IDamageable
         if (isDead) return;
 
         life_enemy -= damage;
-
-        if (hurtClip != null)
-            AudioSource.PlayClipAtPoint(hurtClip, transform.position, Mathf.Clamp01(hurtVolume));
 
         if (life_enemy <= 0)
         {

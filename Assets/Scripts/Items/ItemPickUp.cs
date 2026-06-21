@@ -18,24 +18,24 @@ public class ItemPickup : MonoBehaviour, IInteractable
     public int itemAmount = 1;
     public Sprite itemIcon;
     public ItemType itemType = ItemType.Collectible;
-    
+
     [Header("Propiedades Específicas")]
     public int ammoCount = 0;
     public int healAmount = 0;
     public string keyId = "";
-    
+
     [Header("Efectos")]
     public GameObject pickupEffect;
     public AudioClip pickupSound;
-    
+
     [Header("Visual")]
     public float promptHeight = 1.5f;
     public float promptFontSize = 30;
     public float promptCharacterSize = 0.03f;
-    
+
     private GameObject currentPrompt;
     private bool playerInRange = false;
-    private GameObject currentPlayer;  // ← ESTA VARIABLE FALTABA
+    private GameObject currentPlayer;
 
     void Start()
     {
@@ -46,12 +46,12 @@ public class ItemPickup : MonoBehaviour, IInteractable
             Debug.LogWarning($"⚠️ El collider de {itemName} no es trigger. Configurando automáticamente...");
             col.isTrigger = true;
         }
-        
+
         CreateInteractionPrompt();
-        
+
         if (currentPrompt != null)
             currentPrompt.SetActive(false);
-        
+
         Debug.Log($"✨ Item {itemName} inicializado. Collider: {(col != null ? (col.isTrigger ? "Trigger OK" : "NO Trigger!") : "No collider!")}");
     }
 
@@ -68,10 +68,10 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (other.CompareTag("Player"))
         {
-            currentPlayer = other.gameObject;  // ← GUARDAR REFERENCIA
+            currentPlayer = other.gameObject;
             playerInRange = true;
             Debug.Log($"✅ Jugador entró en rango del item: {itemName}");
-            
+
             if (currentPrompt != null)
                 currentPrompt.SetActive(true);
         }
@@ -89,79 +89,69 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (other.CompareTag("Player"))
         {
-            currentPlayer = null;  // ← LIMPIAR REFERENCIA
+            currentPlayer = null;
             playerInRange = false;
             Debug.Log($"❌ Jugador salió del rango del item: {itemName}");
-            
+
             if (currentPrompt != null)
                 currentPrompt.SetActive(false);
         }
     }
 
     void CreateInteractionPrompt()
-{
-    if (currentPrompt != null) return;
-    
-    GameObject promptObj = new GameObject("InteractionPrompt");
-    promptObj.transform.SetParent(transform);
-    
-    // 🔧 CALCULAR ALTURA AUTOMÁTICAMENTE
-    float calculatedHeight = CalculatePromptHeight();
-    promptObj.transform.localPosition = new Vector3(0, calculatedHeight, 0);
-    
-    TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-    string typeIcon = GetTypeIcon();
-    textMesh.text = $"Presiona <color=yellow>E</color> para agarrar\n<color=cyan>{typeIcon} {itemName}</color>";
-    textMesh.fontSize = (int)promptFontSize;
-    textMesh.characterSize = promptCharacterSize;
-    textMesh.color = Color.white;
-    textMesh.alignment = TextAlignment.Center;
-    
-    promptObj.AddComponent<Billboard>();
-    currentPrompt = promptObj;
-    promptObj.SetActive(false);
-    
-    Debug.Log($"✨ Prompt creado para item: {itemName}, altura: {calculatedHeight}");
-}
+    {
+        if (currentPrompt != null) return;
 
-float CalculatePromptHeight()
-{
-    float height = promptHeight; // Valor por defecto (1.5f)
-    
-    // Método 1: Usar Collider
-    Collider col = GetComponent<Collider>();
-    if (col != null)
+        GameObject promptObj = new GameObject("InteractionPrompt");
+        promptObj.transform.SetParent(transform);
+
+        float calculatedHeight = CalculatePromptHeight();
+        promptObj.transform.localPosition = new Vector3(0, calculatedHeight, 0);
+
+        TextMesh textMesh = promptObj.AddComponent<TextMesh>();
+        string typeIcon = GetTypeIcon();
+        textMesh.text = $"Presiona <color=yellow>E</color> para agarrar\n<color=cyan>{typeIcon} {itemName}</color>";
+        textMesh.fontSize = (int)promptFontSize;
+        textMesh.characterSize = promptCharacterSize;
+        textMesh.color = Color.white;
+        textMesh.alignment = TextAlignment.Center;
+
+        promptObj.AddComponent<Billboard>();
+        currentPrompt = promptObj;
+        promptObj.SetActive(false);
+
+        Debug.Log($"✨ Prompt creado para item: {itemName}, altura: {calculatedHeight}");
+    }
+
+    float CalculatePromptHeight()
     {
-        height = col.bounds.extents.y + 0.5f;
-        Debug.Log($"📏 Altura calculada por Collider: {height}");
+        float height = promptHeight;
+
+        Collider col = GetComponent<Collider>();
+        if (col != null)
+        {
+            height = col.bounds.extents.y + 0.5f;
+            return height;
+        }
+
+        MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
+        if (meshRenderer != null)
+        {
+            height = meshRenderer.bounds.extents.y + 0.5f;
+            return height;
+        }
+
+        SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
+        if (spriteRenderer != null && spriteRenderer.sprite != null)
+        {
+            height = spriteRenderer.bounds.extents.y + 0.5f;
+            return height;
+        }
+
+        height = transform.localScale.y + 0.5f;
         return height;
     }
-    
-    // Método 2: Usar MeshRenderer
-    MeshRenderer meshRenderer = GetComponent<MeshRenderer>();
-    if (meshRenderer != null)
-    {
-        height = meshRenderer.bounds.extents.y + 0.5f;
-        Debug.Log($"📏 Altura calculada por MeshRenderer: {height}");
-        return height;
-    }
-    
-    // Método 3: Usar SpriteRenderer
-    SpriteRenderer spriteRenderer = GetComponent<SpriteRenderer>();
-    if (spriteRenderer != null && spriteRenderer.sprite != null)
-    {
-        height = spriteRenderer.bounds.extents.y + 0.5f;
-        Debug.Log($"📏 Altura calculada por SpriteRenderer: {height}");
-        return height;
-    }
-    
-    // Método 4: Usar transform.localScale
-    height = transform.localScale.y + 0.5f;
-    Debug.Log($"📏 Altura calculada por Scale: {height}");
-    
-    return height;
-}
-    
+
     string GetTypeIcon()
     {
         switch (itemType)
@@ -175,79 +165,118 @@ float CalculatePromptHeight()
         }
     }
 
-   public void Interact()
-{
-    if (!playerInRange)
+    public void Interact()
     {
-        Debug.Log($"⚠️ No estás en rango de {itemName}");
-        return;
-    }
-    
-    // 🔍 DEBUG CRÍTICO
-    Debug.Log($"🎯 [PICKUP] Interact con: {itemName}");
-    Debug.Log($"🎨 [PICKUP] itemIcon: {(itemIcon != null ? itemIcon.name : "NULL")}");
-    Debug.Log($"🎨 [PICKUP] itemIcon tipo: {(itemIcon != null ? itemIcon.GetType().ToString() : "NULL")}");
-    
-    Inventory playerInventory = FindFirstObjectByType<Inventory>();
-    
-    if (playerInventory != null)
-    {
-        bool success = false;
-        
-        switch (itemType)
+        if (!playerInRange)
         {
-            case ItemType.Ammo:
-                Debug.Log($"🔫 [PICKUP] Llamando a AddAmmo con: {itemName}, {itemAmount}, icono: {(itemIcon != null ? itemIcon.name : "NULL")}");
-                success = playerInventory.AddAmmo(itemName, itemAmount, itemIcon);
-                break;
-            case ItemType.Weapon:
-                success = playerInventory.AddWeapon(itemName, ammoCount, itemIcon);
-                break;
-            case ItemType.Key:
-                success = playerInventory.AddKey(keyId, itemAmount, itemIcon, itemName);
-                break;
-            default:
-                success = playerInventory.AddItem(itemName, itemAmount, itemIcon, itemType);
-                break;
+            Debug.Log($"⚠️ No estás en rango de {itemName}");
+            return;
         }
-        
-        if (success)
+
+        Debug.Log($"🎯 [PICKUP] Interact con: {itemName}");
+
+        Inventory playerInventory = FindFirstObjectByType<Inventory>();
+
+        if (playerInventory != null)
         {
-            Debug.Log($"✅ Agarraste {itemAmount}x {itemName}");
-            
-            if (pickupEffect != null)
-                Instantiate(pickupEffect, transform.position, Quaternion.identity);
-            
-            if (pickupSound != null)
-                AudioSource.PlayClipAtPoint(pickupSound, transform.position, 1f);
-            
-            ShowPickupMessage();
-            Destroy(gameObject);
+            bool success = false;
+
+            switch (itemType)
+            {
+                case ItemType.Ammo:
+                    success = playerInventory.AddAmmo(itemName, itemAmount, itemIcon);
+                    break;
+                case ItemType.Weapon:
+                    success = playerInventory.AddWeapon(itemName, ammoCount, itemIcon);
+                    break;
+                case ItemType.Key:
+                    success = playerInventory.AddKey(keyId, itemAmount, itemIcon, itemName);
+                    break;
+                default:
+                    success = playerInventory.AddItem(itemName, itemAmount, itemIcon, itemType);
+                    break;
+            }
+
+            if (success)
+            {
+                Debug.Log($"✅ Agarraste {itemAmount}x {itemName}");
+
+                if (pickupEffect != null)
+                    Instantiate(pickupEffect, transform.position, Quaternion.identity);
+
+                if (pickupSound != null)
+                    AudioSource.PlayClipAtPoint(pickupSound, transform.position, 1f);
+
+                // 💬 --- DISPARAR SISTEMA DE DIÁLOGO DINÁMICO ---
+                TriggerPickupDialogue();
+
+                // Ocultamos la malla y desactivamos colisiones para que no "estorbe" visualmente mientras lees
+                DisableObjectVisuals();
+
+                // Destruimos el objeto de forma segura diferida (o dejamos que actúen las partículas flotantes en tiempo congelado)
+                Destroy(gameObject, 0.1f);
+            }
+            else
+            {
+                Debug.Log($"❌ No pudiste agarrar {itemName}");
+                ShowInventoryFullMessage();
+            }
+        }
+    }
+
+    void TriggerPickupDialogue()
+    {
+        if (DialogueManager.Instance != null)
+        {
+            // Creamos una estructura de diálogo al vuelo
+            Dialogue pickupDialogue = new Dialogue();
+            pickupDialogue.lines = new DialogueLine[1];
+
+            // Nombre vacío como pediste
+            pickupDialogue.lines[0].characterName = "";
+
+            // Texto formateado con el nombre del objeto en color celeste (Hex de celeste estándar en Unity TMP/Rich Text)
+            pickupDialogue.lines[0].text = $"Encontraste <color=#00FFFF>{itemName}</color>.";
+
+            // Lanzamos el diálogo
+            DialogueManager.Instance.StartDialogue(pickupDialogue);
         }
         else
         {
-            Debug.Log($"❌ No pudiste agarrar {itemName}");
-            ShowInventoryFullMessage();
+            Debug.LogWarning("⚠️ No se encontró DialogueManager para mostrar el texto del ítem.");
+            ShowPickupMessage(); // Respaldo flotante por si acaso
         }
     }
-}
-    
+
+    void DisableObjectVisuals()
+    {
+        // Apagamos los renderers y colisionadores para simular que desapareció,
+        // evitando que cause problemas mientras lees el diálogo en pausa.
+        var renderers = GetComponentsInChildren<Renderer>();
+        foreach (var rend in renderers) rend.enabled = false;
+
+        var colliders = GetComponentsInChildren<Collider>();
+        foreach (var col in colliders) col.enabled = false;
+
+        if (currentPrompt != null) Destroy(currentPrompt);
+    }
+
     void ShowPickupMessage()
     {
         GameObject messageObj = new GameObject("PickupMessage");
         messageObj.transform.position = transform.position + Vector3.up * 2f;
-        
+
         TextMesh textMesh = messageObj.AddComponent<TextMesh>();
         textMesh.text = $"+{itemAmount} {itemName}";
         textMesh.fontSize = 40;
         textMesh.characterSize = 0.05f;
         textMesh.color = GetColorByType();
         textMesh.fontStyle = FontStyle.Bold;
-        
+
         messageObj.AddComponent<PickupMessageAnimator>();
         Destroy(messageObj, 1.5f);
     }
-    
+
     Color GetColorByType()
     {
         switch (itemType)
@@ -260,50 +289,30 @@ float CalculatePromptHeight()
             default: return Color.green;
         }
     }
-    
+
     void ShowInventoryFullMessage()
     {
         GameObject messageObj = new GameObject("InventoryFullMessage");
         messageObj.transform.position = transform.position + Vector3.up * 2f;
-        
+
         TextMesh textMesh = messageObj.AddComponent<TextMesh>();
         textMesh.text = "❌ Inventario lleno!";
         textMesh.fontSize = 40;
         textMesh.characterSize = 0.05f;
         textMesh.color = Color.red;
         textMesh.fontStyle = FontStyle.Bold;
-        
+
         messageObj.AddComponent<PickupMessageAnimator>();
         Destroy(messageObj, 1.5f);
     }
-    
+
     void OnDrawGizmosSelected()
     {
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, 1f);
     }
-}
+    // ... (Todo el resto del código de ItemPickup que pusimos antes) ...
 
-public class PickupMessageAnimator : MonoBehaviour
-{
-    private float timer = 0f;
-    private TextMesh textMesh;
-    
-    void Start()
-    {
-        textMesh = GetComponent<TextMesh>();
-    }
-    
-    void Update()
-    {
-        timer += Time.deltaTime;
-        transform.position += Vector3.up * Time.deltaTime * 1.5f;
-        
-        if (textMesh != null)
-        {
-            Color color = textMesh.color;
-            color.a = Mathf.Lerp(1f, 0f, timer / 1.5f);
-            textMesh.color = color;
-        }
-    }
+
+// --- AGREGA ESTO JUSTO DEBAJO, FUERA DE LA CLASE PRINCIPAL ---
 }
