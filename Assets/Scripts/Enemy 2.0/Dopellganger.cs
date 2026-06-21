@@ -12,7 +12,7 @@ public class Dopellganger : Enemy
     [SerializeField] private float chaseRange;
     [SerializeField] private Transform[] puntosPatrulla;
     [SerializeField] private float chaseSpeed;
-    [SerializeField] private EnemyAudio enemyAudio;
+    
 
     private NavMeshAgent agent;
 
@@ -72,7 +72,6 @@ public class Dopellganger : Enemy
     public override void Die()
     {
         isDead = true;
-        enemyAudio?.PlayDie();
         fsm.ChangeState(new DeadState(agent, anim));
         Destroy(gameObject, 1f);
     }
