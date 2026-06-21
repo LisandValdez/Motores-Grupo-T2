@@ -3,11 +3,9 @@ using UnityEngine.SceneManagement;
 
 public class StartGame : MonoBehaviour
 {
-    public AudioSource glitchSound;
 
     public void EmpezarJuego()
     {
-        glitchSound.Play();
         Invoke("CargarJuego", 1f);
     }
 

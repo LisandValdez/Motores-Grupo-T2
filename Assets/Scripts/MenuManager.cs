@@ -1,8 +1,10 @@
 using UnityEngine;
 
+
 public class MenuManager : MonoBehaviour
 {
     public GameObject panelInstrucciones;
+
 
     public void MostrarInstrucciones()
     {
