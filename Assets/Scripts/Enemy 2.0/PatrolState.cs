@@ -1,7 +1,6 @@
 using System;
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
 public class PatrolState : EnemyState
 {
@@ -61,9 +60,24 @@ public class PatrolState : EnemyState
     {
         if (agent == null || player == null) return;
 
+        // ?? EXTRAEMOS EL ENEMY PARA ACTUALIZAR EL RANGO DINÁMICO EN TIEMPO REAL
+        Enemy enemyComponent = agent.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            chaseRange = enemyComponent.GetCurrentChaseRange();
+        }
+
         float distToPlayer = Vector3.Distance(agent.transform.position, player.position);
+
+        // Comprobamos si el jugador entra en el rango actual (base o aumentado por daño)
         if (distToPlayer <= chaseRange)
         {
+            // ?? REPRODUCIR SONIDO DE ALERTA UNA SOLA VEZ
+            if (enemyComponent != null)
+            {
+                enemyComponent.PlayAlertSound();
+            }
+
             fsm.ChangeState(new ChaseState(fsm, agent, player, anim, puntos, chaseRange, attackRange, cooldown, chaseSpeed));
             return;
         }

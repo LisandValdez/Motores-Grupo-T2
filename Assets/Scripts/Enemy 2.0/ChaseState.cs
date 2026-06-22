@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.AI;
-using UnityEngine.InputSystem;
 
 public class ChaseState : EnemyState
 {
@@ -51,11 +50,25 @@ public class ChaseState : EnemyState
     {
         if (agent == null || player == null) return;
 
+        // ?? ACTUALIZAMOS EL CHASE RANGE SEGÚN EL ESTADO ACTUAL DEL ENEMIGO
+        Enemy enemyComponent = agent.GetComponent<Enemy>();
+        if (enemyComponent != null)
+        {
+            chaseRange = enemyComponent.GetCurrentChaseRange();
+        }
+
         float distToPlayer = Vector3.Distance(agent.transform.position, player.position);
 
-        // Si el jugador está fuera del chaseRange, volver a patrulla
+        // Si el jugador logra escapar de la distancia de persecución activa
         if (distToPlayer > chaseRange)
         {
+            // ?? El enemigo pierde al jugador: restablece el sonido de alerta y su rango al valor base
+            if (enemyComponent != null)
+            {
+                enemyComponent.yaAlertoAlPlayer = false;
+                enemyComponent.ResetChaseRange();
+            }
+
             fsm.ChangeState(new PatrolState(fsm, agent, player, anim, puntos, chaseRange, attackRange, cooldown, chaseSpeed));
             return;
         }
