@@ -31,7 +31,6 @@ public class PlayerTriggerInteraction : MonoBehaviour
             }
         }
         
-        // Mostrar/ocultar prompt
         if (currentPrompt != null)
             currentPrompt.SetActive(currentInteractable != null);
     }
@@ -41,7 +40,7 @@ public class PlayerTriggerInteraction : MonoBehaviour
         if (other.GetComponent<IInteractable>() != null)
         {
             currentInteractable = other.gameObject;
-            Debug.Log($"✅ Entró en rango: {other.name}");
+            Debug.Log($"Entró en rango: {other.name}");
             UpdatePromptText(other.gameObject);
         }
     }
@@ -51,7 +50,7 @@ public class PlayerTriggerInteraction : MonoBehaviour
         if (currentInteractable == other.gameObject)
         {
             currentInteractable = null;
-            Debug.Log($"❌ Salió del rango: {other.name}");
+            Debug.Log($"Salió del rango: {other.name}");
         }
     }
     
@@ -90,7 +89,7 @@ public class PlayerTriggerInteraction : MonoBehaviour
         {
             var text = currentPrompt.GetComponentInChildren<UnityEngine.UI.Text>();
             if (text != null)
-                text.text = $"🔘 Presiona E para agarrar {item.itemName}";
+                text.text = $"Presiona E para agarrar {item.itemName}";
         }
     }
 }

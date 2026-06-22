@@ -24,7 +24,7 @@ public class PlayerHealth : MonoBehaviour
     [SerializeField] private float blinkInterval = 0.1f;
     
     [Header("Game Over")]
-    [SerializeField] private GameOverManager gameOverManager;  // ← AGREGAR ESTO
+    [SerializeField] private GameOverManager gameOverManager;
     
     private bool isInvincible = false;
     private SpriteRenderer spriteRenderer;
@@ -44,14 +44,13 @@ public class PlayerHealth : MonoBehaviour
         if (spriteRenderer != null)
             originalColor = spriteRenderer.color;
         
-        //Buscar GameOverManager si no está asignado
         if (gameOverManager == null)
         {
            gameOverManager = FindFirstObjectByType<GameOverManager>();
            if (gameOverManager != null)
-               Debug.Log("✅ GameOverManager encontrado automáticamente");
+               Debug.Log("GameOverManager encontrado automáticamente");
            else
-               Debug.LogWarning("⚠️ No se encontró GameOverManager en la escena");
+               Debug.LogWarning("No se encontró GameOverManager en la escena");
         }
         
         InitializeHeartUI();
@@ -65,7 +64,7 @@ public class PlayerHealth : MonoBehaviour
             heartsPanel = GameObject.Find("HeartsPanel");
             if (heartsPanel == null)
             {
-                Debug.LogWarning("⚠️ No se encontró el panel de corazones");
+                Debug.LogWarning("No se encontró el panel de corazones");
             }
         }
         
@@ -89,7 +88,7 @@ public class PlayerHealth : MonoBehaviour
         
         if (heartImages.Length != maxHealth)
         {
-            Debug.LogWarning($"⚠️ Número de corazones ({heartImages.Length}) no coincide con la vida máxima ({maxHealth})");
+            Debug.LogWarning($"Número de corazones ({heartImages.Length}) no coincide con la vida máxima ({maxHealth})");
         }
     }
     
@@ -121,7 +120,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth -= damage;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         
-        Debug.Log($"💔 Jugador recibió {damage} de daño. Vida: {currentHealth}/{maxHealth}");
+        Debug.Log($"Jugador recibió {damage} de daño. Vida: {currentHealth}/{maxHealth}");
         
         UpdateHeartUI();
         
@@ -151,7 +150,7 @@ public class PlayerHealth : MonoBehaviour
         currentHealth += amount;
         currentHealth = Mathf.Clamp(currentHealth, 0, maxHealth);
         
-        Debug.Log($"💚 Jugador curó {amount}. Vida: {currentHealth}/{maxHealth}");
+        Debug.Log($"Jugador curó {amount}. Vida: {currentHealth}/{maxHealth}");
         
         UpdateHeartUI();
         
@@ -181,22 +180,19 @@ public class PlayerHealth : MonoBehaviour
     
     void Die()
     {
-        Debug.Log("💀 El jugador ha muerto");
+        Debug.Log("El jugador ha muerto");
         
         if (deathSound != null)
             AudioSource.PlayClipAtPoint(deathSound, transform.position, 1f);
         
         OnPlayerDied?.Invoke();
         
-        // 🔥 ACTIVAR GAME OVER 🔥
         ActivarGameOver();
         
-        // Desactivar el control del jugador
         PlayerMove playerMove = GetComponent<PlayerMove>();
         if (playerMove != null)
             playerMove.enabled = false;
         
-        // Animation de muerte
         if (animator != null)
             animator.SetTrigger("Death");
     }
@@ -206,22 +202,22 @@ public class PlayerHealth : MonoBehaviour
        if (gameOverManager != null)
        {
            gameOverManager.GameOver();
-           Debug.Log("✅ GameOver activado desde PlayerHealth");
+           Debug.Log("GameOver activado desde PlayerHealth");
        }
        else
        {
-           Debug.LogError("❌ GameOverManager es NULL! No se puede mostrar Game Over");
+           Debug.LogError("GameOverManager es NULL! No se puede mostrar Game Over");
             
            // Intentar encontrarlo como fallback
            gameOverManager = FindFirstObjectByType<GameOverManager>();
            if (gameOverManager != null)
            {
                //gameOverManager.GameOver();
-               Debug.Log("✅ GameOver encontrado y activado como fallback");
+               Debug.Log("GameOver encontrado y activado como fallback");
            }
            else
            {
-               Debug.LogError("❌ No hay GameOverManager en la escena!");
+               Debug.LogError("No hay GameOverManager");
            }
        }
     }

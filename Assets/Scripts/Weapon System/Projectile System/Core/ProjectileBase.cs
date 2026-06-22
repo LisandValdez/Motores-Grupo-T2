@@ -64,7 +64,7 @@ public abstract class ProjectileBase : MonoBehaviour
                 return;
             }
 
-            Debug.Log($"💥 Raycast impactó: {hit.collider.gameObject.name} (Layer: {hit.collider.gameObject.layer})");
+            Debug.Log($" Raycast impactó: {hit.collider.gameObject.name} (Layer: {hit.collider.gameObject.layer})");
 
             transform.position = hit.point;
 
@@ -90,7 +90,7 @@ public abstract class ProjectileBase : MonoBehaviour
         hasHit = true;
 
         Collider hitCollider = hit.collider;
-        Debug.Log($"💥 Proyectil impactó en: {hitCollider.gameObject.name}");
+        Debug.Log($" Proyectil impactó en: {hitCollider.gameObject.name}");
 
         // Buscar IDamageable
         IDamageable damageable = hitCollider.GetComponentInParent<IDamageable>();
@@ -98,14 +98,14 @@ public abstract class ProjectileBase : MonoBehaviour
         if (damageable != null)
         {
             damageable.TakeDamage(damage);
-            Debug.Log($"  ✅ {damage} de daño aplicado");
+            Debug.Log($"  {damage} de daño aplicado");
 
             // Si el objetivo tiene vida, instanciamos la sangre en el punto de impacto
             SpawnBloodEffect(hit.point, hit.normal);
         }
         else
         {
-            Debug.Log($"  ❌ {hitCollider.name} no tiene IDamageable");
+            Debug.Log($"  {hitCollider.name} no tiene IDamageable");
         }
 
         // Efectos de impacto adicionales

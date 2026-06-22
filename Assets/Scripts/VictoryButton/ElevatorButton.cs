@@ -5,8 +5,8 @@ using System.Collections;
 public class ElevatorButton : MonoBehaviour, IInteractable
 {
     [Header("Configuración")]
-    public ElevatorDoor elevatorDoor;  // Referencia a la puerta
-    public FuseBox fuseBox;            // Referencia a la caja de fusibles
+    public ElevatorDoor elevatorDoor;  
+    public FuseBox fuseBox;           
     public bool requireFuseBoxCompletion = true;
     
     [Header("Movimiento del Botón")]
@@ -16,11 +16,11 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     
     [Header("Mensajes")]
     [TextArea(3, 5)]
-    public string noPowerMessage = "🔌 No hay energía. Necesito colocar el fusible primero.";
+    public string noPowerMessage = "No hay energía. Necesito colocar el fusible primero.";
     [TextArea(3, 5)]
-    public string alreadyOpenMessage = "🚪 La puerta ya está abierta.";
+    public string alreadyOpenMessage = "La puerta ya está abierta.";
     [TextArea(3, 5)]
-    public string successMessage = "🔓 ¡Puerta abierta!";
+    public string successMessage = "Puerta abierta";
     
     [Header("Efectos")]
     public AudioClip pressSound;
@@ -47,7 +47,6 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         transform.localPosition = pos;
         targetPosition = transform.localPosition;
         
-        // Buscar FuseBox automáticamente si no está asignado
         if (fuseBox == null)
             fuseBox = FindFirstObjectByType<FuseBox>();
         
@@ -101,7 +100,7 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
         
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        textMesh.text = $"Presiona <color=yellow>E</color> para abrir puerta\n<color=cyan>🚪 Botón del Ascensor</color>";
+        textMesh.text = $"Presiona <color=yellow>E</color> para abrir puerta\n<color=cyan> Botón del Ascensor</color>";
         textMesh.fontSize = 30;
         textMesh.characterSize = 0.03f;
         textMesh.color = Color.white;
@@ -116,7 +115,7 @@ public class ElevatorButton : MonoBehaviour, IInteractable
     {
         if (!playerInRange)
         {
-            Debug.Log("⚠️ No estás en rango del botón");
+            Debug.Log("No estás en rango del botón");
             return;
         }
         
@@ -163,28 +162,25 @@ public class ElevatorButton : MonoBehaviour, IInteractable
         
         yield return new WaitForSeconds(0.3f);
         
-        // Soltar botón
         isMoving = true;
         targetPosition = new Vector3(releasedPositionX, transform.localPosition.y, transform.localPosition.z);
         
-        // Abrir la puerta
         if (elevatorDoor != null)
         {
             elevatorDoor.OpenDoor();
             ShowMessage(successMessage, Color.green);
             isDoorOpen = true;
             
-            // Actualizar prompt
             if (currentPrompt != null)
             {
                 TextMesh textMesh = currentPrompt.GetComponent<TextMesh>();
                 if (textMesh != null)
-                    textMesh.text = $"<color=green>✅ Puerta abierta</color>";
+                    textMesh.text = $"<color=green> Puerta abierta</color>";
             }
         }
         else
         {
-            Debug.LogError("❌ No se asignó la puerta del ascensor!");
+            Debug.LogError(" No se asignó la puerta del ascensor!");
         }
         
         yield return new WaitForSeconds(0.2f);

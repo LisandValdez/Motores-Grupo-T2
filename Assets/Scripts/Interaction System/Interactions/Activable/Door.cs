@@ -3,13 +3,12 @@
 public class Door : ActivableBase
 {
     public GameObject door;
-    public Vector3 openRotationOffset = new Vector3(0, 90, 0); // El desfase (90 grados)
+    public Vector3 openRotationOffset = new Vector3(0, 90, 0);
 
     [Header("Configuración de Llaves (Arrastra el Item aquí)")]
     [Tooltip("Arrastra aquí el Prefab o el GameObject de la llave que abre esta puerta.")]
     [SerializeField] private ItemPickup requiredKeyItem;
 
-    // Variables ocultas que se rellenarán solas en el Start
     private string requiredKeyId = "";
     private string keyName = "";
     private bool isLocked = false;
@@ -37,7 +36,7 @@ public class Door : ActivableBase
             isLocked = true; // Si hay una llave asignada, la puerta empieza cerrada
             requiredKeyId = requiredKeyItem.keyId;
             keyName = requiredKeyItem.itemName;
-            Debug.Log($"🔑 Puerta vinculada exitosamente. Requiere: {keyName} (ID: {requiredKeyId})");
+            Debug.Log($"Puerta vinculada exitosamente. Requiere: {keyName} (ID: {requiredKeyId})");
         }
         else
         {
@@ -45,10 +44,9 @@ public class Door : ActivableBase
         }
     }
 
-    // Método obligatorio de ActivableBase (Se ejecuta al usar la E o el Raycast)
+
     protected override void Activate()
     {
-        // 🚨 BLOQUEO DE PRÓLOGO: Si no se ha leído la nota, la puerta no se puede usar
         if (!IntroNote.HasReadIntroNote)
         {
             TriggerIntroBlockDialogue();
@@ -73,7 +71,7 @@ public class Door : ActivableBase
             {
                 Debug.LogWarning("🔑 La puerta está cerrada. Necesitas la llave: " + requiredKeyId);
 
-                // 💬 Disparar diálogo dinámico usando el nombre extraído automáticamente
+                //Disparar diálogo dinámico usando el nombre extraído automáticamente
                 TriggerLockedDoorDialogue();
             }
         }
@@ -86,7 +84,6 @@ public class Door : ActivableBase
             Dialogue lockedDialogue = new Dialogue();
             lockedDialogue.lines = new DialogueLine[1];
 
-            // 👤 ASIGNAMOS EL NOMBRE DEL PROTAGONISTA
             lockedDialogue.lines[0].characterName = "Damian";
 
             // Si por alguna razón no hay nombre asignado, usamos un respaldo genérico
@@ -97,7 +94,7 @@ public class Door : ActivableBase
         }
         else
         {
-            Debug.LogWarning("⚠️ No se encontró DialogueManager para mostrar el texto de la puerta cerrada.");
+            Debug.LogWarning("No se encontró DialogueManager para mostrar el texto de la puerta cerrada.");
         }
     }
 
@@ -107,7 +104,6 @@ public class Door : ActivableBase
         {
             playerInsideTrigger = true;
 
-            // 🚨 BLOQUEO DE PRÓLOGO: Si se acerca caminando, se le niega el paso automático
             if (!IntroNote.HasReadIntroNote)
             {
                 if (other.CompareTag("Player"))
@@ -158,7 +154,6 @@ public class Door : ActivableBase
             Dialogue blockDialogue = new Dialogue();
             blockDialogue.lines = new DialogueLine[1];
 
-            // 👤 TAMBIÉN LE ASIGNAMOS EL NOMBRE AL RECORDATORIO DE LA NOTA
             blockDialogue.lines[0].characterName = "Damian";
             blockDialogue.lines[0].text = "Debería leer la nota que hay en mi mesa...";
 

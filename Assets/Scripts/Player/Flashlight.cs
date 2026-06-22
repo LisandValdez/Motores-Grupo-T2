@@ -9,7 +9,6 @@ public class Flashlight : MonoBehaviour
 
     void Start()
     {
-        // Para que empice apagada
         if (flashlight != null)
         {
             flashlight.enabled = false;

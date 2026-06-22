@@ -1,9 +1,9 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.AI; // 1. REQUISITO: Importar la librería de IA
+using UnityEngine.AI; 
 
 [RequireComponent(typeof(Rigidbody))]
-[RequireComponent(typeof(NavMeshAgent))] // 2. Asegura que tenga el NavMeshAgent
+[RequireComponent(typeof(NavMeshAgent))] 
 public class NPCV2 : MonoBehaviour, IInteractable
 {
     public GameObject player;
@@ -19,18 +19,18 @@ public class NPCV2 : MonoBehaviour, IInteractable
     private GameObject currentWorldMessage;
 
     private Rigidbody rb;
-    private NavMeshAgent agent; // 3. Componente para la IA de movimiento
+    private NavMeshAgent agent;
 
     void Start()
     {
         rb = GetComponent<Rigidbody>();
         agent = GetComponent<NavMeshAgent>();
 
-        // Configuración del Rigidbody para que no interfiera negativamente con el agente
+        
         rb.constraints = RigidbodyConstraints.FreezeRotationX | RigidbodyConstraints.FreezeRotationZ;
-        rb.isKinematic = true; // RECOMENDACIÓN: El NavMeshAgent funciona mejor si el RB es kinematic
+        rb.isKinematic = true; 
 
-        // Configuración inicial del NavMeshAgent según tus variables
+        
         agent.speed = followSpeed;
         agent.stoppingDistance = stopDistance;
 
@@ -49,7 +49,7 @@ public class NPCV2 : MonoBehaviour, IInteractable
 
     void Update()
     {
-        // Mostrar/ocultar prompt según distancia
+        
         if (player != null && currentPrompt != null)
         {
             float distanceToPlayer = Vector3.Distance(transform.position, player.transform.position);
@@ -57,19 +57,16 @@ public class NPCV2 : MonoBehaviour, IInteractable
             currentPrompt.SetActive(isInRange);
         }
 
-        // LÓGICA DE MOVIMIENTO DE IA: El NavMesh se actualiza en el Update normal de Unity
+        
         if (isFollowing && player != null)
         {
-            // Habilitamos el agente si estaba apagado
+    
             if (!agent.enabled) agent.enabled = true;
-
-            // Le decimos al agente que su destino es la posición del jugador
-            // El NavMesh automáticamente buscará la puerta o salida si está en otra habitación
             agent.SetDestination(player.transform.position);
         }
         else
         {
-            // Si no debe seguir, detenemos el agente
+
             if (agent.enabled)
             {
                 agent.ResetPath();
@@ -78,7 +75,6 @@ public class NPCV2 : MonoBehaviour, IInteractable
         }
     }
 
-    // Removimos el FixedUpdate porque el NavMeshAgent se encarga de la física y la rotación por sí solo.
 
     void CreateInteractionPrompt()
     {

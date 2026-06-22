@@ -74,18 +74,18 @@ public class Inventory : MonoBehaviour
             }
             else
             {
-                Debug.LogWarning($"⚠️ No hay suficientes {itemName}. Tienes: {item.amount}, necesitas: {amount}");
+                Debug.LogWarning($"No hay suficientes {itemName}. Tienes: {item.amount}, necesitas: {amount}");
                 return false;
             }
         }
         
-        Debug.LogWarning($"❌ No se encontró {itemName} en el inventario");
+        Debug.LogWarning($"No se encontró {itemName} en el inventario");
         return false;
     }
     
     public bool AddItem(string itemName, int amount, Sprite icon = null, ItemType type = ItemType.Collectible)
     {
-        Debug.Log($"📦 [INVENTORY] AddItem: {itemName}, cant: {amount}, icono: {(icon != null ? icon.name : "NULL")}, tipo: {type}");
+        Debug.Log($"[INVENTORY] AddItem: {itemName}, cant: {amount}, icono: {(icon != null ? icon.name : "NULL")}, tipo: {type}");
         
         // Buscar si ya existe un item con el mismo nombre
         InventoryItem existingItem = items.Find(i => i.itemName == itemName);
@@ -97,7 +97,7 @@ public class Inventory : MonoBehaviour
             if (spaceLeft >= amount)
             {
                 existingItem.amount += amount;
-                Debug.Log($"✅ Item existente aumentado: {itemName} ahora tiene {existingItem.amount}");
+                Debug.Log($"Item existente aumentado: {itemName} ahora tiene {existingItem.amount}");
                 OnInventoryChanged?.Invoke();
                 return true;
             }
@@ -119,14 +119,14 @@ public class Inventory : MonoBehaviour
             return true;
         }
         
-        Debug.LogWarning($"❌ Inventario lleno! No se pudo agregar {amount}x {itemName}");
+        Debug.LogWarning($"Inventario lleno! No se pudo agregar {amount}x {itemName}");
         return false;
     }
     
     // AMMO - CORREGIDO: guarda con el icono correcto
    public bool AddAmmo(string ammoType, int amount, Sprite icon = null)
 {
-    Debug.Log($"🔫 [AMMO] AddAmmo llamado:");
+    Debug.Log($"[AMMO] AddAmmo llamado:");
     Debug.Log($"   - Tipo: {ammoType}");
     Debug.Log($"   - Cantidad: {amount}");
     Debug.Log($"   - Icono recibido: {(icon != null ? icon.name : "NULL")}");
@@ -136,16 +136,15 @@ public class Inventory : MonoBehaviour
     else
         ammoInventory[ammoType] = amount;
     
-    // Agregar al inventario normal con su icono
+
     bool success = AddItem(ammoType, amount, icon, ItemType.Ammo);
     
     OnInventoryChanged?.Invoke();
     return success;
 }
-    // WEAPON
     public bool AddWeapon(string weaponName, int startingAmmo, Sprite icon)
     {
-        Debug.Log($"⚔️ [WEAPON] Agregando: {weaponName}, icono: {(icon != null ? icon.name : "NULL")}");
+        Debug.Log($"[WEAPON] Agregando: {weaponName}, icono: {(icon != null ? icon.name : "NULL")}");
         
         if (!weapons.ContainsKey(weaponName))
         {
@@ -159,7 +158,6 @@ public class Inventory : MonoBehaviour
         return false;
     }
     
-    // KEY - CORREGIDO
     public bool AddKey(string keyId, int amount, Sprite icon = null, string keyName = null)
     {
         string displayName = keyName != null ? keyName : keyId;

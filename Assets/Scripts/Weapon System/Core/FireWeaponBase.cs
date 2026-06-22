@@ -32,12 +32,12 @@ public abstract class FireWeaponBase : WeaponBase
     public float casingEjectForce = 5f;
 
     [Header("Ajustes de Munición del Inventario")]
-    public string ammoTypeName = "Pistol Ammo"; // Debe coincidir con el 'itemName' de tu ItemPickup
+    public string ammoTypeName = "Pistol Ammo";
 
-    // Evento para avisarle a la UI que disparamos o recargamos y que debe actualizarse
+    
     public System.Action OnWeaponAmmoChanged;
 
-    // Métodos públicos para que la UI pueda consultar los datos fácilmente
+    
     public int GetCurrentAmmo() => currentAmmo;
     public int GetMaxAmmo() => maxAmmo;
 
@@ -56,13 +56,13 @@ public abstract class FireWeaponBase : WeaponBase
 
 
 
-        // SOLUCIÓN AL 00/00: Establecemos las balas aquí para que estén listas antes de que el Start de la UI pregunte por ellas
+        
         currentAmmo = maxAmmo;
     }
 
     protected virtual void Start()
     {
-        // Dejado vacío por si tus armas hijas (Pistol) lo extienden
+
     }
 
     public override void Attack(Vector3 targetPoint)
@@ -72,7 +72,6 @@ public abstract class FireWeaponBase : WeaponBase
             nextAttackTime = Time.time + (1f / fireRate);
             currentAmmo--;
 
-            // Invocar el evento para actualizar la UI del juego al disparar
             OnWeaponAmmoChanged?.Invoke();
 
             PlayFireAnimation();
@@ -118,7 +117,7 @@ public abstract class FireWeaponBase : WeaponBase
         }
         else
         {
-            Debug.LogWarning($"❌ No hay munición de tipo '{ammoTypeName}' en el inventario.");
+            Debug.LogWarning($"No hay munición de tipo '{ammoTypeName}' en el inventario.");
             PlayDryFireSound();
         }
     }
@@ -148,13 +147,12 @@ public abstract class FireWeaponBase : WeaponBase
             if (Inventory.Instance.UseAmmo(ammoTypeName, ammoToLoad))
             {
                 currentAmmo += ammoToLoad;
-                Debug.Log($"🔄 {weaponName} recargada. Cargador: {currentAmmo}/{maxAmmo}");
+                Debug.Log($" {weaponName} recargada. Cargador: {currentAmmo}/{maxAmmo}");
             }
         }
 
         isReloading = false;
 
-        // Invocar el evento para actualizar la UI al terminar de recargar
         OnWeaponAmmoChanged?.Invoke();
     }
 

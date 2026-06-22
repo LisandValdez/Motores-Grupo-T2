@@ -41,7 +41,7 @@ public class LightingManager : MonoBehaviour
 
         // Obtenemos la referencia al componente AudioSource
         audioSource = GetComponent<AudioSource>();
-        // Lo configuramos por código para que no sea afectado por el espacio 3D (sonido global)
+        // Lo configuramos por código para que no sea afectado por el espacio 3D
         audioSource.spatialBlend = 0f;
         audioSource.playOnAwake = false;
     }
@@ -72,9 +72,8 @@ public class LightingManager : MonoBehaviour
     public void ApagarLuces()
     {
         SetLightingState(false);
-        Debug.Log("🔌 [LIGHTING] Apagón general provocado por la historia. Niebla activada.");
+        Debug.Log(" [LIGHTING] Apagón general provocado por la historia. Niebla activada.");
 
-        // 🔊 REPRODUCIR SONIDO DEL APAGÓN
         if (audioSource != null && sonidoApagon != null)
         {
             audioSource.PlayOneShot(sonidoApagon);
@@ -88,18 +87,16 @@ public class LightingManager : MonoBehaviour
         StartCoroutine(RoutineRestaurarEnergia(1.0f));
     }
 
-    // ⏳ CORRUTINA: Espera antes de encender todo
     private IEnumerator RoutineRestaurarEnergia(float tiempoEspera)
     {
-        Debug.Log($"⚡ [LIGHTING] Fusible colocado. Arrancando generadores, esperando {tiempoEspera}s...");
+        Debug.Log($" [LIGHTING] Fusible colocado. Arrancando generadores, esperando {tiempoEspera}s...");
 
-        // Esperamos el tiempo real de los generadores
         yield return new WaitForSecondsRealtime(tiempoEspera);
 
         SetLightingState(true);
-        Debug.Log("💡 [LIGHTING] ¡Energía restaurada y niebla disipada con éxito!");
+        Debug.Log(" [LIGHTING] ¡Energía restaurada y niebla disipada con éxito!");
 
-        // 🔊 REPRODUCIR SONIDO DE RESTAURACIÓN
+        
         if (audioSource != null && sonidoRestauracion != null)
         {
             audioSource.PlayOneShot(sonidoRestauracion);
@@ -124,7 +121,6 @@ public class LightingManager : MonoBehaviour
         RenderSettings.ambientIntensity = encendido ? 1f : 0f;
         RenderSettings.reflectionIntensity = encendido ? 1f : 0f;
 
-        // 🌫️ 4. CONTROL DE NIEBLA DINÁMICA
         if (usarNieblaEnApagon)
         {
             if (!encendido)

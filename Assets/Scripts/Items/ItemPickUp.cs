@@ -39,11 +39,10 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
     void Start()
     {
-        // Verificar que el collider sea trigger
         Collider col = GetComponent<Collider>();
         if (col != null && !col.isTrigger)
         {
-            Debug.LogWarning($"⚠️ El collider de {itemName} no es trigger. Configurando automáticamente...");
+            Debug.LogWarning($" El collider de {itemName} no es trigger.");
             col.isTrigger = true;
         }
 
@@ -52,12 +51,11 @@ public class ItemPickup : MonoBehaviour, IInteractable
         if (currentPrompt != null)
             currentPrompt.SetActive(false);
 
-        Debug.Log($"✨ Item {itemName} inicializado. Collider: {(col != null ? (col.isTrigger ? "Trigger OK" : "NO Trigger!") : "No collider!")}");
+        Debug.Log($"Item {itemName} inicializado. Collider: {(col != null ? (col.isTrigger ? "Trigger OK" : "NO Trigger!") : "No collider!")}");
     }
 
     void Update()
     {
-        // Actualizar visibilidad del prompt según si el jugador está en rango
         if (currentPrompt != null && currentPrompt.activeSelf != playerInRange)
         {
             currentPrompt.SetActive(playerInRange);
@@ -70,7 +68,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         {
             currentPlayer = other.gameObject;
             playerInRange = true;
-            Debug.Log($"✅ Jugador entró en rango del item: {itemName}");
+            Debug.Log($"Jugador entró en rango del item: {itemName}");
 
             if (currentPrompt != null)
                 currentPrompt.SetActive(true);
@@ -91,7 +89,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         {
             currentPlayer = null;
             playerInRange = false;
-            Debug.Log($"❌ Jugador salió del rango del item: {itemName}");
+            Debug.Log($"Jugador salió del rango del item: {itemName}");
 
             if (currentPrompt != null)
                 currentPrompt.SetActive(false);
@@ -169,11 +167,11 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (!playerInRange)
         {
-            Debug.Log($"⚠️ No estás en rango de {itemName}");
+            Debug.Log($" No estás en rango de {itemName}");
             return;
         }
 
-        Debug.Log($"🎯 [PICKUP] Interact con: {itemName}");
+        Debug.Log($" [PICKUP] Interact con: {itemName}");
 
         Inventory playerInventory = FindFirstObjectByType<Inventory>();
 
@@ -199,7 +197,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
 
             if (success)
             {
-                Debug.Log($"✅ Agarraste {itemAmount}x {itemName}");
+                Debug.Log($"✅Agarraste {itemAmount}x {itemName}");
 
                 if (pickupEffect != null)
                     Instantiate(pickupEffect, transform.position, Quaternion.identity);
@@ -207,18 +205,15 @@ public class ItemPickup : MonoBehaviour, IInteractable
                 if (pickupSound != null)
                     AudioSource.PlayClipAtPoint(pickupSound, transform.position, 1f);
 
-                // 💬 --- DISPARAR SISTEMA DE DIÁLOGO DINÁMICO ---
                 TriggerPickupDialogue();
-
-                // Ocultamos la malla y desactivamos colisiones para que no "estorbe" visualmente mientras lees
+                
                 DisableObjectVisuals();
 
-                // Destruimos el objeto de forma segura diferida (o dejamos que actúen las partículas flotantes en tiempo congelado)
                 Destroy(gameObject, 0.1f);
             }
             else
             {
-                Debug.Log($"❌ No pudiste agarrar {itemName}");
+                Debug.Log($"No pudiste agarrar {itemName}");
                 ShowInventoryFullMessage();
             }
         }
@@ -228,30 +223,24 @@ public class ItemPickup : MonoBehaviour, IInteractable
     {
         if (DialogueManager.Instance != null)
         {
-            // Creamos una estructura de diálogo al vuelo
             Dialogue pickupDialogue = new Dialogue();
             pickupDialogue.lines = new DialogueLine[1];
 
-            // Nombre vacío como pediste
             pickupDialogue.lines[0].characterName = "";
 
-            // Texto formateado con el nombre del objeto en color celeste (Hex de celeste estándar en Unity TMP/Rich Text)
             pickupDialogue.lines[0].text = $"Encontraste <color=#00FFFF>{itemName}</color>.";
 
-            // Lanzamos el diálogo
             DialogueManager.Instance.StartDialogue(pickupDialogue);
         }
         else
         {
-            Debug.LogWarning("⚠️ No se encontró DialogueManager para mostrar el texto del ítem.");
-            ShowPickupMessage(); // Respaldo flotante por si acaso
+            Debug.LogWarning("No se encontró DialogueManager para mostrar el texto del ítem.");
+            ShowPickupMessage();
         }
     }
 
     void DisableObjectVisuals()
     {
-        // Apagamos los renderers y colisionadores para simular que desapareció,
-        // evitando que cause problemas mientras lees el diálogo en pausa.
         var renderers = GetComponentsInChildren<Renderer>();
         foreach (var rend in renderers) rend.enabled = false;
 
@@ -296,7 +285,7 @@ public class ItemPickup : MonoBehaviour, IInteractable
         messageObj.transform.position = transform.position + Vector3.up * 2f;
 
         TextMesh textMesh = messageObj.AddComponent<TextMesh>();
-        textMesh.text = "❌ Inventario lleno!";
+        textMesh.text = "Inventario lleno";
         textMesh.fontSize = 40;
         textMesh.characterSize = 0.05f;
         textMesh.color = Color.red;
@@ -311,8 +300,4 @@ public class ItemPickup : MonoBehaviour, IInteractable
         Gizmos.color = Color.cyan;
         Gizmos.DrawWireSphere(transform.position, 1f);
     }
-    // ... (Todo el resto del código de ItemPickup que pusimos antes) ...
-
-
-// --- AGREGA ESTO JUSTO DEBAJO, FUERA DE LA CLASE PRINCIPAL ---
 }

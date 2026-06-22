@@ -44,7 +44,7 @@ public class WeaponController : MonoBehaviour
         // SI EL JUEGO ESTÁ PAUSADO, IGNORAMOS POR COMPLETO EL INPUT
         if (Time.timeScale == 0f)
         {
-            isAttackPressed = false; // Nos aseguramos de limpiar el estado
+            isAttackPressed = false;
             return;
         }
 
@@ -59,7 +59,6 @@ public class WeaponController : MonoBehaviour
 
     public void OnAim(InputAction.CallbackContext context)
     {
-        // SI EL JUEGO ESTÁ PAUSADO, IGNORAMOS EL APUNTADO
         if (Time.timeScale == 0f) return;
 
         if (currentWeapon != null && !isSwitching && !(currentWeapon is MeleeBase))
@@ -79,7 +78,6 @@ public class WeaponController : MonoBehaviour
 
     public void OnReload(InputAction.CallbackContext context)
     {
-        // SI EL JUEGO ESTÁ PAUSADO, NO RECARGAMOS
         if (Time.timeScale == 0f) return;
 
         if (context.started && currentWeapon != null && !isSwitching)
@@ -90,7 +88,6 @@ public class WeaponController : MonoBehaviour
 
     public void OnSwitchWeapon(InputAction.CallbackContext context)
     {
-        // SI EL JUEGO ESTÁ PAUSADO, NO CAMBIAMOS DE ARMA
         if (Time.timeScale == 0f) return;
 
         if (context.started && !isSwitching && arsenal.Length > 1)

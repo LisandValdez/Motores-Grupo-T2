@@ -11,10 +11,10 @@ public class FuseBox : MonoBehaviour, IInteractable
     
     [Header("Mensajes")]
     [TextArea(3, 5)]
-    public string missingItemMessage = "🔌 ¡Falta un fusible! Necesito uno para restaurar la energía.";
+    public string missingItemMessage = "¡Falta un fusible! Necesito uno para restaurar la energía.";
     
     [TextArea(3, 5)]
-    public string successMessage = "✅ ¡Fusible colocado! La energía ha sido restaurada.";
+    public string successMessage = "Fusible colocado! La energía ha sido restaurada.";
     
     [TextArea(3, 5)]
     public string alreadyCompletedMessage = "La energía ya está restaurada.";
@@ -52,14 +52,12 @@ public class FuseBox : MonoBehaviour, IInteractable
         if (showPrompt)
             CreateInteractionPrompt();
         
-        // Configurar estado inicial de las cámaras
         if (camaraJugador != null)
             camaraJugador.gameObject.SetActive(true);
         
         if (camaraAscensor != null)
             camaraAscensor.gameObject.SetActive(false);
         
-        // Asegurar que la luz empiece apagada
         if (luzAscensor != null)
             luzAscensor.enabled = false;
     }
@@ -101,7 +99,7 @@ public class FuseBox : MonoBehaviour, IInteractable
         promptObj.transform.localPosition = new Vector3(0, promptHeight, 0);
         
         TextMesh textMesh = promptObj.AddComponent<TextMesh>();
-        string status = isCompleted ? "✅ Completado" : "🔌 Caja de Fusibles";
+        string status = isCompleted ? "Completado" : "Caja de Fusibles";
         textMesh.text = $"Presiona <color=yellow>E</color> para interactuar\n<color=cyan>{status}</color>";
         textMesh.fontSize = 30;
         textMesh.characterSize = 0.03f;
@@ -117,7 +115,7 @@ public class FuseBox : MonoBehaviour, IInteractable
     {
         if (!playerInRange)
         {
-            Debug.Log("⚠️ No estás en rango de la caja de fusibles");
+            Debug.Log("No estás en rango de la caja de fusibles");
             return;
         }
         
@@ -131,7 +129,7 @@ public class FuseBox : MonoBehaviour, IInteractable
         
         if (playerInventory == null)
         {
-            Debug.LogError("❌ No se encontró el inventario del jugador");
+            Debug.LogError("No se encontró el inventario del jugador");
             return;
         }
         
@@ -143,7 +141,7 @@ public class FuseBox : MonoBehaviour, IInteractable
             isCompleted = true;
             
             ShowMessage(successMessage, Color.green);
-            Debug.Log($"✅ Fusible colocado en {gameObject.name}");
+            Debug.Log($"Fusible colocado en {gameObject.name}");
             
             if (onCompleteEffect != null)
                 Instantiate(onCompleteEffect, transform.position, Quaternion.identity);
@@ -163,7 +161,7 @@ public class FuseBox : MonoBehaviour, IInteractable
                 TextMesh textMesh = currentPrompt.GetComponent<TextMesh>();
                 if (textMesh != null)
                 {
-                    textMesh.text = $"<color=green>✅ Completado</color>";
+                    textMesh.text = $"<color=green>Completado</color>";
                 }
             }
         }
@@ -185,7 +183,7 @@ public class FuseBox : MonoBehaviour, IInteractable
         if (canvasUI != null)
         {
             canvasUI.SetActive(false);
-            Debug.Log("🖥️ Canvas ocultado durante la cinemática");
+            Debug.Log("Canvas ocultado durante la cinemática");
         }
         
         // Obtener y ocultar el arma
@@ -199,7 +197,7 @@ public class FuseBox : MonoBehaviour, IInteractable
             if (weaponObject != null)
             {
                 weaponObject.SetActive(false);
-                Debug.Log("🔫 Arma ocultada para la cinemática");
+                Debug.Log("Arma ocultada para la cinemática");
             }
         }
 
@@ -223,11 +221,9 @@ public class FuseBox : MonoBehaviour, IInteractable
             Debug.Log("📷 Cámara cambiada al ascensor");
         }
         
-        // Esperar 1 segundo antes de encender la luz
         Debug.Log("⏳ Esperando 1 segundo para encender la luz...");
         yield return new WaitForSeconds(1f);
         
-        // Encender la luz verde después de 1 segundo
         if (luzAscensor != null)
         {
             luzAscensor.enabled = true;
@@ -236,30 +232,29 @@ public class FuseBox : MonoBehaviour, IInteractable
             Debug.Log("💡 Luz del ascensor encendida!");
         }
         
-        // Esperar 2 segundos adicionales con la luz encendida
         Debug.Log("⏳ Esperando 2 segundos con la luz encendida...");
         yield return new WaitForSeconds(2f);
         
-        // Volver a la cámara del jugador
+
         if (camaraAscensor != null && camaraJugador != null)
         {
             camaraJugador.gameObject.SetActive(true);
             camaraAscensor.gameObject.SetActive(false);
-            Debug.Log("📷 Cámara regresó al jugador");
+            Debug.Log("Cámara regresó al jugador");
         }
         
-        // Mostrar el arma nuevamente
+
         if (weaponObject != null)
         {
             weaponObject.SetActive(true);
-            Debug.Log("🔫 Arma visible nuevamente");
+            Debug.Log("Arma visible nuevamente");
         }
 
         // Mostrar UI nuevamente
         if (canvasUI != null)
         {
             canvasUI.SetActive(true);
-            Debug.Log("🖥️ Canvas visible nuevamente");
+            Debug.Log("Canvas visible nuevamente");
         }
         
         // Reactivar movimiento del jugador
@@ -275,7 +270,7 @@ public class FuseBox : MonoBehaviour, IInteractable
         }
         
         enCinematica = false;
-        Debug.Log("✅ Cinemática completada");
+        Debug.Log("Cinemática completada");
     }
     
     void ShowMessage(string message, Color color)

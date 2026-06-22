@@ -40,12 +40,12 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.Raycast(ray, out RaycastHit hit, distance, ~0, triggerInteraction))
         {
             GameObject target = hit.collider.gameObject;
-            if (showDebug) Debug.Log($"🎯 Raycast hit: {target.name}");
+            if (showDebug) Debug.Log($"Raycast hit: {target.name}");
             
             IInteractable interactable = GetInteractableInHierarchy(target);
             if (interactable != null)
             {
-                if (showDebug) Debug.Log($"✅ Interactuando con: {target.name}");
+                if (showDebug) Debug.Log($"Interactuando con: {target.name}");
                 interactable.Interact();
                 return;
             }
@@ -55,12 +55,12 @@ public class PlayerInteraction : MonoBehaviour
         if (Physics.SphereCast(ray, radius, out hit, distance, ~0, triggerInteraction))
         {
             GameObject target = hit.collider.gameObject;
-            if (showDebug) Debug.Log($"🎯 SphereCast hit: {target.name}");
+            if (showDebug) Debug.Log($"SphereCast hit: {target.name}");
             
             IInteractable interactable = GetInteractableInHierarchy(target);
             if (interactable != null)
             {
-                if (showDebug) Debug.Log($"✅ Interactuando con: {target.name}");
+                if (showDebug) Debug.Log($"Interactuando con: {target.name}");
                 interactable.Interact();
                 return;
             }
@@ -76,14 +76,14 @@ public class PlayerInteraction : MonoBehaviour
                 float distToObject = Vector3.Distance(transform.position, col.transform.position);
                 if (distToObject <= distance * 0.8f)
                 {
-                    if (showDebug) Debug.Log($"✅ OverlapSphere encontrado: {col.name}");
+                    if (showDebug) Debug.Log($"OverlapSphere encontrado: {col.name}");
                     interactable.Interact();
                     return;
                 }
             }
         }
         
-        if (showDebug) Debug.Log("❌ No se encontró nada interactuable");
+        if (showDebug) Debug.Log("No se encontró nada interactuable");
     }
     
     private IInteractable GetInteractableInHierarchy(GameObject obj)

@@ -1,6 +1,5 @@
 using UnityEngine;
 using UnityEngine.InputSystem;
-// No incluyas ningún using de Cinemachine
 
 [RequireComponent(typeof(CharacterController))]
 public class PlayerMove : MonoBehaviour
@@ -31,14 +30,12 @@ public class PlayerMove : MonoBehaviour
     [System.Obsolete]
     void Start()
     {
-        // Simplemente obtener la cámara principal
         if (Camera.main != null)
         {
             cameraTransform = Camera.main.transform;
         }
         else
         {
-            // Buscar cualquier cámara como fallback
             Camera anyCamera = FindObjectOfType<Camera>();
             if (anyCamera != null)
             {
@@ -56,12 +53,12 @@ public class PlayerMove : MonoBehaviour
     {
         maxLife = maxLifeValue;
         currentLife = maxLifeValue;
-        Debug.Log($"✅ Vida máxima establecida en: {maxLife}");
+        Debug.Log($"Vida máxima establecida en: {maxLife}");
     }
 
     public void die()
     {
-        Debug.Log("💀 El jugador ha muerto");
+        Debug.Log("El jugador ha muerto");
         enabled = false;
     }
 

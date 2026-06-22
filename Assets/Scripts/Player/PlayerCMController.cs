@@ -11,7 +11,7 @@ public class PlayerCameraController : MonoBehaviour
     public Vector2 rotationLimits = new Vector2(-90f, 90f);
     
     [Header("Referencias")]
-    public Transform playerBody;  // El GameObject del jugador
+    public Transform playerBody; 
     
     private Vector2 lookInput;
     private bool isAiming = false;
@@ -69,7 +69,6 @@ public class PlayerCameraController : MonoBehaviour
         panTilt.PanAxis.Value = currentPan;
         panTilt.TiltAxis.Value = currentTilt;
         
-        // 🔥 NUEVO: Rotar al jugador horizontalmente
         if (playerBody != null)
         {
             playerBody.rotation = Quaternion.Euler(0, currentPan, 0);

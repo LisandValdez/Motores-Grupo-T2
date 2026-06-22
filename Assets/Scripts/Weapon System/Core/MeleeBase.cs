@@ -8,7 +8,7 @@ public abstract class MeleeBase : WeaponBase
     protected Animator anim;
     protected bool isAttacking = false;
 
-    // Movido a la base para que todas las armas melee lo compartan
+    
     private HashSet<GameObject> hitTargets = new HashSet<GameObject>();
 
     protected virtual void Awake()
@@ -24,7 +24,7 @@ public abstract class MeleeBase : WeaponBase
             nextAttackTime = Time.time + (1f / fireRate);
             isAttacking = true;
 
-            hitTargets.Clear(); // Limpiamos la lista al iniciar cada ataque
+            hitTargets.Clear();
 
             if (anim != null) anim.SetTrigger("AttackTrigger");
 
@@ -34,19 +34,16 @@ public abstract class MeleeBase : WeaponBase
 
     protected abstract void OnMeleeStrike();
 
-    // Detectamos el daño de forma genérica para todas las armas melee
     protected virtual void OnTriggerEnter(Collider other)
     {
         if (!isAttacking) return;
 
-        // Buscamos la interfaz IDamageable (recomendado) o usamos el Tag
         if (other.CompareTag("Enemy") && !hitTargets.Contains(other.gameObject))
         {
             hitTargets.Add(other.gameObject);
 
-            // Si usas la interfaz: 
-            // other.GetComponent<IDamageable>()?.TakeDamage(damage);
-            Debug.Log($"{weaponName} golpeó a {other.name} causando {damage} de daño.");
+
+            Debug.Log($"{weaponName} golpeï¿½ a {other.name} causando {damage} de daï¿½o.");
         }
     }
 

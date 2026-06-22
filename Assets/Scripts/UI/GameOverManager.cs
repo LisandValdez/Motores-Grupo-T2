@@ -21,7 +21,7 @@ public class GameOverManager : MonoBehaviour
         }
         else
         {
-            Debug.LogError("❌ Game Over Panel no asignado en GameOverManager!");
+            Debug.LogError("Game Over Panel no asignado");
         }
         
         Time.timeScale = 0f;
@@ -32,7 +32,7 @@ public class GameOverManager : MonoBehaviour
     public void Retry()
     {
         Time.timeScale = 1f;
-        SceneManager.LoadScene("MapaHotelJuan");
+        SceneManager.LoadScene("GameScene");
     }
 
     public void MainMenu()

@@ -16,20 +16,6 @@ public class HealthUI : MonoBehaviour
         UpdateHearts();
     }
 
-    //void Update()
-    //{
-    //    // tecla H para probar daño
-    //    if (Input.GetKeyDown(KeyCode.H))
-    //    {
-    //        currentHealth--;
-
-    //        if (currentHealth < 0)
-    //            currentHealth = 0;
-
-    //        UpdateHearts();
-    //    }
-    //}
-
     void UpdateHearts()
     {
         for (int i = 0; i < hearts.Length; i++)
@@ -40,9 +26,5 @@ public class HealthUI : MonoBehaviour
                 hearts[i].sprite = emptyHeart;
         }
 
-        //if (currentHealth <= 0)
-        //{
-        //    FindFirstObjectByType<GameOverManager>().GameOver();
-        //}
     }
 }

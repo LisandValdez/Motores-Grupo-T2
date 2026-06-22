@@ -1682,16 +1682,21 @@ MonoBehaviour:
   m_EditorClassIdentifier: Assembly-CSharp::Dopellganger
   life_enemy: 60
   damage: 1
-  hurtClip: {fileID: 0}
-  deathClip: {fileID: 0}
+  chaseRangeBase: 8
+  chaseRangeAlRecibirDanio: 15
+  tiempoRangoAumentado: 10
+  hurtClip: {fileID: 8300000, guid: c2292708b26b97644b272e10c418b9e0, type: 3}
+  deathClip: {fileID: 8300000, guid: e96cbf4f79a15164d870d00d3550e67f, type: 3}
+  alertClip: {fileID: 8300000, guid: e1d0fa59ae0df2949bf5daf4ace98f0d, type: 3}
+  yaAlertoAlPlayer: 0
   player: {fileID: 0}
   anim: {fileID: 4518394719210484681}
   distanciaAtaque: 1.31
   cooldownAtaque: 2
-  chaseRange: 14.6
   puntosPatrulla:
   - {fileID: 0}
-  chaseSpeed: 2
+  - {fileID: 0}
+  chaseSpeed: 4
 --- !u!82 &499462096802061864
 AudioSource:
   m_ObjectHideFlags: 0

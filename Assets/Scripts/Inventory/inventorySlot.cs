@@ -18,31 +18,29 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         slotIndex = index;
         parentUI = ui;
         
-        // Buscar el hijo "Icon" - usar Find con nombre exacto
+        
         Transform iconTransform = transform.Find("Icon");
         if (iconTransform != null)
         {
             itemIcon = iconTransform.GetComponent<Image>();
-            Debug.Log($"✅ Slot {index}: Encontrado hijo 'Icon'");
+            Debug.Log($"Slot {index}: Encontrado hijo 'Icon'");
         }
         else
         {
-            Debug.LogError($"❌ Slot {index}: No se encontró hijo 'Icon'. Los hijos son: {GetChildNames()}");
+            Debug.LogError($"Slot {index}: No se encontró hijo 'Icon'. Los hijos son: {GetChildNames()}");
         }
         
-        // Buscar el hijo "Amount"
         Transform amountTransform = transform.Find("Amount");
         if (amountTransform != null)
         {
             amountText = amountTransform.GetComponent<Text>();
-            Debug.Log($"✅ Slot {index}: Encontrado hijo 'Amount'");
+            Debug.Log($"Slot {index}: Encontrado hijo 'Amount'");
         }
         else
         {
-            Debug.LogWarning($"⚠️ Slot {index}: No se encontró hijo 'Amount'");
+            Debug.LogWarning($"Slot {index}: No se encontró hijo 'Amount'");
         }
         
-        // Buscar el hijo "HighlightBorder"
         Transform highlightTransform = transform.Find("HighlightBorder");
         if (highlightTransform != null)
         {
@@ -67,7 +65,7 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
     {
         currentItem = item;
         
-        Debug.Log($"🎨 [SLOT] SetItem: {item.itemName}, Icono: {(item.icon != null ? item.icon.name : "NULL")}");
+        Debug.Log($" [SLOT] SetItem: {item.itemName}, Icono: {(item.icon != null ? item.icon.name : "NULL")}");
         
         if (itemIcon != null)
         {
@@ -75,17 +73,17 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
             {
                 itemIcon.sprite = item.icon;
                 itemIcon.color = Color.white;
-                Debug.Log($"  ✅ Icono asignado al hijo 'Icon': {item.icon.name}");
+                Debug.Log($" Icono asignado al hijo 'Icon': {item.icon.name}");
             }
             else
             {
-                Debug.LogWarning($"  ⚠️ El item {item.itemName} no tiene icono");
+                Debug.LogWarning($" El item {item.itemName} no tiene icono");
                 itemIcon.sprite = null;
             }
         }
         else
         {
-            Debug.LogError($"❌ itemIcon es NULL en slot {slotIndex}!");
+            Debug.LogError($"itemIcon es NULL en slot {slotIndex}!");
         }
         
         if (amountText != null)
@@ -149,10 +147,10 @@ public class InventorySlot : MonoBehaviour, IPointerClickHandler, IPointerEnterH
         switch (currentItem.itemType)
         {
             case ItemType.Consumable:
-                Debug.Log($"💊 Usaste {currentItem.itemName}");
+                Debug.Log($" Usaste {currentItem.itemName}");
                 break;
             case ItemType.Weapon:
-                Debug.Log($"⚔️ Equipaste {currentItem.itemName}");
+                Debug.Log($" Equipaste {currentItem.itemName}");
                 break;
         }
         

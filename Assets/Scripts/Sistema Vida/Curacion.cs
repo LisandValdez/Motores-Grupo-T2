@@ -6,12 +6,12 @@ public class Curacion : MonoBehaviour
 
     private void OnTriggerEnter(Collider other)
     {
-        Debug.Log("Botiquín tocó: " + other.name);
+        Debug.Log("Botiquin tocado: " + other.name);
 
         if (other.TryGetComponent<IHealt>(out var healt))
         {
             healt.Take_health(healtAmount);
-            Debug.Log("Curación aplicada: " + healtAmount);
+            Debug.Log("Curacion aplicada: " + healtAmount);
 
             Destroy(gameObject); 
         }

@@ -5,14 +5,14 @@ public class PlayerLook : MonoBehaviour
 {
     public float sensitivity = 2f;
     [Range(0.1f, 1f)]
-    public float aimSensitivityMultiplier = 0.5f; // 0.5 significa la mitad de sensibilidad
+    public float aimSensitivityMultiplier = 0.5f; 
     public Transform player;
 
     private Vector2 lookInput;
     private float xRotation = 0f;
     private bool isAiming = false;
 
-    // Recibe el estado desde el WeaponController
+    
     public void SetAiming(bool state)
     {
         isAiming = state;
@@ -25,7 +25,6 @@ public class PlayerLook : MonoBehaviour
 
     void Update()
     {
-        // Aplicar reducci�n si estamos apuntando
         float currentSensitivity = isAiming ? (sensitivity * aimSensitivityMultiplier) : sensitivity;
 
         float mouseX = lookInput.x * currentSensitivity * Time.deltaTime;

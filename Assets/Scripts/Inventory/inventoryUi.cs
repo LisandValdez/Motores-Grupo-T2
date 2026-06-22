@@ -1,20 +1,20 @@
 using UnityEngine;
 using UnityEngine.UI;
-using UnityEngine.InputSystem;  // ← Agregar esto
+using UnityEngine.InputSystem; 
 using System.Collections.Generic;
 
 public class InventoryUI : MonoBehaviour
 {
     [Header("Configuración del Panel")]
-    public GameObject inventoryPanel;      // Panel principal del inventario
-    public Transform slotsParent;          // GameObject padre que contiene los slots
-    public GameObject slotPrefab;          // Prefab del slot (un botón con imagen)
+    public GameObject inventoryPanel;     
+    public Transform slotsParent;         
+    public GameObject slotPrefab;          
     
     [Header("Teclas")]
-    public KeyCode toggleKey = KeyCode.I;   // Tecla para abrir/cerrar inventario (referencia)
+    public KeyCode toggleKey = KeyCode.I;   
     
     [Header("Detalles del Item")]
-    public GameObject itemDetailPanel;     // Panel para mostrar detalles
+    public GameObject itemDetailPanel;    
     public Text itemNameText;
     public Text itemAmountText;
     public Text itemDescriptionText;
@@ -30,11 +30,11 @@ public class InventoryUI : MonoBehaviour
     
     if (playerInventory == null)
     {
-        Debug.LogError("❌ No se encontró el componente Inventory en el jugador!");
+        Debug.LogError("No se encontró el componente Inventory en el jugador");
         return;
     }
     
-    Debug.Log($"✅ InventoryUI: Inventario encontrado con {playerInventory.items.Count} items");
+    Debug.Log($"InventoryUI: Inventario encontrado con {playerInventory.items.Count} items");
     
     // Crear los slots
     CreateSlots();
@@ -57,7 +57,7 @@ public void RefreshUI()
 {
     if (playerInventory == null || slots.Count == 0) return;
     
-    Debug.Log($"🔄 [UI] Refrescando UI. Items en inventario: {playerInventory.items.Count}");
+    Debug.Log($"[UI] Refrescando UI. Items en inventario: {playerInventory.items.Count}");
     
     for (int i = 0; i < playerInventory.items.Count; i++)
     {
@@ -77,27 +77,7 @@ public void RefreshUI()
         }
     }
 }
-    
-    // public void RefreshUI()
-    // {
-    //     if (playerInventory == null) return;
-        
-    //     // Actualizar cada slot
-    //     for (int i = 0; i < slots.Count; i++)
-    //     {
-    //         if (i < playerInventory.items.Count)
-    //         {
-    //             // Slot con item
-    //             InventoryItem item = playerInventory.items[i];
-    //             slots[i].SetItem(item);
-    //         }
-    //         else
-    //         {
-    //             // Slot vacío
-    //             slots[i].ClearSlot();
-    //         }
-    //     }
-    // }
+
     
     void Update()
 {
@@ -142,7 +122,7 @@ public void OnToggleInventory(InputAction.CallbackContext context)
             slots.Add(slot);
         }
         
-        Debug.Log($"✅ Creados {slots.Count} slots para el inventario");
+        Debug.Log($"Creados {slots.Count} slots para el inventario");
     }
 
     

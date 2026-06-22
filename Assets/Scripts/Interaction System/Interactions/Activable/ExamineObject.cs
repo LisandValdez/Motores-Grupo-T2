@@ -15,16 +15,16 @@ public class ExamineObject : ActivableBase
             if (DialogueManager.Instance != null)
             {
                 DialogueManager.Instance.StartDialogue(examineDialogue);
-                Debug.Log($"👁️ Examinando objeto: {gameObject.name}");
+                Debug.Log($"Examinando objeto: {gameObject.name}");
             }
             else
             {
-                Debug.LogWarning("⚠️ No se encontró DialogueManager en la escena para mostrar el texto del examen.");
+                Debug.LogWarning("No se encontró DialogueManager en la escena para mostrar el texto del examen.");
             }
         }
         else
         {
-            Debug.LogWarning($"⚠️ El objeto {gameObject.name} no tiene un diálogo de examen configurado.");
+            Debug.LogWarning($"El objeto {gameObject.name} no tiene un diálogo de examen configurado.");
         }
     }
 }

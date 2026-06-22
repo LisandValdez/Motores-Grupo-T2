@@ -116,7 +116,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
     {
         if (!playerInRange)
         {
-            Debug.Log("⚠️ No estás en rango del botón");
+            Debug.Log("No estás en rango del botón");
             return;
         }
         
@@ -128,7 +128,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
         
         if (isPressed || isMoving)
         {
-            Debug.Log("⏰ El botón ya está siendo usado");
+            Debug.Log("El botón ya está siendo usado");
             return;
         }
         
@@ -151,9 +151,8 @@ public class VictoryButton : MonoBehaviour, IInteractable
     
     IEnumerator VictorySequence()
     {
-        Debug.Log("🎉 ¡Iniciando secuencia de victoria!");
+        Debug.Log("Iniciando secuencia de victoria");
         
-        // 1. CERRAR LA PUERTA (rápido)
         if (elevatorDoor != null)
         {
             Debug.Log("🚪 Cerrando puerta...");
@@ -163,16 +162,13 @@ public class VictoryButton : MonoBehaviour, IInteractable
             
             if (doorCloseSound != null)
                 AudioSource.PlayClipAtPoint(doorCloseSound, transform.position, 1f);
-            
-            // Esperar SOLO el tiempo necesario para cerrar
+        
             yield return StartCoroutine(WaitForDoorToClose());
         }
         
-        // 2. PAUSA MÍNIMA para que se vea el mensaje de cierre
         yield return new WaitForSeconds(0.2f);
         
-        // 3. EFECTOS DE VICTORIA (inmediato)
-        Debug.Log("🎆 ¡VICTORIA!");
+        Debug.Log("¡VICTORIA!");
         
         if (victoryEffect != null)
             Instantiate(victoryEffect, transform.position, Quaternion.identity);
@@ -204,7 +200,7 @@ public class VictoryButton : MonoBehaviour, IInteractable
         // Si la puerta sigue abierta después del tiempo máximo, forzar cierre
         if (elevatorDoor != null && elevatorDoor.isOpen)
         {
-            Debug.LogWarning("⚠️ Forzando cierre de puerta");
+            Debug.LogWarning("Forzando cierre de puerta");
             elevatorDoor.ForceClose();
         }
         
@@ -213,36 +209,31 @@ public class VictoryButton : MonoBehaviour, IInteractable
     
     void EndGame()
 {
-    Debug.Log("🏆 JUEGO COMPLETADO 🏆");
+    Debug.Log("JUEGO COMPLETADO");
     
     if (victoryManager != null)
     {
-        // Mostrar la victoria ANTES de pausar
         victoryManager.Victory();
         
-        // Pequeña pausa para que se vea el efecto
         StartCoroutine(PauseAfterVictory());
     }
     else
     {
-        Debug.LogError("❌ No se encontró VictoryManager!");
+        Debug.LogError("No se encontró VictoryManager!");
     }
 }
 
 IEnumerator PauseAfterVictory()
 {
-    // Esperar un frame para que VictoryManager pueda procesar
     yield return null;
     
-    // Ahora sí pausamos el juego
     Time.timeScale = 0f;
-    Debug.Log("⏸️ Juego pausado");
+    Debug.Log("Juego pausado");
 }
 
     
     void ShowMessage(string message, Color color)
 {
-    // 🔥 Buscar por componente en lugar de tag
     FadeMessage[] oldMessages = FindObjectsOfType<FadeMessage>();
     foreach (FadeMessage msg in oldMessages)
     {
@@ -250,7 +241,7 @@ IEnumerator PauseAfterVictory()
     }
     
     GameObject messageObj = new GameObject("ButtonMessage");
-    // Ya no necesitas asignar tag
+
     messageObj.transform.SetParent(transform);
     messageObj.transform.localPosition = new Vector3(0, promptHeight + 0.8f, 0);
     
